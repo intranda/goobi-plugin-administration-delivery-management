@@ -1,5 +1,6 @@
 package de.intranda.goobi.plugins;
 
+import org.apache.commons.configuration.XMLConfiguration;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
 
@@ -10,13 +11,13 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 
 @PluginImplementation
 @Log4j2
-public class SampleAdministrationPlugin implements IAdministrationPlugin {
+public class DeliveryManagementAdministrationPlugin implements IAdministrationPlugin {
 
     @Getter
-    private String title = "intranda_administration_sample";
+    private String title = "intranda_administration_deliveryManagement";
 
     @Getter
-    private String value;
+    private String value = "test2334";
 
     @Override
     public PluginType getType() {
@@ -25,14 +26,13 @@ public class SampleAdministrationPlugin implements IAdministrationPlugin {
 
     @Override
     public String getGui() {
-        return "/uii/plugin_administration_sample.xhtml";
+        return "/uii/plugin_administration_deliveryManagement.xhtml";
     }
 
-    /**
-     * Constructor
-     */
-    public SampleAdministrationPlugin() {
-        log.info("Sample admnistration plugin started");
-        value = ConfigPlugins.getPluginConfig(title).getString("value", "default value");
-    }   
+
+    private void loadConfiguration() {
+        XMLConfiguration conf =  ConfigPlugins.getPluginConfig(title);
+
+    }
+
 }
