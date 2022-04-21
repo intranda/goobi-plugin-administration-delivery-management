@@ -1,6 +1,6 @@
 package de.intranda.goobi.plugins;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,8 +29,15 @@ public class DeliveryManagementPluginTest {
     }
 
     @Test
-    public void testVersion() throws IOException {
-        String s = "xyz";
-        assertNotNull(s);
+    public void testDisplayMode() throws IOException {
+        DeliveryManagementAdministrationPlugin plugin = new DeliveryManagementAdministrationPlugin();
+        plugin.setDisplayMode("fixture");
+        assertEquals("fixture", plugin.getDisplayMode());
+    }
+
+    @Test
+    public void testPossibleModes() throws IOException {
+        DeliveryManagementAdministrationPlugin plugin = new DeliveryManagementAdministrationPlugin();
+        assertEquals(2, plugin.getModes().length);
     }
 }
