@@ -32,10 +32,15 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="box box-color box-bordered lightgrey">
-                        <div class="box-title">
+                        <div
+                            class="box-title"
+                            jsf:id="box-title">
                             <h3>
                                 <i class="fa fa-plug"></i>
                                 <h:outputText value="#{msgs[AdministrationForm.administrationPlugin.title]}" />
+                                <h:outputText
+                                    value=": #{msgs[AdministrationForm.administrationPlugin.displayMode]}"
+                                    rendered="#{AdministrationForm.administrationPlugin.displayMode != null}" />
                             </h3>
                         </div>
                         <div class="box-content nopadding">
@@ -51,44 +56,44 @@
                                 styleClass="col-sm-12"
                                 rendered="#{LoginForm.hasRole('Plugin_administration_deliveryManagement')}">
                                 <div class="row">
-                                    <h:form>
+                                    <h:form styleClass="form-horizontal form-bordered">
                                         <div class="grid">
                                             <div class="grid-selection">
                                                 <ui:repeat
                                                     var="mode"
                                                     value="#{AdministrationForm.administrationPlugin.modes}">
-                                                    <button
-                                                        type="button"
-                                                        class="button-link font-black"
-                                                        jsf:id="displayDetails">
-                                                        <h:outputText value="#{msgs[mode]}" />
-                                                        <f:setPropertyActionListener
-                                                            value="#{mode}"
-                                                            target="#{AdministrationForm.administrationPlugin.displayMode}" />
-                                                        <f:ajax render="@form" />
-
-                                                    </button>
-
-
+                                                    <div>
+                                                        <button
+                                                            type="button"
+                                                            class="button-link font-black"
+                                                            jsf:id="displayDetails">
+                                                            <h:outputText value="#{msgs[mode]}" />
+                                                            <f:setPropertyActionListener
+                                                                value="#{mode}"
+                                                                target="#{AdministrationForm.administrationPlugin.displayMode}" />
+                                                            <f:setPropertyActionListener
+                                                                value=""
+                                                                target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                                                            <f:ajax render="@form :box-title" />
+                                                        </button>
+                                                    </div>
                                                 </ui:repeat>
-
-
                                             </div>
-
                                             <h:panelGroup
                                                 id="plugin-main-content"
                                                 layout="block"
                                                 styleClass="grid-main">
-                                                <h:outputText value="mode: #{AdministrationForm.administrationPlugin.displayMode}" />
+
+                                                <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'displayMode_institution'}">
+                                                    <ui:include src="include_institution.xhtml" />
+                                                </ui:fragment>
+
+
+
+
+
                                             </h:panelGroup>
                                         </div>
-
-
-
-
-
-
-
                                     </h:form>
                                 </div>
                             </h:panelGroup>

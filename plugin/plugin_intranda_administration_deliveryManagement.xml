@@ -1,6 +1,14 @@
 <config_plugin>
 	
-	<!-- configuration item as sample -->
-	<value>sample value from config</value>
+	<institution>
+        <field fieldType="textarea" displayInTable="false" name="address"></field>
+        <field fieldType="input" displayInTable="true" name="city"></field>
+        <field fieldType="dropdown" displayInTable="false" name="zipcode">
+            <value>10115</value>
+            <value>10117</value>
+            <value>10119</value>
+        </field>
+    
+    </institution>
 	
 </config_plugin>
