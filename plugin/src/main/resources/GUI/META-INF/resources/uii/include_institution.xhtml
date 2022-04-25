@@ -24,9 +24,7 @@
                     <h:outputText value="#{msgs.treffer}: #{AdministrationForm.administrationPlugin.institutionBean.paginator.totalResults}" />
                 </div>
 
-                <!-- Datentabelle -->
                 <x:dataTable
-                    id="ldaps"
                     styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
                     var="item"
                     value="#{AdministrationForm.administrationPlugin.institutionBean.paginator.list}">
@@ -45,32 +43,19 @@
                         <h:outputText value="#{item.longName}" />
                     </x:column>
 
+                    <c:forEach
+                        items="#{AdministrationForm.administrationPlugin.configuredInstitutionFields}"
+                        var="cif">
 
-                    <x:column style="max-width:250px;">
-                        <f:facet name="header">
-                            <h:outputText value="#{msgs.regelsaetze}" />
-                        </f:facet>
-                        <h:outputText
-                            value="#{msgs.institution_allSelected}"
-                            rendered="#{item.allowAllRulesets}" />
-                        <x:dataList
-                            var="intern"
-                            rendered="#{!item.allowAllRulesets}"
-                            value="#{item.allowedRulesets}"
-                            layout="ordered list"
-                            rowCountVar="rowCount"
-                            rowIndexVar="rowIndex">
-                            <ui:fragment rendered="#{intern.selected}">
-                                <h:outputText value="#{intern.object_name}" />
-                                <h:outputText
-                                    value=","
-                                    rendered="#{rowIndex + 1 lt rowCount}" />
-                            </ui:fragment>
-                        </x:dataList>
-
-                    </x:column>
-
-
+                        <x:column
+                            style="max-width:250px;"
+                            rendered="#{cif.displayInTable}">
+                            <f:facet name="header">
+                                <h:outputText value="#{cif.label}" />
+                            </f:facet>
+                            <h:outputText value="#{item.additionalData[cif.name]}" />
+                        </x:column>
+                    </c:forEach>
 
 
                     <x:column width="150px;">
@@ -93,7 +78,7 @@
                             <f:setPropertyActionListener
                                 value="edit"
                                 target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                            <f:ajax render="@form :box-title" />
+                            <f:ajax render="@form" />
                         </button>
                     </x:column>
                 </x:dataTable>
@@ -103,10 +88,14 @@
                     <button
                         jsf:id="new"
                         class="btn btn-primary font-size-s"
-                        jsf:action="#{AdministrationForm.administrationPlugin.institutionBean.createNewInstitution}"
+                        jsf:action="#{AdministrationForm.administrationPlugin.createNewInstitution}"
                         jsf:immediate="true">
                         <i class="fa fa-plus margin-right-5"></i>
                         <h:outputText value="#{msgs.institution_createNew}" />
+                        <f:setPropertyActionListener
+                            value="edit"
+                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                        <f:ajax render="@form" />
                     </button>
                 </div>
                 <div class="dataTables_paginate">

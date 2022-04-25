@@ -125,4 +125,10 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         InstitutionManager.deleteInstitution(institution);
         institutionBean.FilterKein();
     }
+
+    public void createNewInstitution() {
+        Institution institution = new Institution();
+        setInstitution(institution);
+    }
+
 }
