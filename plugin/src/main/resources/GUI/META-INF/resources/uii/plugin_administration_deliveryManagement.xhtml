@@ -48,7 +48,7 @@
                             <h:panelGroup rendered="#{!LoginForm.hasRole('Plugin_administration_deliveryManagement')}">
                                 <h:outputText
                                     styleClass="alert alert-danger alert-dismissable margin-bottom-10 margin-top-10"
-                                    value="#{msgs.plugin_administration_missingPermission} Plugin_administration_deliveryManagement"></h:outputText>
+                                    value="#{msgs.plugin_administration_missingPermission} Plugin_administration_deliveryManagement"/>
                             </h:panelGroup>
 
                             <h:panelGroup
@@ -56,9 +56,9 @@
                                 styleClass="col-sm-12"
                                 rendered="#{LoginForm.hasRole('Plugin_administration_deliveryManagement')}">
                                 <div class="row">
-                                    <h:form styleClass="form-horizontal form-bordered">
                                         <div class="grid">
                                             <div class="grid-selection">
+                                    <h:form styleClass="form-horizontal form-bordered">
                                                 <ui:repeat
                                                     var="mode"
                                                     value="#{AdministrationForm.administrationPlugin.modes}">
@@ -74,10 +74,11 @@
                                                             <f:setPropertyActionListener
                                                                 value=""
                                                                 target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                                                            <f:ajax render="@form :box-title" />
+                                                            <f:ajax render="@form :box-title :plugin-main-content" />
                                                         </button>
                                                     </div>
                                                 </ui:repeat>
+                                    </h:form>
                                             </div>
                                             <h:panelGroup
                                                 id="plugin-main-content"
@@ -94,7 +95,6 @@
 
                                             </h:panelGroup>
                                         </div>
-                                    </h:form>
                                 </div>
                             </h:panelGroup>
 
