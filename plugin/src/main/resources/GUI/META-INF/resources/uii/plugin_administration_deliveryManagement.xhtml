@@ -91,6 +91,11 @@
 
 
 
+                                                <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'displayMode_user'}">
+                                                    <ui:include src="include_users.xhtml" />
+                                                </ui:fragment>
+
+
 
 
                                             </h:panelGroup>

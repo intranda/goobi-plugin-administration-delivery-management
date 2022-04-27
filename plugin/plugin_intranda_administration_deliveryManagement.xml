@@ -1,14 +1,17 @@
 <config_plugin>
 	
 	<institution>
-        <field fieldType="textarea" displayInTable="false" name="address"></field>
-        <field fieldType="input" displayInTable="true" name="city"></field>
-        <field fieldType="dropdown" displayInTable="false" name="zipcode">
+        <field fieldType="textarea" displayInTable="false" name="address" label="Adresse"></field>
+        <field fieldType="input" displayInTable="true" name="city" label="Stadt"></field>
+        <field fieldType="dropdown" displayInTable="false" name="zipcode" label="PLZ">
             <value>10115</value>
             <value>10117</value>
             <value>10119</value>
         </field>
-    
+ 
+        
+  
+
     </institution>
 	
 </config_plugin>

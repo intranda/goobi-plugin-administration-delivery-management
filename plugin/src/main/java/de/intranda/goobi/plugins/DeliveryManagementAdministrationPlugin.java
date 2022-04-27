@@ -8,13 +8,18 @@ import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.goobi.beans.Institution;
+import org.goobi.beans.User;
 import org.goobi.managedbeans.InstitutionBean;
+import org.goobi.managedbeans.UserBean;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
 
 import de.sub.goobi.config.ConfigPlugins;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.InstitutionManager;
+import de.sub.goobi.persistence.managers.LdapManager;
+import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -46,17 +51,21 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private String editionMode = "";
 
     @Getter
-
-    private Institution institution;
-
-    @Getter
     private String[] modes = { "displayMode_institution", "displayMode_user" };
 
     @Getter
+    private Institution institution;
+    @Getter
     private InstitutionBean institutionBean = Helper.getBeanByClass(InstitutionBean.class);
-
     @Getter
     private List<ConfiguredField> configuredInstitutionFields = null;
+
+    @Getter
+    private User user;
+    @Getter
+    private UserBean userBean = Helper.getBeanByClass(UserBean.class);
+    @Getter
+    private List<ConfiguredField> configuredUserFields = null;
 
     @Override
     public PluginType getType() {
@@ -69,7 +78,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         if (configuredInstitutionFields == null) {
             loadConfiguration();
         }
-
         return "/uii/plugin_administration_deliveryManagement.xhtml";
     }
 
@@ -77,11 +85,11 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         XMLConfiguration conf = ConfigPlugins.getPluginConfig(title);
         conf.setExpressionEngine(new XPathExpressionEngine());
         List<HierarchicalConfiguration> institutionFields = conf.configurationsAt("/institution/field");
-
+        List<HierarchicalConfiguration> userFields = conf.configurationsAt("/user/field");
         configuredInstitutionFields = new ArrayList<>();
+        configuredUserFields = new ArrayList<>();
 
         for (HierarchicalConfiguration hc : institutionFields) {
-
             ConfiguredField field = new ConfiguredField(hc.getString("@name"), hc.getString("@label"), hc.getString("@fieldType", "input"),
                     hc.getBoolean("@displayInTable", false), hc.getString("@validationType", null), hc.getString("@regularExpression", null),
                     hc.getString("/validationError", null));
@@ -92,6 +100,19 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             }
             configuredInstitutionFields.add(field);
         }
+
+        for (HierarchicalConfiguration hc : userFields) {
+            ConfiguredField field = new ConfiguredField(hc.getString("@name"), hc.getString("@label"), hc.getString("@fieldType", "input"),
+                    hc.getBoolean("@displayInTable", false), hc.getString("@validationType", null), hc.getString("@regularExpression", null),
+                    hc.getString("/validationError", null));
+
+            if (field.getFieldType().equals("dropdown") || field.getFieldType().equals("multiselect")) {
+                List<String> valueList = Arrays.asList(hc.getStringArray("/value"));
+                field.setSelectItemList(valueList);
+            }
+            configuredUserFields.add(field);
+        }
+
     }
 
     public void setDisplayMode(String displayMode) {
@@ -99,6 +120,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             this.displayMode = displayMode;
             if (displayMode.equals("displayMode_institution")) {
                 institutionBean.FilterKein();
+            }
+            if (displayMode.equals("displayMode_user")) {
+                userBean.FilterKein();
             }
         }
     }
@@ -131,4 +155,76 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         setInstitution(institution);
     }
 
+    public void setUser(User user) {
+        if (this.user == null || !this.user.equals(user)) {
+            this.user = user;
+            for (ConfiguredField field : configuredUserFields) {
+                field.setValue(user.getAdditionalData().get(field.getName()));
+            }
+        }
+    }
+
+    public void saveUser() {
+        for (ConfiguredField field : configuredUserFields) {
+            user.getAdditionalData().put(field.getName(), field.getValue());
+        }
+        try {
+            UserManager.saveUser(user);
+        } catch (DAOException e) {
+            log.error(e);
+        }
+        userBean.FilterKein();
+    }
+
+    public void deleteUser() {
+        try {
+            UserManager.deleteUser(user);
+        } catch (DAOException e) {
+            log.error(e);
+        }
+        userBean.FilterKein();
+    }
+
+    public void createNewUser() {
+        User user = new User();
+        setUser(user);
+    }
+
+    public Integer getAuthenticationType() {
+        if (user.getLdapGruppe() != null) {
+            return user.getLdapGruppe().getId();
+        } else {
+            return null;
+        }
+    }
+
+    public void setAuthenticationType(Integer inAuswahl) {
+        if (inAuswahl.intValue() != 0) {
+            try {
+                user.setLdapGruppe(LdapManager.getLdapById(inAuswahl));
+            } catch (DAOException e) {
+                Helper.setFehlerMeldung("Error on writing to database", e);
+            }
+        }
+    }
+
+    public Integer getCurrentInstitutionID() {
+        if (user.getInstitution() != null) {
+            return user.getInstitution().getId();
+        } else {
+            return Integer.valueOf(0);
+        }
+    }
+
+    public void setCurrentInstitutionID(Integer id) {
+        if (id != null && id.intValue() != 0) {
+            Institution institution = InstitutionManager.getInstitutionById(id);
+            user.setInstitution(institution);
+        }
+    }
+
+
+    // TODO send mail when account was activated
+
 }
+

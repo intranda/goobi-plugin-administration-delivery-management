@@ -1,0 +1,427 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+        <h:form styleClass="form-horizontal form-bordered">
+            <h:panelGroup
+                layout="block"
+                styleClass="dataTables_wrapper"
+                rendered="#{AdministrationForm.administrationPlugin.editionMode==''}">
+                <div class="dataTables_length">
+                    <h:outputText value="#{msgs.treffer}: #{AdministrationForm.administrationPlugin.userBean.paginator.totalResults}" />
+                </div>
+
+
+                <table
+                    role="grid"
+                    id="tableUserAll"
+                    class="table table-hover table-nomargin dataTable table-bordered responsive">
+                    <!-- ### Columnheader row ### -->
+                    <thead>
+                        <tr role="row">
+                            <intranda:columnheader
+                                name="name"
+                                value="#{msgs.benutzer}" />
+                            <intranda:columnheader
+                                name="login"
+                                value="#{msgs.login}" />
+                            <intranda:columnheader
+                                name="institution"
+                                value="#{msgs.institution}" />
+
+                            <!-- additional fields -->
+                            <c:forEach
+                                items="#{AdministrationForm.administrationPlugin.configuredUserFields}"
+                                var="cif">
+                                <ui:fragment rendered="#{cif.displayInTable}">
+                                    <intranda:columnheader
+                                        name="field"
+                                        value="#{cif.label}" />
+                                </ui:fragment>
+                            </c:forEach>
+
+                            <intranda:columnheader
+                                value="#{msgs.auswahl}"
+                                sortable="false" />
+                        </tr>
+                    </thead>
+                    <!-- ### Content rows ### -->
+                    <ui:repeat
+                        var="item"
+                        value="#{AdministrationForm.administrationPlugin.userBean.paginator.list}"
+                        varStatus="status">
+                        <tr role="row">
+                            <td>
+                                <h:outputText
+                                    value="#{item.nachname}, #{item.vorname}"
+                                    styleClass="userID_#{item.vorname}_#{item.nachname} #{not item.active?'font-light':''}"
+                                    title="#{item.login}" />
+                            </td>
+                            <td>
+                                <h:outputText
+                                    value="#{item.login}"
+                                    styleClass="#{not item.active?'font-light':''}" />
+                            </td>
+
+                            <td>
+                                <h:outputText
+                                    value="#{item.institution.shortName}"
+                                    styleClass="#{not item.active?'font-light':''}" />
+                            </td>
+
+                            <!-- additional fields -->
+                            <c:forEach
+                                items="#{AdministrationForm.administrationPlugin.configuredUserFields}"
+                                var="cif">
+                                <ui:fragment rendered="#{cif.displayInTable}">
+                                    <td>
+                                        <h:outputText value="#{item.additionalData[cif.name]}" />
+                                    </td>
+                                </ui:fragment>
+                            </c:forEach>
+
+                            <td>
+                                <div class="no-linebreak">
+                                    <!-- Bearbeiten-Schaltknopf -->
+                                    <button
+                                        jsf:id="edit"
+                                        class="btn margin-right-5"
+                                        jsf:rel="tooltip"
+                                        title="#{msgs.benutzerBearbeiten}">
+                                        <i class="fa fa-pencil"></i>
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <f:passThroughAttribute
+                                            name="aria-label"
+                                            value="#{msgs.benutzerBearbeiten}" />
+                                        <f:setPropertyActionListener
+                                            target="#{AdministrationForm.administrationPlugin.user}"
+                                            value="#{item}" />
+                                        <f:setPropertyActionListener
+                                            value="edit"
+                                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ui:repeat>
+                </table>
+
+                <div class="dataTables_info">
+                    <button
+                        jsf:id="newUser"
+                        class="btn btn-primary font-size-s"
+                        jsf:action="#{AdministrationForm.administrationPlugin.createNewUser}"
+                        jsf:immediate="true">
+                        <i class="fa fa-plus margin-right-5"></i>
+                        <h:outputText value="#{msgs.neuenBenutzerAnlegen}" />
+                        <f:setPropertyActionListener
+                            value="edit"
+                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                    </button>
+                </div>
+                <div class="dataTables_paginate">
+                    <intranda:tablePaginator2
+                        id="user"
+                        name="users"
+                        paginator="#{AdministrationForm.administrationPlugin.userBean.paginator}" />
+                </div>
+            </h:panelGroup>
+
+            <h:panelGroup
+                layout="block"
+                styleClass="dataTables_wrapper"
+                rendered="#{AdministrationForm.administrationPlugin.editionMode=='edit'}">
+                <div class="tab-content">
+                    <intranda:formInputText
+                        classLeft="col-sm-3 control-label notFocusable"
+                        id="lastname"
+                        label="#{msgs.nachname}"
+                        field="#{AdministrationForm.administrationPlugin.user.nachname}"
+                        help="#{msgs.helpNachname}"
+                        name="nachname"
+                        fieldStyle="form-control" />
+
+                    <intranda:formInputText
+                        classLeft="col-sm-3 control-label notFocusable"
+                        id="firstname"
+                        label="#{msgs.vorname}"
+                        field="#{AdministrationForm.administrationPlugin.user.vorname}"
+                        help="#{msgs.helpVorname}"
+                        name="vorname"
+                        fieldStyle="form-control" />
+
+                    <intranda:formInputText
+                        classLeft="col-sm-3 control-label notFocusable"
+                        id="location"
+                        label="#{msgs.standort}"
+                        field="#{AdministrationForm.administrationPlugin.user.standort}"
+                        help="#{msgs.helpStandort}"
+                        name="standort"
+                        fieldStyle="form-control" />
+
+                    <intranda:formInputDropDown
+                        classLeft="col-sm-3 control-label notFocusable"
+                        id="institution"
+                        label="#{msgs.institution}"
+                        field="#{AdministrationForm.administrationPlugin.currentInstitutionID}"
+                        help="#{msgs.helpUserInstitution}"
+                        name="institutionName"
+                        selectItems="#{BenutzerverwaltungForm.institutionsAsSelectList}"
+                        fieldStyle="form-control"
+                        required="true" />
+
+                    <div class="form-group">
+                        <div class="col-sm-3 control-label">
+                            <h:outputLabel
+                                for="loginAs"
+                                value="#{msgs.login}" />
+                            <h:panelGroup>
+                                <i
+                                    class="fa fa-asterisk pull-right font-asterisk"
+                                    title="#{msgs.requiredField}"
+                                    data-toggle="tooltip" />
+                            </h:panelGroup>
+                        </div>
+                        <div class="col-sm-9">
+                            <x:inputText
+                                id="loginAs"
+                                forceId="true"
+                                styleClass="form-control"
+                                value="#{AdministrationForm.administrationPlugin.user.login}"
+                                required="true"
+                                readonly="false"
+                                validatorMessage="#{msgs.loginWrongCharacter}">
+                                <f:validateRegex pattern="[a-z0-9\._-]+" />
+                            </x:inputText>
+                            <h:message
+                                for="loginAs"
+                                showDetail="true"
+                                styleClass="help-inline font-danger" />
+                            <h:outputText
+                                styleClass="help-block font-light"
+                                rendered="#{NavigationForm.showHelp}"
+                                value="#{msgs.helpLogin}" />
+                        </div>
+                    </div>
+
+
+                    <!-- authentication type -->
+                    <div class="form-group">
+                        <div class="col-sm-3 control-label">
+                            <h:outputLabel
+                                for="ldapGruppe"
+                                value="#{msgs.user_edit_loginType}" />
+                            <h:panelGroup>
+                                <i
+                                    class="fa fa-asterisk pull-right font-asterisk"
+                                    title="#{msgs.requiredField}"
+                                    data-toggle="tooltip" />
+                            </h:panelGroup>
+                        </div>
+                        <div class="col-sm-9">
+                            <h:selectOneMenu
+                                id="ldapGruppe"
+                                styleClass="form-control"
+                                value="#{AdministrationForm.administrationPlugin.authenticationType}">
+                                <f:selectItems
+                                    value="#{BenutzerverwaltungForm.ldapGruppeAuswahlListe}"
+                                    var="var"
+                                    itemLabel="#{var.itemLabel}"
+                                    itemValue="#{var.itemValue}" />
+                            </h:selectOneMenu>
+                            <h:message
+                                for="ldapGruppe"
+                                showDetail="true"
+                                styleClass="help-inline font-danger" />
+                            <h:outputText
+                                styleClass="help-block font-light"
+                                rendered="#{NavigationForm.showHelp}"
+                                value="#{msgs.helpLdapGruppe}" />
+                        </div>
+                    </div>
+
+
+                    <intranda:formInputCheckBox
+                        classLeft="col-sm-3 control-label notFocusable"
+                        id="isActive"
+                        label="#{msgs.istAktiv}"
+                        field="#{AdministrationForm.administrationPlugin.user.active}"
+                        help="#{msgs.helpIstAktiv}"
+                        name="istAktiv" />
+
+                    <intranda:formInputDropDown
+                        classLeft="col-sm-3 control-label notFocusable"
+                        id="dashboard"
+                        label="#{msgs.dashboard}"
+                        field="#{AdministrationForm.administrationPlugin.user.dashboardPlugin}"
+                        help="#{msgs.helpUserDashboard}"
+                        name="dashboardName"
+                        selectItems="#{AdministrationForm.administrationPlugin.user.availableDashboards}"
+                        fieldStyle="form-control" />
+
+
+                    <!-- additional data -->
+                    <ui:repeat
+                        var="item"
+                        value="#{AdministrationForm.administrationPlugin.configuredUserFields}">
+
+                        <div
+                            class="form-group"
+                            style="">
+                            <div
+                                class="col-sm-3 control-label"
+                                tabindex="-1">
+                                <h:outputLabel
+                                    for="id1"
+                                    value="#{item.label}" />
+                            </div>
+                            <div
+                                class="col-sm-9"
+                                style="">
+                                <ui:fragment rendered="#{item.fieldType=='input'}">
+                                    <h:inputText
+                                        id="input"
+                                        styleClass="form-control"
+                                        value="#{item.value}"
+                                        required="false"
+                                        readonly="false">
+                                    </h:inputText>
+                                </ui:fragment>
+
+
+                                <ui:fragment rendered="#{item.fieldType=='textarea'}">
+
+                                    <h:inputTextarea
+                                        id="textarea"
+                                        styleClass="form-control"
+                                        value="#{item.value}"
+                                        required="false"
+                                        readonly="false">
+                                    </h:inputTextarea>
+
+                                </ui:fragment>
+
+
+                                <ui:fragment rendered="#{item.fieldType=='dropdown'}">
+
+                                    <h:selectOneMenu
+                                        id="dropdown"
+                                        styleClass="form-control"
+                                        value="#{item.value}">
+                                        <f:selectItem
+                                            itemValue="null"
+                                            itemLabel="#{msgs.bitteAuswaehlen}" />
+                                        <f:selectItems value="#{item.selectItemList}" />
+                                    </h:selectOneMenu>
+                                </ui:fragment>
+
+                            </div>
+                        </div>
+
+                    </ui:repeat>
+
+
+                </div>
+
+
+                <div class="form-actions">
+                    <!-- Save -->
+                    <button
+                        class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+                        jsf:id="absenden"
+                        type="submit"
+                        jsf:action="#{AdministrationForm.administrationPlugin.saveUser}">
+                        <i class="fa fa-save margin-right-5"></i>
+                        <h:outputText value="#{msgs.speichern}" />
+                        <f:setPropertyActionListener
+                            value=""
+                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                        <f:ajax
+                            render="@form"
+                            execute="@form" />
+                    </button>
+
+                    <!-- Cancel -->
+                    <button
+                        class="btn margin-sides-10 font-size-s pull-right"
+                        jsf:id="cancel"
+                        type="submit"
+                        jsf:immediate="true">
+                        <h:outputText value="#{msgs.abbrechen}" />
+                        <f:setPropertyActionListener
+                            value=""
+                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                        <f:ajax render="@form" />
+                    </button>
+                    <!-- delete -->
+                    <ui:fragment rendered="#{AdministrationForm.administrationPlugin.user.id != null}">
+                        <button
+                            id="delete"
+                            type="button"
+                            class="btn btn-danger"
+                            data-toggle="modal"
+                            data-target="#deleteModal">
+                            <i class="fa fa-trash-o margin-right-5" />
+                            <h:outputText value="#{msgs.loeschen}" />
+                        </button>
+                        <div
+                            class="modal fade"
+                            id="deleteModal"
+                            tabindex="-1"
+                            role="dialog"
+                            aria-labelledby="myModalLabel">
+                            <div
+                                class="modal-dialog"
+                                role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4
+                                            class="modal-title"
+                                            id="myModalLabel">
+                                            <h:outputText value="#{msgs.loeschen}" />
+                                        </h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button
+                                            class="btn"
+                                            data-dismiss="modal"
+                                            aria-hidden="true">#{msgs.abbrechen}</button>
+                                        <button
+                                            jsf:id="confirmDelete"
+                                            class="btn btn-danger"
+                                            jsf:action="#{AdministrationForm.administrationPlugin.deleteUser}">
+                                            <i class="fa fa-trash-o margin-right-5" />
+                                            <f:setPropertyActionListener
+                                                value=""
+                                                target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                                            <h:outputText value="#{msgs.loeschen}" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ui:fragment>
+                </div>
+
+            </h:panelGroup>
+        </h:form>
+    </composite:implementation>
+
+</ui:composition>

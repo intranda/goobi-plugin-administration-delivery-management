@@ -46,7 +46,6 @@
                     <c:forEach
                         items="#{AdministrationForm.administrationPlugin.configuredInstitutionFields}"
                         var="cif">
-
                         <x:column
                             style="max-width:250px;"
                             rendered="#{cif.displayInTable}">
@@ -273,6 +272,9 @@
                                             class="btn btn-danger"
                                             jsf:action="#{AdministrationForm.administrationPlugin.deleteInstitution}">
                                             <i class="fa fa-trash-o margin-right-5" />
+                                            <f:setPropertyActionListener
+                                                value=""
+                                                target="#{AdministrationForm.administrationPlugin.editionMode}" />
                                             <h:outputText value="#{msgs.loeschen}" />
                                         </button>
                                     </div>
