@@ -7,6 +7,8 @@ import java.util.List;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
+import org.apache.commons.lang.StringUtils;
+import org.goobi.api.mail.SendMail;
 import org.goobi.beans.Institution;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.InstitutionBean;
@@ -29,8 +31,6 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 @Log4j2
 public class DeliveryManagementAdministrationPlugin implements IAdministrationPlugin {
 
-    //    - Anlegen und Bearbeiten von Institutionen mit verschiedenen zugehörigen Metadaten (Adressen, Kontaktdaten, Ansprechpartner etc.)
-    //    - Anlegen und Bearbeiten von Benutzeraccounts mit verschiedenen zugehörigen Metadaten und Zuweisung der Benutzer zu den vorhandenen Institutionen
     //    - Hinterlegen einer zentralen Datenschutzerklärung
     //    - Suche und Sortierung von Nutzern
     //    - Zuweisung von Nutzern zu bestehenden Institutionen
@@ -66,6 +66,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private UserBean userBean = Helper.getBeanByClass(UserBean.class);
     @Getter
     private List<ConfiguredField> configuredUserFields = null;
+
+    // is set to true, when the account was disabled and gets activated
+    private boolean activateAccount = false;
 
     @Override
     public PluginType getType() {
@@ -155,6 +158,21 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         setInstitution(institution);
     }
 
+    public void setUserIsActive(boolean active) {
+        if (!user.isActive() && active) {
+            // account gets activated, send mail
+            activateAccount = true;
+        } else if (!active) {
+            // account gets deactivated
+            activateAccount = false;
+        }
+        user.setActive(active);
+    }
+
+    public boolean isUserIsActive() {
+        return user.isActive();
+    }
+
     public void setUser(User user) {
         if (this.user == null || !this.user.equals(user)) {
             this.user = user;
@@ -172,6 +190,13 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             UserManager.saveUser(user);
         } catch (DAOException e) {
             log.error(e);
+        }
+        if (activateAccount && StringUtils.isNotBlank(user.getEmail())) {
+            // TODO send mail when account was activated
+            String messageSubject = SendMail.getInstance().getConfig().getUserActivationMailSubject();
+            String messageBody =
+                    SendMail.getInstance().getConfig().getUserActivationMailBody().replace("{login}", user.getLogin());
+            SendMail.getInstance().sendMailToUser(messageSubject, messageBody, user.getEmail());
         }
         userBean.FilterKein();
     }
@@ -222,9 +247,4 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             user.setInstitution(institution);
         }
     }
-
-
-    // TODO send mail when account was activated
-
 }
-
