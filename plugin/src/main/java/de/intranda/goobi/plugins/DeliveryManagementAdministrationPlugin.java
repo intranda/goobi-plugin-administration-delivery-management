@@ -33,7 +33,6 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 @Log4j2
 public class DeliveryManagementAdministrationPlugin implements IAdministrationPlugin {
 
-    //    - Hinterlegen einer zentralen Datenschutzerklärung
     //    - Suche und Sortierung von Nutzern
 
     //    - Übersichtsanzeige einer Institution (Auflistung bereits abgelieferter Publikationen (Vorgänge) mit Anzeige konfigurierter Metadaten einer Institution; Datum letzte Lieferung)
@@ -99,7 +98,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         configuredInstitutionFields = new ArrayList<>();
         configuredUserFields = new ArrayList<>();
 
-        privacyPolicyText = conf.getString("/privacyStatement","");
+        privacyPolicyText = conf.getString("/privacyStatement", "");
 
         for (HierarchicalConfiguration hc : institutionFields) {
             ConfiguredField field = new ConfiguredField(hc.getString("@name"), hc.getString("@label"), hc.getString("@fieldType", "input"),
@@ -270,8 +269,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
             conf.save(new File(new Helper().getGoobiConfigDirectory() + file));
         } catch (ConfigurationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
         }
 
     }
