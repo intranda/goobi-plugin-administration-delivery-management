@@ -1,9 +1,11 @@
 package de.intranda.goobi.plugins;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
@@ -33,12 +35,11 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     //    - Hinterlegen einer zentralen Datenschutzerklärung
     //    - Suche und Sortierung von Nutzern
-    //    - Zuweisung von Nutzern zu bestehenden Institutionen
+
     //    - Übersichtsanzeige einer Institution (Auflistung bereits abgelieferter Publikationen (Vorgänge) mit Anzeige konfigurierter Metadaten einer Institution; Datum letzte Lieferung)
     //    - Import und Export von Stammdaten einer Institution als json oder xml
     //    - Übersicht über freizuschaltende Nutzer und Möglichkeit, eine Freischaltung zu ermöglichen oder zu verhindern
     //    - Mailversand über erfolgte oder verweigerte Freischaltung
-    //    - weitreichende Konfigurierbarkeit des Plugins und der Mail-Texte über eine Konfigurationsdatei
 
     @Getter
     private String title = "intranda_administration_deliveryManagement";
@@ -51,7 +52,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private String editionMode = "";
 
     @Getter
-    private String[] modes = { "displayMode_institution", "displayMode_user" };
+    private String[] modes = { "displayMode_institution", "displayMode_user", "displayMode_privacyPolicy" };
 
     @Getter
     private Institution institution;
@@ -70,6 +71,12 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     // is set to true, when the account was disabled and gets activated
     private boolean activateAccount = false;
 
+    @Getter
+    @Setter
+    private String privacyPolicyText;
+
+    private XMLConfiguration conf;
+
     @Override
     public PluginType getType() {
         return PluginType.Administration;
@@ -85,12 +92,14 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     }
 
     private void loadConfiguration() {
-        XMLConfiguration conf = ConfigPlugins.getPluginConfig(title);
+        conf = ConfigPlugins.getPluginConfig(title);
         conf.setExpressionEngine(new XPathExpressionEngine());
         List<HierarchicalConfiguration> institutionFields = conf.configurationsAt("/institution/field");
         List<HierarchicalConfiguration> userFields = conf.configurationsAt("/user/field");
         configuredInstitutionFields = new ArrayList<>();
         configuredUserFields = new ArrayList<>();
+
+        privacyPolicyText = conf.getString("/privacyStatement","");
 
         for (HierarchicalConfiguration hc : institutionFields) {
             ConfiguredField field = new ConfiguredField(hc.getString("@name"), hc.getString("@label"), hc.getString("@fieldType", "input"),
@@ -247,4 +256,24 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             user.setInstitution(institution);
         }
     }
+
+    public void savePrivacyPolicy() {
+        System.out.println("save " + privacyPolicyText);
+        // check if element exists
+        if (conf.getString("/privacyStatement") != null) {
+            conf.clearProperty("/privacyStatement");
+        }
+        conf.addProperty("/privacyStatement", privacyPolicyText);
+        String file = "plugin_" + title + ".xml";
+
+        try {
+
+            conf.save(new File(new Helper().getGoobiConfigDirectory() + file));
+        } catch (ConfigurationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
 }

@@ -26,6 +26,7 @@
     border-right: 1px solid black;
 }
 </style>
+        <script src="template/js/plugins/tinymce/tinymce.min.js"></script>
 
 
         <h:panelGroup>
@@ -48,7 +49,7 @@
                             <h:panelGroup rendered="#{!LoginForm.hasRole('Plugin_administration_deliveryManagement')}">
                                 <h:outputText
                                     styleClass="alert alert-danger alert-dismissable margin-bottom-10 margin-top-10"
-                                    value="#{msgs.plugin_administration_missingPermission} Plugin_administration_deliveryManagement"/>
+                                    value="#{msgs.plugin_administration_missingPermission} Plugin_administration_deliveryManagement" />
                             </h:panelGroup>
 
                             <h:panelGroup
@@ -56,9 +57,9 @@
                                 styleClass="col-sm-12"
                                 rendered="#{LoginForm.hasRole('Plugin_administration_deliveryManagement')}">
                                 <div class="row">
-                                        <div class="grid">
-                                            <div class="grid-selection">
-                                    <h:form styleClass="form-horizontal form-bordered">
+                                    <div class="grid">
+                                        <div class="grid-selection">
+                                            <h:form styleClass="form-horizontal form-bordered">
                                                 <ui:repeat
                                                     var="mode"
                                                     value="#{AdministrationForm.administrationPlugin.modes}">
@@ -78,28 +79,30 @@
                                                         </button>
                                                     </div>
                                                 </ui:repeat>
-                                    </h:form>
-                                            </div>
-                                            <h:panelGroup
-                                                id="plugin-main-content"
-                                                layout="block"
-                                                styleClass="grid-main">
-
-                                                <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'displayMode_institution'}">
-                                                    <ui:include src="include_institution.xhtml" />
-                                                </ui:fragment>
-
-
-
-                                                <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'displayMode_user'}">
-                                                    <ui:include src="include_users.xhtml" />
-                                                </ui:fragment>
-
-
-
-
-                                            </h:panelGroup>
+                                            </h:form>
                                         </div>
+                                        <h:panelGroup
+                                            id="plugin-main-content"
+                                            layout="block"
+                                            styleClass="grid-main">
+
+                                            <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'displayMode_institution'}">
+                                                <ui:include src="include_institution.xhtml" />
+                                            </ui:fragment>
+
+
+
+                                            <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'displayMode_user'}">
+                                                <ui:include src="include_users.xhtml" />
+                                            </ui:fragment>
+
+                                            <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'displayMode_privacyPolicy'}">
+                                                <ui:include src="include_privacyPolicy.xhtml" />
+                                            </ui:fragment>
+
+
+                                        </h:panelGroup>
+                                    </div>
                                 </div>
                             </h:panelGroup>
 
@@ -108,6 +111,79 @@
                 </div>
             </div>
         </h:panelGroup>
+<script type="text/javascript">
+                                    //<![CDATA[
+                                    var simpleTinyMceConfig = {
+                                        selector: '.textarea-html',
+                                        setup: function( editor ) {
+                                            editor.on( 'change', function() {
+                                                tinymce.triggerSave();
+                                            } );
+                                        },
+                                        valid_elements: 'p,strong,em,span[!style<text-decoration: underline;],sup,',
+                                        statusbar: true,
+                                        theme: 'silver',
+                                        height: 250,
+                                        plugins: [ 'print code preview fullscreen' ],
+                                        menu: {},
+                                        toolbar: false,
+                                        toolbar: 'undo redo | bold italic underline | superscript | code ',
+                                        content_css: 'css/content.css',
+                                        init_instance_callback: function( editor ) {
+                                            var readOnlyAttr = $( "#" + editor.id.replace( ":", "\\:" ) ).attr( "readonly" );
+                                            if ( readOnlyAttr === "readonly" ) {
+                                                editor.setMode( "readonly" );
+                                            }
+                                        },
+                                        setup: function( editor ) {
+                                            editor.on( "blur", function( event, a, b ) {
+                                                editor.save();
+                                                $( "#" + editor.id.replace( ":", "\\:" ) ).trigger( "change" );
+                                            } );
+                                        }
+                                    
+                                    };
+                                    
+                                    function initTinyMce() {
+                                        console.log( "Init tinyMce" );
+                                        tinymce.init( simpleTinyMceConfig );
+                                    };
 
+                                    $( window ).on( "load", function() {
+                                        renderInputFields()
+                                    } );
+                                    $( document ).ready(function() {
+                                        renderInputFields()
+                                    } );
+
+                                    jsf.ajax.addOnEvent( function( data ) {
+                                        var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
+                                        switch ( ajaxstatus ) {
+                                            case "success": // This is called when ajax response is successfully processed.
+                                                renderInputFields()
+                                                break;
+                                        }
+                                    } );
+                                    
+                                    function renderInputFields( ajaxData ) {
+                                        if ( typeof tinyMCE !== 'undefined' ) {
+                                            if ( ajaxData === undefined || ajaxData.status == "begin" ) {
+                                                for ( edId in tinyMCE.editors ) {
+                                                    try {
+                                                        tinyMCE.editors[ edId ].remove();
+                                                        console.log( "Removed editor " + edId );
+                                                    }
+                                                    catch ( error ) {
+                                                        console.log( "Error occured during removing editors; ", error );
+                                                    }
+                                                }
+                                            }
+                                            if ( ajaxData === undefined || ajaxData.status == "success" ) {
+                                                initTinyMce( ajaxData );
+                                            }
+                                        }
+                                    }
+                                    //]]>
+                                </script>
     </composite:implementation>
 </ui:composition>

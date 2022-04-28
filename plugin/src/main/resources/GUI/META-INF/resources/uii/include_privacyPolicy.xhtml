@@ -1,0 +1,47 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+
+
+
+        <h:form styleClass="form-horizontal form-bordered">
+            <h:inputTextarea
+                style="margin:10px; width: calc(100% - 20px);"
+                id="textareaHtml"
+                styleClass="form-control textarea-html"
+                value="#{AdministrationForm.administrationPlugin.privacyPolicyText}" />
+
+            <div class="form-actions">
+                <!-- Save -->
+                <button
+                    class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+                    jsf:id="absenden"
+                    type="submit"
+                    jsf:action="#{AdministrationForm.administrationPlugin.savePrivacyPolicy}">
+                    <i class="fa fa-save margin-right-5"></i>
+                    <h:outputText value="#{msgs.speichern}" />
+                    <f:ajax
+                        render="@form"
+                        execute="@form" />
+                </button>
+            </div>
+
+        </h:form>
+
+
+
+    </composite:implementation>
+</ui:composition>

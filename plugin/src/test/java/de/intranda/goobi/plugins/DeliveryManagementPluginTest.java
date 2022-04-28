@@ -38,6 +38,6 @@ public class DeliveryManagementPluginTest {
     @Test
     public void testPossibleModes() throws IOException {
         DeliveryManagementAdministrationPlugin plugin = new DeliveryManagementAdministrationPlugin();
-        assertEquals(2, plugin.getModes().length);
+        assertEquals(3, plugin.getModes().length);
     }
 }
