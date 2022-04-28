@@ -125,6 +125,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 institutionBean.FilterKein();
             }
             if (displayMode.equals("displayMode_user")) {
+                userBean.setHideInactiveUsers(false);
                 userBean.FilterKein();
             }
         }
@@ -192,10 +193,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             log.error(e);
         }
         if (activateAccount && StringUtils.isNotBlank(user.getEmail())) {
-            // TODO send mail when account was activated
+            // send mail when account gets activated
             String messageSubject = SendMail.getInstance().getConfig().getUserActivationMailSubject();
-            String messageBody =
-                    SendMail.getInstance().getConfig().getUserActivationMailBody().replace("{login}", user.getLogin());
+            String messageBody = SendMail.getInstance().getConfig().getUserActivationMailBody().replace("{login}", user.getLogin());
             SendMail.getInstance().sendMailToUser(messageSubject, messageBody, user.getEmail());
         }
         userBean.FilterKein();
