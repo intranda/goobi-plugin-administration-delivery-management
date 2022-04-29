@@ -14,7 +14,6 @@ import org.goobi.api.mail.SendMail;
 import org.goobi.beans.Institution;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.DatabasePaginator;
-import org.goobi.managedbeans.InstitutionBean;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
 
@@ -54,31 +53,27 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     @Getter
     private Institution institution;
-    @Getter
-    private InstitutionBean institutionBean = Helper.getBeanByClass(InstitutionBean.class);
+
     @Getter
     private List<ConfiguredField> configuredInstitutionFields = null;
 
     @Getter
-    private User user;
-    //    @Getter
-    //    private UserBean userBean = Helper.getBeanByClass(UserBean.class);
-    @Getter
-    private List<ConfiguredField> configuredUserFields = null;
-
-    // is set to true, when the account was disabled and gets activated
-    private boolean activateAccount = false;
+    @Setter
+    private String institutionSearchFilter;
 
     @Getter
     @Setter
-    private String privacyPolicyText;
+    private String institutionSort;
 
-    private XMLConfiguration conf;
+    @Getter
+    private DatabasePaginator institutionPaginator;
 
-    @Override
-    public PluginType getType() {
-        return PluginType.Administration;
-    }
+
+    @Getter
+    private User user;
+
+    @Getter
+    private List<ConfiguredField> configuredUserFields = null;
 
     @Getter
     @Setter
@@ -90,6 +85,22 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     @Getter
     private DatabasePaginator userPaginator;
+
+
+    // is set to true, when the account was disabled and gets activated
+    private boolean activateAccount = false;
+
+
+    @Getter
+    @Setter
+    private String privacyPolicyText;
+
+    private XMLConfiguration conf;
+
+    @Override
+    public PluginType getType() {
+        return PluginType.Administration;
+    }
 
     @Override
     public String getGui() {
@@ -140,7 +151,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         if (this.displayMode == null || !this.displayMode.equals(displayMode)) {
             this.displayMode = displayMode;
             if (displayMode.equals("displayMode_institution")) {
-                institutionBean.FilterKein();
+                filterInstitution();
             }
             if (displayMode.equals("displayMode_user")) {
                 //                userBean.setHideInactiveUsers(false);
@@ -165,21 +176,56 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         }
 
         InstitutionManager.saveInstitution(institution);
-        institutionBean.FilterKein();
+        filterInstitution();
     }
 
     public void deleteInstitution() {
         InstitutionManager.deleteInstitution(institution);
-        institutionBean.FilterKein();
+        filterInstitution();
     }
 
-    //    public
+
+    public void filterInstitution() {
+        InstitutionManager manager = new InstitutionManager();
+        institutionPaginator = new DatabasePaginator(getInsitutionSqlSortString(), institutionSearchFilter, manager, "institution_all");
+    }
+
+
+
+    private String getInsitutionSqlSortString() {
+        String sort = "";
+        if (StringUtils.isNotBlank(institutionSort)) {
+            switch (institutionSort) {
+                case "benutzer.Nachname, benutzer.Vorname":
+                case "benutzer.Nachname Desc, benutzer.Vorname Desc":
+                case "benutzer.login":
+                case "benutzer.login Desc":
+                case "benutzer.email":
+                case "benutzer.email Desc":
+                case "institution.shortName":
+                case "institution.shortName Desc":
+                    sort = institutionSort;
+                    break;
+                default:
+                    // free configured field
+                    if (institutionSort.endsWith("Desc")) {
+                        sort = "ExtractValue(institution.additional_data, '/root/" + institutionSort.replace(" Desc", "") + "') desc";
+                    } else {
+                        sort = "ExtractValue(institution.additional_data, '/root/" + institutionSort + "')";
+                    }
+                    break;
+            }
+        }
+        return sort;
+    }
 
     public void filterUser() {
         UserManager m = new UserManager();
         String sqlQuery = "userstatus!='deleted'";
         userPaginator = new DatabasePaginator(getUserSqlSortString(), sqlQuery, m, "");
     }
+
+
 
     private String getUserSqlSortString() {
         String sort = "";

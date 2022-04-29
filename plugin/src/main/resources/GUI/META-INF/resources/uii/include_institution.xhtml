@@ -21,24 +21,44 @@
                 styleClass="dataTables_wrapper"
                 rendered="#{AdministrationForm.administrationPlugin.editionMode==''}">
                 <div class="dataTables_length">
-                    <h:outputText value="#{msgs.treffer}: #{AdministrationForm.administrationPlugin.institutionBean.paginator.totalResults}" />
+                    <h:outputText value="#{msgs.treffer}: #{AdministrationForm.administrationPlugin.institutionPaginator.totalResults}" />
                 </div>
 
                 <x:dataTable
                     styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
                     var="item"
-                    value="#{AdministrationForm.administrationPlugin.institutionBean.paginator.list}">
+                    value="#{AdministrationForm.administrationPlugin.institutionPaginator.list}">
 
                     <x:column>
                         <f:facet name="header">
-                            <h:outputText value="#{msgs.institution_shortName}" />
+                            <button
+                                class="button-link"
+                                style="width: 100%; text-align: left;"
+                                jsf:action="#{AdministrationForm.administrationPlugin.filterInstitution}">
+                                <h:outputText value="#{msgs.institution_shortName}" />
+                                <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.institutionSort== 'shortName Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.institutionSort== 'shortName' ?'fa-sort-asc':'fa-sort'}"></span>
+                                <f:setPropertyActionListener
+                                    target="#{AdministrationForm.administrationPlugin.institutionSort}"
+                                    value="#{AdministrationForm.administrationPlugin.institutionSort== 'shortName' ? 'shortName Desc' : 'shortName' }" />
+                                <f:ajax render="@form" />
+                            </button>
                         </f:facet>
                         <h:outputText value="#{item.shortName}" />
                     </x:column>
 
                     <x:column>
                         <f:facet name="header">
-                            <h:outputText value="#{msgs.institution_longName}" />
+                            <button
+                                class="button-link"
+                                style="width: 100%; text-align: left;"
+                                jsf:action="#{AdministrationForm.administrationPlugin.filterInstitution}">
+                                <h:outputText value="#{msgs.institution_longName}" />
+                                <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.institutionSort== 'longName Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.institutionSort== 'longName' ?'fa-sort-asc':'fa-sort'}"></span>
+                                <f:setPropertyActionListener
+                                    target="#{AdministrationForm.administrationPlugin.institutionSort}"
+                                    value="#{AdministrationForm.administrationPlugin.institutionSort== 'longName' ? 'longName Desc' : 'longName' }" />
+                                <f:ajax render="@form" />
+                            </button>
                         </f:facet>
                         <h:outputText value="#{item.longName}" />
                     </x:column>
@@ -50,7 +70,17 @@
                             style="max-width:250px;"
                             rendered="#{cif.displayInTable}">
                             <f:facet name="header">
-                                <h:outputText value="#{cif.label}" />
+                                <button
+                                    class="button-link"
+                                    style="width: 100%; text-align: left;"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.filterInstitution}">
+                                    <h:outputText value="#{cif.label}" />
+                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.institutionSort==(cif.name).concat(' Desc') ?'fa-sort-desc':AdministrationForm.administrationPlugin.institutionSort== cif.name ?'fa-sort-asc':'fa-sort'}"></span>
+                                    <f:setPropertyActionListener
+                                        target="#{AdministrationForm.administrationPlugin.institutionSort}"
+                                        value="#{AdministrationForm.administrationPlugin.institutionSort== cif.name.concat(' Desc') ? cif.name : cif.name.concat(' Desc')}" />
+                                    <f:ajax render="@form" />
+                                </button>
                             </f:facet>
                             <h:outputText value="#{item.additionalData[cif.name]}" />
                         </x:column>
@@ -101,7 +131,7 @@
                     <!-- paginator -->
                     <intranda:tablePaginator
                         id="inst"
-                        paginator="#{AdministrationForm.administrationPlugin.institutionBean.paginator}" />
+                        paginator="#{AdministrationForm.administrationPlugin.institutionPaginator}" />
                     <!-- /paginator -->
                 </div>
             </h:panelGroup>
