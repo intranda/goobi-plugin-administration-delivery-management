@@ -20,7 +20,7 @@
                 styleClass="dataTables_wrapper"
                 rendered="#{AdministrationForm.administrationPlugin.editionMode==''}">
                 <div class="dataTables_length">
-                    <h:outputText value="#{msgs.treffer}: #{AdministrationForm.administrationPlugin.userBean.paginator.totalResults}" />
+                    <h:outputText value="#{msgs.treffer}: #{AdministrationForm.administrationPlugin.userPaginator.totalResults}" />
                 </div>
 
 
@@ -31,24 +31,103 @@
                     <!-- ### Columnheader row ### -->
                     <thead>
                         <tr role="row">
-                            <intranda:columnheader
-                                name="name"
-                                value="#{msgs.benutzer}" />
-                            <intranda:columnheader
-                                name="login"
-                                value="#{msgs.login}" />
-                            <intranda:columnheader
-                                name="institution"
-                                value="#{msgs.institution}" />
+                            <th
+                                scope="col"
+                                role="columnheader"
+                                >
+                                <button
+                                    class="button-link"
+                                    style="width: 100%; text-align: left;"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">
+                                    <h:outputText value="#{msgs.benutzer}" />
+                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.userSort== 'benutzer.Nachname Desc, benutzer.Vorname Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.userSort== 'benutzer.Nachname, benutzer.Vorname' ?'fa-sort-asc':'fa-sort'}"></span>
+                                    <f:setPropertyActionListener
+                                        target="#{AdministrationForm.administrationPlugin.userSort}"
+                                        value="#{AdministrationForm.administrationPlugin.userSort== 'benutzer.Nachname, benutzer.Vorname' ? 'benutzer.Nachname Desc, benutzer.Vorname Desc' : 'benutzer.Nachname, benutzer.Vorname' }" />
+                                    <f:ajax render="@form" />
+                                </button>
+                            </th>
+
+                            <th
+                                scope="col"
+                                role="columnheader"
+                                >
+                                <button
+                                    class="button-link"
+                                    style="width: 100%; text-align: left;"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">
+                                    <h:outputText value="#{msgs.login}" />
+                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.userSort== 'benutzer.login Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.userSort== 'benutzer.login' ?'fa-sort-asc':'fa-sort'}"></span>
+                                    <f:setPropertyActionListener
+                                        target="#{AdministrationForm.administrationPlugin.userSort}"
+                                        value="#{AdministrationForm.administrationPlugin.userSort== 'benutzer.login' ? 'benutzer.login Desc' : 'benutzer.login' }" />
+                                    <f:ajax render="@form" />
+                                </button>
+                            </th>
+
+                            <th
+                                scope="col"
+                                role="columnheader"
+                                >
+                                <button
+                                    class="button-link"
+                                    style="width: 100%; text-align: left;"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">
+                                    <h:outputText value="#{msgs.email}" />
+                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.userSort== 'benutzer.email Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.userSort== 'benutzer.email' ?'fa-sort-asc':'fa-sort'}"></span>
+                                    <f:setPropertyActionListener
+                                        target="#{AdministrationForm.administrationPlugin.userSort}"
+                                        value="#{AdministrationForm.administrationPlugin.userSort== 'benutzer.email' ? 'benutzer.email Desc' : 'benutzer.email' }" />
+                                    <f:ajax render="@form" />
+                                </button>
+                            </th>
+
+
+                            <th
+                                scope="col"
+                                role="columnheader"
+                                >
+                                <button
+                                    class="button-link"
+                                    style="width: 100%; text-align: left;"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">
+                                    <h:outputText value="#{msgs.institution}" />
+                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.userSort== 'institution.shortName Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.userSort== 'institution.shortName' ?'fa-sort-asc':'fa-sort'}"></span>
+                                    <f:setPropertyActionListener
+                                        target="#{AdministrationForm.administrationPlugin.userSort}"
+                                        value="#{AdministrationForm.administrationPlugin.userSort== 'institution.shortName Desc' ? 'institution.shortName' : 'institution.shortName Desc' }" />
+                                    <f:ajax render="@form" />
+                                </button>
+                            </th>
+
+
 
                             <!-- additional fields -->
                             <c:forEach
                                 items="#{AdministrationForm.administrationPlugin.configuredUserFields}"
                                 var="cif">
                                 <ui:fragment rendered="#{cif.displayInTable}">
-                                    <intranda:columnheader
-                                        name="field"
-                                        value="#{cif.label}" />
+                                
+                            <th
+                                scope="col"
+                                role="columnheader"
+                                >
+                                <button
+                                    class="button-link"
+                                    style="width: 100%; text-align: left;"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">
+                                    <h:outputText value="#{cif.label}" />
+                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.userSort==(cif.name).concat(' Desc') ?'fa-sort-desc':AdministrationForm.administrationPlugin.userSort== cif.name ?'fa-sort-asc':'fa-sort'}"></span>
+                                    <f:setPropertyActionListener
+                                        target="#{AdministrationForm.administrationPlugin.userSort}"
+                                        value="#{AdministrationForm.administrationPlugin.userSort== cif.name.concat(' Desc') ? cif.name : cif.name.concat(' Desc') }" />
+                                    <f:ajax render="@form" />
+                                </button>
+                            </th>                                
+                                
+                                
+                                
+                                   
                                 </ui:fragment>
                             </c:forEach>
 
@@ -60,7 +139,7 @@
                     <!-- ### Content rows ### -->
                     <ui:repeat
                         var="item"
-                        value="#{AdministrationForm.administrationPlugin.userBean.paginator.list}"
+                        value="#{AdministrationForm.administrationPlugin.userPaginator.list}"
                         varStatus="status">
                         <tr role="row">
                             <td>
@@ -74,7 +153,11 @@
                                     value="#{item.login}"
                                     styleClass="#{not item.active?'font-light':''}" />
                             </td>
-
+                            <td>
+                                <h:outputText
+                                    value="#{item.email}"
+                                    styleClass="#{not item.active?'font-light':''}" />
+                            </td>
                             <td>
                                 <h:outputText
                                     value="#{item.institution.shortName}"
@@ -137,7 +220,7 @@
                     <intranda:tablePaginator2
                         id="user"
                         name="users"
-                        paginator="#{AdministrationForm.administrationPlugin.userBean.paginator}" />
+                        paginator="#{AdministrationForm.administrationPlugin.userPaginator}" />
                 </div>
             </h:panelGroup>
 

@@ -13,8 +13,8 @@ import org.apache.commons.lang.StringUtils;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.Institution;
 import org.goobi.beans.User;
+import org.goobi.managedbeans.DatabasePaginator;
 import org.goobi.managedbeans.InstitutionBean;
-import org.goobi.managedbeans.UserBean;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
 
@@ -34,7 +34,6 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 public class DeliveryManagementAdministrationPlugin implements IAdministrationPlugin {
 
     //    - Suche und Sortierung von Nutzern
-
     //    - Übersichtsanzeige einer Institution (Auflistung bereits abgelieferter Publikationen (Vorgänge) mit Anzeige konfigurierter Metadaten einer Institution; Datum letzte Lieferung)
     //    - Import und Export von Stammdaten einer Institution als json oder xml
     //    - Übersicht über freizuschaltende Nutzer und Möglichkeit, eine Freischaltung zu ermöglichen oder zu verhindern
@@ -62,8 +61,8 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     @Getter
     private User user;
-    @Getter
-    private UserBean userBean = Helper.getBeanByClass(UserBean.class);
+    //    @Getter
+    //    private UserBean userBean = Helper.getBeanByClass(UserBean.class);
     @Getter
     private List<ConfiguredField> configuredUserFields = null;
 
@@ -80,6 +79,17 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     public PluginType getType() {
         return PluginType.Administration;
     }
+
+    @Getter
+    @Setter
+    private String userSearchFilter;
+
+    @Getter
+    @Setter
+    private String userSort;
+
+    @Getter
+    private DatabasePaginator userPaginator;
 
     @Override
     public String getGui() {
@@ -133,8 +143,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 institutionBean.FilterKein();
             }
             if (displayMode.equals("displayMode_user")) {
-                userBean.setHideInactiveUsers(false);
-                userBean.FilterKein();
+                //                userBean.setHideInactiveUsers(false);
+                //                userBean.FilterKein();
+                filterUser();
             }
         }
     }
@@ -160,6 +171,41 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     public void deleteInstitution() {
         InstitutionManager.deleteInstitution(institution);
         institutionBean.FilterKein();
+    }
+
+    //    public
+
+    public void filterUser() {
+        UserManager m = new UserManager();
+        String sqlQuery = "userstatus!='deleted'";
+        userPaginator = new DatabasePaginator(getUserSqlSortString(), sqlQuery, m, "");
+    }
+
+    private String getUserSqlSortString() {
+        String sort = "";
+        if (StringUtils.isNotBlank(userSort)) {
+            switch (userSort) {
+                case "benutzer.Nachname, benutzer.Vorname":
+                case "benutzer.Nachname Desc, benutzer.Vorname Desc":
+                case "benutzer.login":
+                case "benutzer.login Desc":
+                case "benutzer.email":
+                case "benutzer.email Desc":
+                case "institution.shortName":
+                case "institution.shortName Desc":
+                    sort = userSort;
+                    break;
+                default:
+                    // free configured field
+                    if (userSort.endsWith("Desc")) {
+                        sort = "ExtractValue(benutzer.additional_data, '/root/" + userSort.replace(" Desc", "") + "') desc";
+                    } else {
+                        sort = "ExtractValue(benutzer.additional_data, '/root/" + userSort + "')";
+                    }
+                    break;
+            }
+        }
+        return sort;
     }
 
     public void createNewInstitution() {
@@ -206,7 +252,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             String messageBody = SendMail.getInstance().getConfig().getUserActivationMailBody().replace("{login}", user.getLogin());
             SendMail.getInstance().sendMailToUser(messageSubject, messageBody, user.getEmail());
         }
-        userBean.FilterKein();
+        filterUser();
     }
 
     public void deleteUser() {
@@ -215,7 +261,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         } catch (DAOException e) {
             log.error(e);
         }
-        userBean.FilterKein();
+        filterUser();
     }
 
     public void createNewUser() {
