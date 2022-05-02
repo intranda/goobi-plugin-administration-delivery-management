@@ -9,7 +9,8 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.Institution;
 import org.goobi.beans.User;
@@ -68,7 +69,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     @Getter
     private DatabasePaginator institutionPaginator;
 
-
     @Getter
     private User user;
 
@@ -86,10 +86,8 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     @Getter
     private DatabasePaginator userPaginator;
 
-
     // is set to true, when the account was disabled and gets activated
     private boolean activateAccount = false;
-
 
     @Getter
     @Setter
@@ -184,13 +182,10 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         filterInstitution();
     }
 
-
     public void filterInstitution() {
         InstitutionManager manager = new InstitutionManager();
         institutionPaginator = new DatabasePaginator(getInsitutionSqlSortString(), institutionSearchFilter, manager, "institution_all");
     }
-
-
 
     private String getInsitutionSqlSortString() {
         String sort = "";
@@ -221,11 +216,22 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     public void filterUser() {
         UserManager m = new UserManager();
-        String sqlQuery = "userstatus!='deleted'";
-        userPaginator = new DatabasePaginator(getUserSqlSortString(), sqlQuery, m, "");
+        StringBuilder sqlQuery = new StringBuilder();
+        sqlQuery.append("userstatus!='deleted'");
+        if (StringUtils.isNotBlank(userSearchFilter)) {
+            String like = " like '%" + StringEscapeUtils.escapeSql(userSearchFilter) + "%'";
+            sqlQuery.append("and (login").append(like);
+            sqlQuery.append("or Vorname").append(like);
+            sqlQuery.append("or Nachname").append(like);
+            sqlQuery.append("or email").append(like);
+            for (ConfiguredField cf : configuredUserFields) {
+                sqlQuery.append("or ExtractValue(benutzer.additional_data, '/root/").append(cf.getName()).append("')").append(like);
+            }
+            sqlQuery.append(")");
+        }
+
+        userPaginator = new DatabasePaginator(getUserSqlSortString(), sqlQuery.toString(), m, "");
     }
-
-
 
     private String getUserSqlSortString() {
         String sort = "";
