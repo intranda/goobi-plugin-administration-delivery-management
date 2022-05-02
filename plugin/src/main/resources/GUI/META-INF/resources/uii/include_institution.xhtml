@@ -14,7 +14,9 @@
     </composite:interface>
 
     <composite:implementation>
-        <h:form styleClass="form-horizontal form-bordered">
+        <h:form
+            styleClass="form-horizontal form-bordered"
+            id="myform">
             <!-- list of existing institutions -->
             <h:panelGroup
                 layout="block"
@@ -127,12 +129,11 @@
                         <f:ajax render="@form" />
                     </button>
                 </div>
+
                 <div class="dataTables_paginate">
-                    <!-- paginator -->
                     <intranda:tablePaginator
                         id="inst"
                         paginator="#{AdministrationForm.administrationPlugin.institutionPaginator}" />
-                    <!-- /paginator -->
                 </div>
             </h:panelGroup>
 
@@ -218,16 +219,6 @@
                         </div>
 
                     </ui:repeat>
-                    <!-- 
-                <intranda:formInputTextAjax
-                    id="address"
-                    name="address"
-                    label="#{msgs.institution_address}"
-                    field="#{AdministrationForm.administrationPlugin.institution.additionalData['address']}"
-                    help="#{msgs.institution_help_longName}"
-                    fieldStyle="form-control"
-                    render="@form" />
- -->
 
                 </div>
 
