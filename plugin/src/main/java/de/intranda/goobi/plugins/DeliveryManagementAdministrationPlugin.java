@@ -221,12 +221,19 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         if (StringUtils.isNotBlank(userSearchFilter)) {
             String like = " like '%" + StringEscapeUtils.escapeSql(userSearchFilter) + "%'";
             sqlQuery.append("and (login").append(like);
-            sqlQuery.append("or Vorname").append(like);
-            sqlQuery.append("or Nachname").append(like);
-            sqlQuery.append("or email").append(like);
+            sqlQuery.append(" or Vorname").append(like);
+            sqlQuery.append(" or Nachname").append(like);
+            sqlQuery.append(" or email").append(like);
             for (ConfiguredField cf : configuredUserFields) {
-                sqlQuery.append("or ExtractValue(benutzer.additional_data, '/root/").append(cf.getName()).append("')").append(like);
+                sqlQuery.append(" or ExtractValue(benutzer.additional_data, '/root/").append(cf.getName()).append("')").append(like);
             }
+            sqlQuery.append(" or BenutzerID IN (SELECT DISTINCT BenutzerID FROM benutzer, institution WHERE ");
+            sqlQuery.append("benutzer.institution_id = institution.id AND (institution.shortName ");
+            sqlQuery.append(like);
+            sqlQuery.append(" OR institution.longName ");
+            sqlQuery.append(like);
+            sqlQuery.append("))");
+
             sqlQuery.append(")");
         }
 
