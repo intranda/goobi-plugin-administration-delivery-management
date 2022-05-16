@@ -112,37 +112,31 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private void loadConfiguration() {
         conf = ConfigPlugins.getPluginConfig(title);
         conf.setExpressionEngine(new XPathExpressionEngine());
-        List<HierarchicalConfiguration> institutionFields = conf.configurationsAt("/institution/field");
-        List<HierarchicalConfiguration> userFields = conf.configurationsAt("/user/field");
+
+        List<HierarchicalConfiguration> configuredFields = conf.configurationsAt("/fields/field");
+
         configuredInstitutionFields = new ArrayList<>();
         configuredUserFields = new ArrayList<>();
 
         privacyPolicyText = conf.getString("/privacyStatement", "");
 
-        for (HierarchicalConfiguration hc : institutionFields) {
-            ConfiguredField field = new ConfiguredField(hc.getString("@name"), hc.getString("@label"), hc.getString("@fieldType", "input"),
-                    hc.getBoolean("@displayInTable", false), hc.getString("@validationType", null), hc.getString("@regularExpression", null),
-                    hc.getString("/validationError", null));
+        for (HierarchicalConfiguration hc : configuredFields) {
 
-            if (field.getFieldType().equals("dropdown") || field.getFieldType().equals("multiselect")) {
+            ConfiguredField field = new ConfiguredField(hc.getString("@type"), hc.getString("@name"), hc.getString("@label"),
+                    hc.getString("@fieldType", "input"), hc.getBoolean("@displayInTable", false), hc.getString("@validationType", null),
+                    hc.getString("@regularExpression", null), hc.getString("/validationError", null));
+
+            if (field.getFieldType().equals("dropdown")  || field.getFieldType().equals("combo")) {
                 List<String> valueList = Arrays.asList(hc.getStringArray("/value"));
                 field.setSelectItemList(valueList);
             }
-            configuredInstitutionFields.add(field);
-        }
 
-        for (HierarchicalConfiguration hc : userFields) {
-            ConfiguredField field = new ConfiguredField(hc.getString("@name"), hc.getString("@label"), hc.getString("@fieldType", "input"),
-                    hc.getBoolean("@displayInTable", false), hc.getString("@validationType", null), hc.getString("@regularExpression", null),
-                    hc.getString("/validationError", null));
-
-            if (field.getFieldType().equals("dropdown") || field.getFieldType().equals("multiselect")) {
-                List<String> valueList = Arrays.asList(hc.getStringArray("/value"));
-                field.setSelectItemList(valueList);
+            if ("institution".equals(field.getType())) {
+                configuredInstitutionFields.add(field);
+            } else {
+                configuredUserFields.add(field);
             }
-            configuredUserFields.add(field);
         }
-
     }
 
     public void setDisplayMode(String displayMode) {

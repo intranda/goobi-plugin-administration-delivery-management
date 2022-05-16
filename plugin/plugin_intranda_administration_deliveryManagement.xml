@@ -1,17 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <config_plugin>
-	
-	<institution>
-        <field fieldType="textarea" displayInTable="false" name="address" label="Adresse"></field>
-        <field fieldType="input" displayInTable="true" name="city" label="Stadt"></field>
-        <field fieldType="dropdown" displayInTable="false" name="zipcode" label="PLZ">
-            <value>10115</value>
-            <value>10117</value>
-            <value>10119</value>
-        </field>
- 
-        
-  
+	<privacyStatement>&lt;p&gt;&lt;strong&gt;Formatierte Datenschutzerkl&amp;auml;rung&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;1.) Lorem ipsum&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;2.) Ut wisi enim ad minim veniam&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;</privacyStatement>
 
-    </institution>
-	
+<fields>
+
+
+	<field type="institution" displayInTable="false" fieldType="input" label="Straße" name="street" position="page2" required="true" validation="" validationErrorDescription="Das Feld ist ein Pflichtfeld." helpMessage=""/>
+
+	<field type="institution" displayInTable="false" fieldType="input" label="Hausnummer" name="number" position="page2" required="true" validation="[A-Za-z0-9]+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern und Buchstaben enthalten." helpMessage=""/>
+	<field type="institution" displayInTable="false" fieldType="input" label="Ort" name="city" position="page2" required="true" validation="" validationErrorDescription="" helpMessage="Das Feld ist ein Pflichtfeld."/>
+	<field type="institution" displayInTable="false" fieldType="input" label="Postleitzahl" name="zipcode" position="page2" required="true" validation="\d{5}" validationErrorDescription="Das Feld ist ein Pflichtfeld und muss eine fünfstellige Postleitzahl enthalten." helpMessage=""/>
+	<field type="institution" displayInTable="false" fieldType="input" label="E-Mail-Adresse" name="email" position="page2" required="true" 
+	validation="[a-zA-Z0-9.!#$%&amp;’*+/=?^_`{\|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+" validationErrorDescription="Keine gültige email Adresse angegeben." helpMessage=""/>
+	<field type="institution" displayInTable="false" fieldType="input" label="Webseite (URL)" name="website" position="page2" required="false" 
+	validation="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&amp;//=]*)" 
+	validationErrorDescription="Der Wert entspricht keiner gültigen URL. Bitte im Schema 'https://www.abc.de' angeben." helpMessage=""/>
+	<field type="institution" displayInTable="false" fieldType="input" label="Vorwahl" name="areacode" position="page2" required="true" validation="\d+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern enthalten." helpMessage=""/>
+	<field type="institution" displayInTable="false" fieldType="input" label="Rufnummer" name="phonenumber" position="page2" required="true" validation="\d+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern enthalten." helpMessage=""/>
+
+
+
+<field type="institution" displayInTable="false" fieldType="input" label="Funktion" name="contact-function"
+position="page3" required="false" validation=".{2,64}" validationErrorDescription="Anzahl der Zeichen zwischen 2 und 64" helpMessage=""/>
+
+<!-- Testdata for different field types -->
+<!--
+<field type="institution" displayInTable="false" fieldType="dropdown" label="Titel" name="contact-title"
+position="page3" required="false" validation="" validationErrorDescription="">
+<value>Dr</value>
+<value>Prof</value>
+<value>PhD</value>
+</field>
+<field type="institution" displayInTable="false" fieldType="textarea" label="Vorname" name="contact-firstname"
+position="page3" required="true" validation="" validationErrorDescription=""/>
+-->
+
+
+
+<field type="institution" displayInTable="false" fieldType="input" label="Titel" name="contact-title"
+position="page3" required="false" validation="" validationErrorDescription="" helpMessage="">
+</field>
+<field type="institution" displayInTable="false" fieldType="input" label="Vorname" name="contact-firstname"
+position="page3" required="true" validation="" validationErrorDescription="" helpMessage=""/>
+
+<field type="institution" displayInTable="false" fieldType="input" label="Nachname" name="contact-lastname"
+position="page3" required="true" validation="" validationErrorDescription="" helpMessage=""/>
+<field type="institution" displayInTable="false" fieldType="input" label="E-Mail-Adresse" name="contact-email"
+position="page3" required="true" validation="[a-zA-Z0-9.!#$%&amp;’*+/=?^_`{\|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+" validationErrorDescription="Keine gültige email Adresse angegeben." helpMessage=""/>
+
+<field type="institution" displayInTable="false" fieldType="input" label="Vorwahl" name="contact-areacode" position="page3" 
+required="false" validation="\d+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern enthalten." helpMessage=""/>
+
+<field type="institution" displayInTable="false" fieldType="input" label="Rufnummer" name="contact-phonenumber" position="page3" 
+required="false" validation="\d+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern enthalten." helpMessage=""/>
+
+
+
+
+<field type="institution" displayInTable="false" fieldType="combo" 
+label="Zugriffs- und Nutzungsberechtigung: Ich möchte eine Zugriffs- und Nutzungsberechtigung als Standard-Einstellung für alle zukünftig abgelieferten Publikationen vergeben." 
+name="institution-accesscondition"
+position="page4" required="false" validation="(false\|CC0\|CC-BY\|CC-BY-SA)" validationErrorDescription="Bitte auswählen" helpMessage="">
+<value>CC0</value>
+<value>CC-BY</value>
+<value>CC-BY-SA</value>
+</field>
+
+<field type="institution" displayInTable="false" fieldType="combo" 
+label="Automatische Erinnerung per E-Mail: Ich möchte per E-Mail eine automatische Erinnerung an die Ablieferungspflicht erhalten." 
+name="institution-reminder"
+position="page4" required="false" validation="" validationErrorDescription="" helpMessage="">
+<value>monatlich</value>
+<value>quartalsweise</value>
+<value>jährlich</value>
+</field>
+
+</fields>
+
+
 </config_plugin>
