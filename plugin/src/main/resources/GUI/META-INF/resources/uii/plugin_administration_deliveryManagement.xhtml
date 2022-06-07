@@ -25,12 +25,49 @@
 .grid-selection {
     border-right: 1px solid black;
 }
+
+
+#plugin-main-content{
+  padding: 1.6rem;
+}
+   
+.col-md-3 {
+  padding-top: 16px;
+}
+   
+#plugin-main-content {
+  border-left: 2px solid #666;
+}
+
+.col-md-3 {
+  margin-right: -2px;
+  border-right: 2px solid #666;
+}
+
+.col-md-3 .btn {
+  margin-bottom: 8px;
+  background-color: #1F79CC;
+  color: #fff;
+}
+
+.col-md-3 .btn i {
+  margin-left: 8px;
+}
+
+.dataTables_wrapper .dataTables_filter {
+  margin-right: 0;
+}
+
+.dataTables_wrapper .dataTables_info {
+    margin-left: 0;
+}
+
 </style>
         <script src="template/js/plugins/tinymce/tinymce.min.js"></script>
 
 
         <h:panelGroup>
-            <div class="row">
+            <div class="row ">
                 <div class="col-sm-12">
                     <div class="box box-color box-bordered lightgrey">
                         <div
@@ -54,11 +91,10 @@
 
                             <h:panelGroup
                                 id="actionform"
-                                styleClass="col-sm-12"
-                                rendered="#{LoginForm.hasRole('Plugin_administration_deliveryManagement')}">
+                                rendered="#{LoginForm.hasRole('Plugin_administration_deliveryManagement')}"
+                                styleClass="col-sm-12">
                                 <div class="row">
-                                    <div class="grid">
-                                        <div class="grid-selection">
+                                        <div class="col-md-3">
                                             <h:form styleClass="form-horizontal form-bordered">
                                                 <ui:repeat
                                                     var="mode"
@@ -66,9 +102,10 @@
                                                     <div>
                                                         <button
                                                             type="button"
-                                                            class="button-link font-black"
+                                                            class="btn"
                                                             jsf:id="displayDetails">
                                                             <h:outputText value="#{msgs[mode]}" />
+                                                            <i class="fa fa-caret-right" aria-hidden="true"></i>
                                                             <f:setPropertyActionListener
                                                                 value="#{mode}"
                                                                 target="#{AdministrationForm.administrationPlugin.displayMode}" />
@@ -84,13 +121,11 @@
                                         <h:panelGroup
                                             id="plugin-main-content"
                                             layout="block"
-                                            styleClass="grid-main">
+                                            styleClass="col-md-9">
 
                                             <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'displayMode_institution'}">
                                                 <ui:include src="include_institution.xhtml" />
                                             </ui:fragment>
-
-
 
                                             <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'displayMode_user'}">
                                                 <ui:include src="include_users.xhtml" />
@@ -100,9 +135,7 @@
                                                 <ui:include src="include_privacyPolicy.xhtml" />
                                             </ui:fragment>
 
-
                                         </h:panelGroup>
-                                    </div>
                                 </div>
                             </h:panelGroup>
 
@@ -141,9 +174,9 @@
                                                 $( "#" + editor.id.replace( ":", "\\:" ) ).trigger( "change" );
                                             } );
                                         }
-                                    
+
                                     };
-                                    
+
                                     function initTinyMce() {
                                         console.log( "Init tinyMce" );
                                         tinymce.init( simpleTinyMceConfig );
@@ -164,7 +197,7 @@
                                                 break;
                                         }
                                     } );
-                                    
+
                                     function renderInputFields( ajaxData ) {
                                         if ( typeof tinyMCE !== 'undefined' ) {
                                             if ( ajaxData === undefined || ajaxData.status == "begin" ) {
