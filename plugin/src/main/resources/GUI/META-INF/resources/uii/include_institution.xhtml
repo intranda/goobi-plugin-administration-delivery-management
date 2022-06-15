@@ -96,6 +96,7 @@
                             jsf:id="edit"
                             class="btn margin-right-5"
                             jsf:rel="tooltip"
+                            aria-label="#{msgs.institution_edit}"
                             title="#{msgs.institution_edit}">
                             <i class="fa fa-pencil"></i>
                             <f:passThroughAttribute
@@ -141,7 +142,6 @@
                 rendered="#{AdministrationForm.administrationPlugin.editionMode=='edit'}">
                 <div class="tab-content">
                     <intranda:formInputTextAjax
-                        id="shortName"
                         label="#{msgs.institution_shortName}"
                         field="#{AdministrationForm.administrationPlugin.institution.shortName}"
                         help="#{msgs.institution_help_shortName}"
@@ -149,7 +149,6 @@
                         fieldStyle="form-control"
                         render="@form" />
                     <intranda:formInputTextAjax
-                        id="longTitle"
                         name="longTitle"
                         label="#{msgs.institution_longName}"
                         field="#{AdministrationForm.administrationPlugin.institution.longName}"
@@ -161,7 +160,9 @@
                     <!-- additional data -->
                     <ui:repeat
                         var="item"
-                        value="#{AdministrationForm.administrationPlugin.configuredInstitutionFields}">
+                        value="#{AdministrationForm.administrationPlugin.configuredInstitutionFields}"
+                        varStatus="status"
+                        >
 
                         <div
                             class="form-group"
@@ -170,7 +171,7 @@
                                 class="col-sm-3 control-label"
                                 tabindex="-1">
                                 <h:outputLabel
-                                    for="id1"
+                                    for="id"
                                     value="#{item.label}" />
                             </div>
                             <div
@@ -178,7 +179,7 @@
                                 style="">
                                 <ui:fragment rendered="#{item.fieldType=='input'}">
                                     <h:inputText
-                                        id="input"
+                                        id="id"
                                         styleClass="form-control"
                                         value="#{item.value}"
                                         required="false"
@@ -307,7 +308,7 @@
 
             <!-- edit / new institution -->
         </h:form>
-        
+
 
     </composite:implementation>
 

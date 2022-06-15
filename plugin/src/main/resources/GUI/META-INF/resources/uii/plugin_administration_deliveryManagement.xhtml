@@ -21,6 +21,7 @@
         <script src="template/js/plugins/tinymce/tinymce.min.js"></script>
 
 
+		<main>
         <h:panelGroup>
             <div class="row deliveryManagement">
                 <div class="col-sm-12">
@@ -28,13 +29,13 @@
                         <div
                             class="box-title"
                             jsf:id="box-title">
-                            <h3>
+                            <h2>
                                 <i class="fa fa-plug"></i>
                                 <h:outputText value="#{msgs[AdministrationForm.administrationPlugin.title]}" />
                                 <h:outputText
                                     value=": #{msgs[AdministrationForm.administrationPlugin.displayMode]}"
                                     rendered="#{AdministrationForm.administrationPlugin.displayMode != null}" />
-                            </h3>
+                            </h2>
 
                             <ul class="tabs">
 							<ui:repeat
@@ -97,6 +98,7 @@
                 </div>
             </div>
         </h:panelGroup>
+       	</main>
 <script type="text/javascript">
                                     //<![CDATA[
                                     var simpleTinyMceConfig = {
