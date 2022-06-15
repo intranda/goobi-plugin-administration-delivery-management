@@ -15,59 +15,14 @@
 
     <composite:implementation>
 
-        <style>
-.grid {
-    display: grid;
-    grid-template-columns: 15% auto;
-    grid-column-gap: 10px;
-}
+		<!-- Custom plugin styles -->
+		<h:outputStylesheet library="css" name="styles.css"/>
 
-.grid-selection {
-    border-right: 1px solid black;
-}
-
-
-#plugin-main-content{
-  padding: 1.6rem;
-}
-   
-.col-md-3 {
-  padding-top: 16px;
-}
-   
-#plugin-main-content {
-  border-left: 2px solid #666;
-}
-
-.col-md-3 {
-  margin-right: -2px;
-  border-right: 2px solid #666;
-}
-
-.col-md-3 .btn {
-  margin-bottom: 8px;
-  background-color: #1F79CC;
-  color: #fff;
-}
-
-.col-md-3 .btn i {
-  margin-left: 8px;
-}
-
-.dataTables_wrapper .dataTables_filter {
-  margin-right: 0;
-}
-
-.dataTables_wrapper .dataTables_info {
-    margin-left: 0;
-}
-
-</style>
         <script src="template/js/plugins/tinymce/tinymce.min.js"></script>
 
 
         <h:panelGroup>
-            <div class="row ">
+            <div class="row deliveryManagement">
                 <div class="col-sm-12">
                     <div class="box box-color box-bordered lightgrey">
                         <div
@@ -80,8 +35,28 @@
                                     value=": #{msgs[AdministrationForm.administrationPlugin.displayMode]}"
                                     rendered="#{AdministrationForm.administrationPlugin.displayMode != null}" />
                             </h3>
+
+                            <ul class="tabs">
+							<ui:repeat
+								var="mode"
+								value="#{AdministrationForm.administrationPlugin.modes}"
+								varStatus="status">
+
+                                <li class="#{mode eq AdministrationForm.administrationPlugin.displayMode ?'active':''}">
+                                    <h:commandLink id="details" action="#{NavigationForm.Reload}" value="#{msgs[mode]}">
+                                        <f:setPropertyActionListener target="#{AdministrationForm.administrationPlugin.displayMode}" value="#{mode}" />
+                                        <f:setPropertyActionListener
+											value=""
+											target="#{AdministrationForm.administrationPlugin.editionMode}" />
+										<f:ajax render="@form :box-title :plugin-main-content" />
+                                    </h:commandLink>
+                                </li>
+
+							</ui:repeat>
+                            </ul>
                         </div>
                         <div class="box-content nopadding">
+                                                
 
                             <h:panelGroup rendered="#{!LoginForm.hasRole('Plugin_administration_deliveryManagement')}">
                                 <h:outputText
@@ -94,35 +69,13 @@
                                 rendered="#{LoginForm.hasRole('Plugin_administration_deliveryManagement')}"
                                 styleClass="col-sm-12">
                                 <div class="row">
-                                        <div class="col-md-3">
-                                            <h:form styleClass="form-horizontal form-bordered">
-                                                <ui:repeat
-                                                    var="mode"
-                                                    value="#{AdministrationForm.administrationPlugin.modes}">
-                                                    <div>
-                                                        <button
-                                                            type="button"
-                                                            class="btn"
-                                                            jsf:id="displayDetails">
-                                                            <h:outputText value="#{msgs[mode]}" />
-                                                            <i class="fa fa-caret-right" aria-hidden="true"></i>
-                                                            <f:setPropertyActionListener
-                                                                value="#{mode}"
-                                                                target="#{AdministrationForm.administrationPlugin.displayMode}" />
-                                                            <f:setPropertyActionListener
-                                                                value=""
-                                                                target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                                                            <f:ajax render="@form :box-title :plugin-main-content" />
-                                                        </button>
-                                                    </div>
-                                                </ui:repeat>
-                                            </h:form>
-                                        </div>
+
                                         <h:panelGroup
                                             id="plugin-main-content"
                                             layout="block"
-                                            styleClass="col-md-9">
+                                            styleClass="col-md-12">
 
+											
                                             <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'displayMode_institution'}">
                                                 <ui:include src="include_institution.xhtml" />
                                             </ui:fragment>
@@ -134,7 +87,7 @@
                                             <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'displayMode_privacyPolicy'}">
                                                 <ui:include src="include_privacyPolicy.xhtml" />
                                             </ui:fragment>
-
+                                      
                                         </h:panelGroup>
                                 </div>
                             </h:panelGroup>

@@ -43,7 +43,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private String title = "intranda_administration_deliveryManagement";
 
     @Getter
-    private String displayMode;
+    private String displayMode = "displayMode_institution";
 
     @Getter
     @Setter
