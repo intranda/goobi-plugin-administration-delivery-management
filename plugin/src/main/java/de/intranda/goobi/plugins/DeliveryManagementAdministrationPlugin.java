@@ -137,6 +137,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 configuredUserFields.add(field);
             }
         }
+        filterInstitution(); // temporary fix to load the data for the first page
     }
 
     public void setDisplayMode(String displayMode) {
