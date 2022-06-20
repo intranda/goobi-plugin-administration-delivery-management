@@ -15,68 +15,75 @@
 
     <composite:implementation>
 
-		<!-- Custom plugin styles -->
-		<h:outputStylesheet library="css" name="styles.css"/>
+        <!-- Custom plugin styles -->
+        <h:outputStylesheet
+            library="css"
+            name="styles.css" />
 
         <script src="template/js/plugins/tinymce/tinymce.min.js"></script>
 
 
-		<main>
-        <h:panelGroup>
-            <div class="row deliveryManagement">
-                <div class="col-sm-12">
-                    <div class="box box-color box-bordered lightgrey">
-                        <div
-                            class="box-title"
-                            jsf:id="box-title">
-                            <h2>
-                                <i class="fa fa-plug"></i>
-                                <h:outputText value="#{msgs[AdministrationForm.administrationPlugin.title]}" />
-                                <h:outputText
-                                    value=": #{msgs[AdministrationForm.administrationPlugin.displayMode]}"
-                                    rendered="#{AdministrationForm.administrationPlugin.displayMode != null}" />
-                            </h2>
+        <main>
+            <h:panelGroup>
+                <div class="row deliveryManagement">
+                    <div class="col-sm-12">
+                        <div class="box box-color box-bordered lightgrey">
+                            <div
+                                class="box-title"
+                                jsf:id="box-title">
+                                <h2>
+                                    <i class="fa fa-plug"></i>
+                                    <h:outputText value="#{msgs[AdministrationForm.administrationPlugin.title]}" />
+                                    <h:outputText
+                                        value=": #{msgs[AdministrationForm.administrationPlugin.displayMode]}"
+                                        rendered="#{AdministrationForm.administrationPlugin.displayMode != null}" />
+                                </h2>
 
-                            <ul class="tabs">
-							<ui:repeat
-								var="mode"
-								value="#{AdministrationForm.administrationPlugin.modes}"
-								varStatus="status">
+                                <ul class="tabs">
+                                    <ui:repeat
+                                        var="mode"
+                                        value="#{AdministrationForm.administrationPlugin.modes}"
+                                        varStatus="status">
 
-                                <li class="#{mode eq AdministrationForm.administrationPlugin.displayMode ?'active':''}">
-                                    <h:commandLink id="details" action="#{NavigationForm.Reload}" value="#{msgs[mode]}">
-                                        <f:setPropertyActionListener target="#{AdministrationForm.administrationPlugin.displayMode}" value="#{mode}" />
-                                        <f:setPropertyActionListener
-											value=""
-											target="#{AdministrationForm.administrationPlugin.editionMode}" />
-										<f:ajax render="@form :box-title :plugin-main-content" />
-                                    </h:commandLink>
-                                </li>
+                                        <li class="#{mode eq AdministrationForm.administrationPlugin.displayMode ?'active':''}">
+                                            <h:commandLink
+                                                id="details"
+                                                action="#{NavigationForm.Reload}"
+                                                value="#{msgs[mode]}">
+                                                <f:setPropertyActionListener
+                                                    target="#{AdministrationForm.administrationPlugin.displayMode}"
+                                                    value="#{mode}" />
+                                                <f:setPropertyActionListener
+                                                    value=""
+                                                    target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                                                <f:ajax render="@form :box-title :plugin-main-content" />
+                                            </h:commandLink>
+                                        </li>
 
-							</ui:repeat>
-                            </ul>
-                        </div>
-                        <div class="box-content nopadding">
-                                                
+                                    </ui:repeat>
+                                </ul>
+                            </div>
+                            <div class="box-content nopadding">
 
-                            <h:panelGroup rendered="#{!LoginForm.hasRole('Plugin_administration_deliveryManagement')}">
-                                <h:outputText
-                                    styleClass="alert alert-danger alert-dismissable margin-bottom-10 margin-top-10"
-                                    value="#{msgs.plugin_administration_missingPermission} Plugin_administration_deliveryManagement" />
-                            </h:panelGroup>
 
-                            <h:panelGroup
-                                id="actionform"
-                                rendered="#{LoginForm.hasRole('Plugin_administration_deliveryManagement')}"
-                                styleClass="col-sm-12">
-                                <div class="row">
+                                <h:panelGroup rendered="#{!LoginForm.hasRole('Plugin_administration_deliveryManagement')}">
+                                    <h:outputText
+                                        styleClass="alert alert-danger alert-dismissable margin-bottom-10 margin-top-10"
+                                        value="#{msgs.plugin_administration_missingPermission} Plugin_administration_deliveryManagement" />
+                                </h:panelGroup>
+
+                                <h:panelGroup
+                                    id="actionform"
+                                    rendered="#{LoginForm.hasRole('Plugin_administration_deliveryManagement')}"
+                                    styleClass="col-sm-12">
+                                    <div class="row">
 
                                         <h:panelGroup
                                             id="plugin-main-content"
                                             layout="block"
                                             styleClass="col-md-12">
 
-											
+
                                             <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'displayMode_institution'}">
                                                 <ui:include src="include_institution.xhtml" />
                                             </ui:fragment>
@@ -88,18 +95,24 @@
                                             <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'displayMode_privacyPolicy'}">
                                                 <ui:include src="include_privacyPolicy.xhtml" />
                                             </ui:fragment>
-                                      
-                                        </h:panelGroup>
-                                </div>
-                            </h:panelGroup>
 
+
+                                            <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'displayMode_zdbTitleData'}">
+                                                <ui:include src="include_zdbTitleData.xhtml" />
+                                            </ui:fragment>
+
+
+                                        </h:panelGroup>
+                                    </div>
+                                </h:panelGroup>
+
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </h:panelGroup>
-       	</main>
-<script type="text/javascript">
+            </h:panelGroup>
+        </main>
+        <script type="text/javascript">
                                     //<![CDATA[
                                     var simpleTinyMceConfig = {
                                         selector: '.textarea-html',
@@ -129,21 +142,21 @@
                                                 $( "#" + editor.id.replace( ":", "\\:" ) ).trigger( "change" );
                                             } );
                                         }
-
+                                    
                                     };
-
+                                    
                                     function initTinyMce() {
                                         console.log( "Init tinyMce" );
                                         tinymce.init( simpleTinyMceConfig );
                                     };
-
+                                    
                                     $( window ).on( "load", function() {
                                         renderInputFields()
                                     } );
-                                    $( document ).ready(function() {
+                                    $( document ).ready( function() {
                                         renderInputFields()
                                     } );
-
+                                    
                                     jsf.ajax.addOnEvent( function( data ) {
                                         var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
                                         switch ( ajaxstatus ) {
@@ -152,7 +165,7 @@
                                                 break;
                                         }
                                     } );
-
+                                    
                                     function renderInputFields( ajaxData ) {
                                         if ( typeof tinyMCE !== 'undefined' ) {
                                             if ( ajaxData === undefined || ajaxData.status == "begin" ) {

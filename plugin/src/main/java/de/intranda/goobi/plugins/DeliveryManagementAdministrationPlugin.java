@@ -23,6 +23,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.LdapManager;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -50,7 +51,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private String editionMode = "";
 
     @Getter
-    private String[] modes = { "displayMode_institution", "displayMode_user", "displayMode_privacyPolicy" };
+    private String[] modes = { "displayMode_institution", "displayMode_user", "displayMode_privacyPolicy", "displayMode_zdbTitleData" };
 
     @Getter
     private Institution institution;
@@ -95,6 +96,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     private XMLConfiguration conf;
 
+    @Getter
+    private DatabasePaginator processPaginator;
+
     @Override
     public PluginType getType() {
         return PluginType.Administration;
@@ -126,7 +130,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                     hc.getString("@fieldType", "input"), hc.getBoolean("@displayInTable", false), hc.getString("@validationType", null),
                     hc.getString("@regularExpression", null), hc.getString("/validationError", null));
 
-            if (field.getFieldType().equals("dropdown")  || field.getFieldType().equals("combo")) {
+            if (field.getFieldType().equals("dropdown") || field.getFieldType().equals("combo")) {
                 List<String> valueList = Arrays.asList(hc.getStringArray("/value"));
                 field.setSelectItemList(valueList);
             }
@@ -150,6 +154,10 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 //                userBean.setHideInactiveUsers(false);
                 //                userBean.FilterKein();
                 filterUser();
+            }
+
+            if (displayMode.equals("displayMode_zdbTitleData")) {
+                generateZdbTitleList();
             }
         }
     }
@@ -357,7 +365,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     }
 
     public void savePrivacyPolicy() {
-        System.out.println("save " + privacyPolicyText);
         // check if element exists
         if (conf.getString("/privacyStatement") != null) {
             conf.clearProperty("/privacyStatement");
@@ -372,6 +379,22 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             log.error(e);
         }
 
+    }
+
+    @Getter
+    @Setter
+    private String sortField;
+
+    public void generateZdbTitleList() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(
+                "(prozesse.ProzesseID IN (SELECT DISTINCT processid FROM metadata WHERE metadata.name = 'DocStruct' AND metadata.value = 'ZdbTitle')) ");
+        sb.append("AND prozesse.istTemplate = false ");
+        sb.append("and not exists (select * from metadata m2 where m2.name='CatalogIDPeriodicalDB' and m2.processid = prozesse.ProzesseID) ");
+
+        ProcessManager m = new ProcessManager();
+        processPaginator = new DatabasePaginator("prozesse.titel", sb.toString(), m, "process_all");
     }
 
 }
