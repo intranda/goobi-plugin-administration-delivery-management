@@ -1,6 +1,7 @@
 package de.intranda.goobi.plugins;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.Institution;
+import org.goobi.beans.Process;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.DatabasePaginator;
 import org.goobi.production.enums.PluginType;
@@ -21,6 +23,7 @@ import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
 import de.sub.goobi.config.ConfigPlugins;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.LdapManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -29,6 +32,16 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import net.xeoh.plugins.base.annotations.PluginImplementation;
+import ugh.dl.DigitalDocument;
+import ugh.dl.DocStruct;
+import ugh.dl.Fileformat;
+import ugh.dl.Metadata;
+import ugh.dl.Prefs;
+import ugh.exceptions.DocStructHasNoTypeException;
+import ugh.exceptions.MetadataTypeNotAllowedException;
+import ugh.exceptions.PreferencesException;
+import ugh.exceptions.UGHException;
+import ugh.exceptions.WriteException;
 
 @PluginImplementation
 @Log4j2
@@ -98,6 +111,26 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     @Getter
     private DatabasePaginator processPaginator;
+
+    private static final String zdbMetadatataType = "CatalogIDPeriodicalDB"; // TODO from dashboard config
+
+
+
+    @Getter
+    @Setter
+    private String sortField;
+    @Getter
+    @Setter
+    private Process process;
+
+    private Prefs prefs;
+    private Fileformat fileformat;
+    private DigitalDocument digitalDocument;
+
+    private DocStruct logical;
+
+    @Getter
+    private List<Metadata> metadataList;
 
     @Override
     public PluginType getType() {
@@ -381,12 +414,10 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     }
 
-    @Getter
-    @Setter
-    private String sortField;
 
     public void generateZdbTitleList() {
-
+        // TODO exclude/include finished data
+        // TODO search field
         StringBuilder sb = new StringBuilder();
         sb.append(
                 "(prozesse.ProzesseID IN (SELECT DISTINCT processid FROM metadata WHERE metadata.name = 'DocStruct' AND metadata.value = 'ZdbTitle')) ");
@@ -395,6 +426,57 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
         ProcessManager m = new ProcessManager();
         processPaginator = new DatabasePaginator("prozesse.titel", sb.toString(), m, "process_all");
+    }
+
+
+    public void openProcess() {
+        metadataList = new ArrayList<>();
+        prefs = process.getRegelsatz().getPreferences();
+        try {
+            fileformat = process.readMetadataFile();
+            digitalDocument = fileformat.getDigitalDocument();
+            logical = digitalDocument.getLogicalDocStruct();
+            List<Metadata>mdl = logical.getAllMetadata();
+            boolean identifierAvailable = false;
+
+            for (Metadata md : mdl) {
+                metadataList.add(md);
+                if (md.getType().getName().equals(zdbMetadatataType)) {
+                    identifierAvailable = true;
+                }
+            }
+            // TODO fill with additional fields from dashboard config
+
+            if (!identifierAvailable) {
+                Metadata md = new Metadata(prefs.getMetadataTypeByName(zdbMetadatataType));
+                metadataList.add(md);
+            }
+
+        } catch (IOException | InterruptedException | SwapException | DAOException | UGHException e1) {
+            log.error(e1);
+        }
+    }
+
+    public void saveZdbTitleData() {
+
+        for (Metadata md : metadataList) {
+            if (md.getParent() == null) {
+                try {
+                    logical.addMetadata(md);
+                } catch (MetadataTypeNotAllowedException | DocStructHasNoTypeException e) {
+                    log.error(e);
+                }
+            }
+        }
+
+        try {
+            process.writeMetadataFile(fileformat);
+        } catch (WriteException | PreferencesException | IOException | InterruptedException | SwapException | DAOException e) {
+            log.error(e);
+        }
+
+        // update metadata list
+        generateZdbTitleList();
     }
 
 }
