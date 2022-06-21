@@ -132,6 +132,14 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     @Getter
     private List<Metadata> metadataList;
 
+    @Getter
+    @Setter
+    private boolean includeFinishedZdbData;
+
+    @Getter
+    @Setter
+    private String zdbSearchField;
+
     @Override
     public PluginType getType() {
         return PluginType.Administration;
@@ -416,13 +424,18 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
 
     public void generateZdbTitleList() {
-        // TODO exclude/include finished data
         // TODO search field
+        if (StringUtils.isNotBlank(zdbSearchField)) {
+            System.out.println(zdbSearchField);
+        }
+
         StringBuilder sb = new StringBuilder();
         sb.append(
                 "(prozesse.ProzesseID IN (SELECT DISTINCT processid FROM metadata WHERE metadata.name = 'DocStruct' AND metadata.value = 'ZdbTitle')) ");
         sb.append("AND prozesse.istTemplate = false ");
-        sb.append("and not exists (select * from metadata m2 where m2.name='CatalogIDPeriodicalDB' and m2.processid = prozesse.ProzesseID) ");
+        if (!includeFinishedZdbData) {
+            sb.append("and not exists (select * from metadata m2 where m2.name='CatalogIDPeriodicalDB' and m2.processid = prozesse.ProzesseID) ");
+        }
 
         ProcessManager m = new ProcessManager();
         processPaginator = new DatabasePaginator("prozesse.titel", sb.toString(), m, "process_all");
