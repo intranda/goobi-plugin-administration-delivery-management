@@ -49,7 +49,9 @@
                                             <h:commandLink
                                                 id="details"
                                                 action="#{NavigationForm.Reload}"
-                                                value="#{msgs[mode]}">
+                                                value="#{msgs[mode]}"
+                                                disabled="#{AdministrationForm.administrationPlugin.editionMode == 'edit'}"
+                                                >
                                                 <f:setPropertyActionListener
                                                     target="#{AdministrationForm.administrationPlugin.displayMode}"
                                                     value="#{mode}" />

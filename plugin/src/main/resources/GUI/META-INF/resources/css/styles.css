@@ -30,3 +30,15 @@
 	height: 40rem !important;
 	margin: 1.6rem;
 }
+
+.box.box-color .box-title .tabs > li.active > span {
+  background: #fff;
+  color: #368ee0 !important;
+}
+
+.box.box-color .box-title .tabs > li > span {
+  padding: 4px 8px;
+  text-decoration: none;
+  color: #fff !important;
+}
+

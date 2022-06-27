@@ -72,9 +72,12 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     @Getter
     private List<ConfiguredField> configuredInstitutionFields = null;
 
+    private List<String> excludeInstitutions;
+
     @Getter
     @Setter
     private String institutionSearchFilter;
+
 
     @Getter
     @Setter
@@ -92,6 +95,10 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     @Getter
     @Setter
     private String userSearchFilter;
+
+    @Getter
+    @Setter
+    private boolean showOnlyInactiveUser;
 
     @Getter
     @Setter
@@ -140,6 +147,8 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     @Setter
     private String zdbSearchField;
 
+
+
     @Override
     public PluginType getType() {
         return PluginType.Administration;
@@ -164,6 +173,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         configuredUserFields = new ArrayList<>();
 
         privacyPolicyText = conf.getString("/privacyStatement", "");
+
+        excludeInstitutions= Arrays.asList(conf.getStringArray("/excludeInstitution"));
+
 
         for (HierarchicalConfiguration hc : configuredFields) {
 
@@ -280,6 +292,26 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
             sqlQuery.append(")");
         }
+        if (!excludeInstitutions.isEmpty()) {
+            sqlQuery.append(" AND benutzer.institution_id NOT IN (SELECT institution.id from institution where ");
+            sqlQuery.append("institution.shortName in (");
+            StringBuilder inst = new StringBuilder();
+            for (String s : excludeInstitutions) {
+                if (inst.length()>0) {
+                    inst.append(", ");
+                }
+                inst.append("'");
+                inst.append(s);
+                inst.append("'");
+            }
+            sqlQuery.append(inst.toString());
+            sqlQuery.append("))");
+        }
+
+        if (showOnlyInactiveUser) {
+            sqlQuery.append(" AND userstatus!='active'");
+        }
+
 
         userPaginator = new DatabasePaginator(getUserSqlSortString(), sqlQuery.toString(), m, "");
     }
