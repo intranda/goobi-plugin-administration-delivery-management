@@ -78,7 +78,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     @Setter
     private String institutionSearchFilter;
 
-
     @Getter
     @Setter
     private String institutionSort;
@@ -121,8 +120,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     private static final String zdbMetadatataType = "CatalogIDPeriodicalDB"; // TODO from dashboard config
 
-
-
     @Getter
     @Setter
     private String sortField;
@@ -146,8 +143,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     @Getter
     @Setter
     private String zdbSearchField;
-
-
 
     @Override
     public PluginType getType() {
@@ -174,14 +169,15 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
         privacyPolicyText = conf.getString("/privacyStatement", "");
 
-        excludeInstitutions= Arrays.asList(conf.getStringArray("/excludeInstitution"));
-
+        excludeInstitutions = Arrays.asList(conf.getStringArray("/excludeInstitution"));
 
         for (HierarchicalConfiguration hc : configuredFields) {
 
-            ConfiguredField field = new ConfiguredField(hc.getString("@type"), hc.getString("@name"), hc.getString("@label"),
-                    hc.getString("@fieldType", "input"), hc.getBoolean("@displayInTable", false), hc.getString("@validationType", null),
-                    hc.getString("@regularExpression", null), hc.getString("/validationError", null));
+            String label = hc.getString("@alternativeLabel", hc.getString("@label"));
+
+            ConfiguredField field = new ConfiguredField(hc.getString("@type"), hc.getString("@name"), label, hc.getString("@fieldType", "input"),
+                    hc.getBoolean("@displayInTable", false), hc.getString("@validationType", null), hc.getString("@regularExpression", null),
+                    hc.getString("/validationError", null));
 
             if (field.getFieldType().equals("dropdown") || field.getFieldType().equals("combo")) {
                 List<String> valueList = Arrays.asList(hc.getStringArray("/value"));
@@ -219,14 +215,25 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         if (this.institution == null || !this.institution.equals(institution)) {
             this.institution = institution;
             for (ConfiguredField field : configuredInstitutionFields) {
-                field.setValue(institution.getAdditionalData().get(field.getName()));
+                String value = institution.getAdditionalData().get(field.getName());
+                if (field.getFieldType().equals("combo") && StringUtils.isNotBlank(value) && !"false".equals(value)) {
+                    field.setBooleanValue(true);
+                    field.setSubValue(value);
+                } else {
+                    field.setValue(value);
+                }
+
             }
         }
     }
 
     public void saveInstitution() {
         for (ConfiguredField field : configuredInstitutionFields) {
-            institution.getAdditionalData().put(field.getName(), field.getValue());
+            if (field.getFieldType().equals("combo") && field.getBooleanValue()) {
+                institution.getAdditionalData().put(field.getName(), field.getSubValue());
+            } else {
+                institution.getAdditionalData().put(field.getName(), field.getValue());
+            }
         }
 
         InstitutionManager.saveInstitution(institution);
@@ -297,7 +304,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             sqlQuery.append("institution.shortName in (");
             StringBuilder inst = new StringBuilder();
             for (String s : excludeInstitutions) {
-                if (inst.length()>0) {
+                if (inst.length() > 0) {
                     inst.append(", ");
                 }
                 inst.append("'");
@@ -311,7 +318,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         if (showOnlyInactiveUser) {
             sqlQuery.append(" AND userstatus!='active'");
         }
-
 
         userPaginator = new DatabasePaginator(getUserSqlSortString(), sqlQuery.toString(), m, "");
     }
@@ -367,14 +373,24 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         if (this.user == null || !this.user.equals(user)) {
             this.user = user;
             for (ConfiguredField field : configuredUserFields) {
-                field.setValue(user.getAdditionalData().get(field.getName()));
+                String value = user.getAdditionalData().get(field.getName());
+                if (field.getFieldType().equals("combo") && StringUtils.isNotBlank(value) && !"false".equals(value)) {
+                    field.setBooleanValue(true);
+                    field.setSubValue(value);
+                } else {
+                    field.setValue(user.getAdditionalData().get(field.getName()));
+                }
             }
         }
     }
 
     public void saveUser() {
         for (ConfiguredField field : configuredUserFields) {
-            user.getAdditionalData().put(field.getName(), field.getValue());
+            if (field.getFieldType().equals("combo") && field.getBooleanValue()) {
+                user.getAdditionalData().put(field.getName(), field.getSubValue());
+            } else {
+                user.getAdditionalData().put(field.getName(), field.getValue());
+            }
         }
         try {
             UserManager.saveUser(user);
@@ -454,7 +470,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     }
 
-
     public void generateZdbTitleList() {
         // TODO search field
         if (StringUtils.isNotBlank(zdbSearchField)) {
@@ -473,7 +488,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         processPaginator = new DatabasePaginator("prozesse.titel", sb.toString(), m, "process_all");
     }
 
-
     public void openProcess() {
         metadataList = new ArrayList<>();
         prefs = process.getRegelsatz().getPreferences();
@@ -481,7 +495,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             fileformat = process.readMetadataFile();
             digitalDocument = fileformat.getDigitalDocument();
             logical = digitalDocument.getLogicalDocStruct();
-            List<Metadata>mdl = logical.getAllMetadata();
+            List<Metadata> mdl = logical.getAllMetadata();
             boolean identifierAvailable = false;
 
             for (Metadata md : mdl) {

@@ -139,7 +139,7 @@
                         </tr>
                     </thead>
                     <ui:repeat
-                        var="item"
+                        var="zdbItem"
                         value="#{AdministrationForm.administrationPlugin.processPaginator.list}"
                         varStatus="status">
                         <tr role="row">
@@ -149,7 +149,7 @@
                                 <table>
                                     <ui:repeat
                                         var="metadata"
-                                        value="#{item.metadataList}"
+                                        value="#{zdbItem.metadataList}"
                                         varStatus="metadatastatus"
                                         id="metadatalist">
                                         <h:panelGroup rendered="#{metadata.one != 'DocStruct' and metadata.one != 'index.Titel'}">
@@ -170,7 +170,7 @@
                             <!-- Alle Schritte Auflisten -->
                             <td>
                                 <ui:include src="/uii/includes/ajaxPlusMinusButton.xhtml" />
-                                <h:panelGroup rendered="#{item.panelAusgeklappt}">
+                                <h:panelGroup rendered="#{zdbItem.panelAusgeklappt}">
                                     <div class="box box-small box-color box-bordered">
                                         <div class="box-title">
                                             <h3>
@@ -184,7 +184,7 @@
                                                 styleClass="table table-hover table-bordered"
                                                 id="prozessdetails"
                                                 var="step"
-                                                value="#{item.schritteList}">
+                                                value="#{zdbItem.schritteList}">
 
                                                 <h:column>
                                                     <f:facet name="header">
@@ -304,7 +304,7 @@
 
                             <!-- Vorgangsdatum -->
                             <td>
-                                <h:outputText value="#{item.erstellungsdatumAsString}">
+                                <h:outputText value="#{zdbItem.erstellungsdatumAsString}">
                                     <!-- <f:convertDateTime locale="#{SpracheForm.locale}" type="date" dateStyle="medium"/> -->
                                 </h:outputText>
                             </td>

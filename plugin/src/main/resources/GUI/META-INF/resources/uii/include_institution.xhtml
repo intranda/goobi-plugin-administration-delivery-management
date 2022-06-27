@@ -108,25 +108,25 @@
                             <f:setPropertyActionListener
                                 value="edit"
                                 target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                            <f:ajax render="@form" />
+                            <f:ajax render="@all" />
                         </button>
                     </x:column>
                 </x:dataTable>
 
                 <div class="dataTables_info">
                     <!-- Neu-Schaltknopf -->
-                    <button
-                        jsf:id="new"
-                        class="btn btn-primary font-size-s"
-                        jsf:action="#{AdministrationForm.administrationPlugin.createNewInstitution}"
-                        jsf:immediate="true">
-                        <i class="fa fa-plus margin-right-5"></i>
-                        <h:outputText value="#{msgs.institution_createNew}" />
-                        <f:setPropertyActionListener
-                            value="edit"
-                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                        <f:ajax render="@form" />
-                    </button>
+                    <!--                     <button -->
+                    <!--                         jsf:id="new" -->
+                    <!--                         class="btn btn-primary font-size-s" -->
+                    <!--                         jsf:action="#{AdministrationForm.administrationPlugin.createNewInstitution}" -->
+                    <!--                         jsf:immediate="true"> -->
+                    <!--                         <i class="fa fa-plus margin-right-5"></i> -->
+                    <!--                         <h:outputText value="#{msgs.institution_createNew}" /> -->
+                    <!--                         <f:setPropertyActionListener -->
+                    <!--                             value="edit" -->
+                    <!--                             target="#{AdministrationForm.administrationPlugin.editionMode}" /> -->
+                    <!--                         <f:ajax render="@form" /> -->
+                    <!--                     </button> -->
                 </div>
 
                 <div class="dataTables_paginate">
@@ -161,8 +161,7 @@
                     <ui:repeat
                         var="item"
                         value="#{AdministrationForm.administrationPlugin.configuredInstitutionFields}"
-                        varStatus="status"
-                        >
+                        varStatus="status">
 
                         <div
                             class="form-group"
@@ -213,7 +212,26 @@
                                         <f:selectItems value="#{item.selectItemList}" />
                                     </h:selectOneMenu>
                                 </ui:fragment>
+                                <h:panelGroup
+                                    id="combo"
+                                    rendered="#{item.fieldType=='combo'}">
+                                    <h:selectBooleanCheckbox
+                                        id="combo1"
+                                        styleClass="form-control"
+                                        value="#{item.booleanValue}">
+                                        <f:ajax
+                                            render="@form"
+                                            execute="@this" />
+                                    </h:selectBooleanCheckbox>
+                                    <h:selectOneRadio
+                                        rendered="#{item.booleanValue}"
+                                        id="combo2"
+                                        styleClass="form-control"
+                                        value="#{item.subValue}">
 
+                                        <f:selectItems value="#{item.selectItemList}" />
+                                    </h:selectOneRadio>
+                                </h:panelGroup>
                             </div>
                         </div>
 
@@ -235,7 +253,7 @@
                             value=""
                             target="#{AdministrationForm.administrationPlugin.editionMode}" />
                         <f:ajax
-                            render="@form"
+                            render="@all"
                             execute="@form" />
                     </button>
 
@@ -249,7 +267,7 @@
                         <f:setPropertyActionListener
                             value=""
                             target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                        <f:ajax render="@form" />
+                        <f:ajax render="@all" />
                     </button>
                     <!-- delete -->
                     <ui:fragment rendered="#{AdministrationForm.administrationPlugin.institution.id != null}">
