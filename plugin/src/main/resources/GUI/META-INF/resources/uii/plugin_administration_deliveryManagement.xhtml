@@ -126,9 +126,14 @@
                                         theme: 'silver',
                                         height: 250,
                                         plugins: [ 'print code preview fullscreen' ],
-                                        menu: {},
+                                        menu: {
+                                            edit: {title: 'Edit', items: 'undo redo | cut copy paste pastetext | selectall'},
+                                            format: {title: 'Format', items: 'bold italic underline strikethrough | formats | removeformat'},
+                                            tools: {title: 'Tools', items: 'spellchecker code'}
+                                        },
+                                        menubar: 'edit format tools',
                                         toolbar: false,
-                                        toolbar: 'undo redo | bold italic underline | superscript | code ',
+                                        toolbar: 'undo redo | bold italic underline | code ',
                                         content_css: 'css/content.css',
                                         init_instance_callback: function( editor ) {
                                             var readOnlyAttr = $( "#" + editor.id.replace( ":", "\\:" ) ).attr( "readonly" );
