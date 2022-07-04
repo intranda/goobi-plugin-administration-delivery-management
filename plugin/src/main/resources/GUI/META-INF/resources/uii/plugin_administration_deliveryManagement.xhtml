@@ -16,14 +16,16 @@
     <composite:implementation>
 
         <!-- Custom plugin styles -->
-        <h:outputStylesheet
-            library="css"
-            name="styles.css" />
+		<link
+			type="text/css"
+			rel="stylesheet"
+			href="#{HelperForm.applicationWebsiteUrl}/uii/css/index.css" />
+
 
         <script src="template/js/plugins/tinymce/tinymce.min.js"></script>
 
 
-        <main>
+        <main class="#{AdministrationForm.administrationPlugin.editionMode=='edit' ? 'editMode' : ''}">
             <h:panelGroup>
                 <div class="row deliveryManagement">
                     <div class="col-sm-12">
@@ -83,7 +85,7 @@
                                         <h:panelGroup
                                             id="plugin-main-content"
                                             layout="block"
-                                            styleClass="col-md-12">
+                                            >
 
 
                                             <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'displayMode_institution'}">
@@ -149,21 +151,21 @@
                                                 $( "#" + editor.id.replace( ":", "\\:" ) ).trigger( "change" );
                                             } );
                                         }
-                                    
+
                                     };
-                                    
+
                                     function initTinyMce() {
                                         console.log( "Init tinyMce" );
                                         tinymce.init( simpleTinyMceConfig );
                                     };
-                                    
+
                                     $( window ).on( "load", function() {
                                         renderInputFields()
                                     } );
                                     $( document ).ready( function() {
                                         renderInputFields()
                                     } );
-                                    
+
                                     jsf.ajax.addOnEvent( function( data ) {
                                         var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
                                         switch ( ajaxstatus ) {
@@ -172,7 +174,7 @@
                                                 break;
                                         }
                                     } );
-                                    
+
                                     function renderInputFields( ajaxData ) {
                                         if ( typeof tinyMCE !== 'undefined' ) {
                                             if ( ajaxData === undefined || ajaxData.status == "begin" ) {
