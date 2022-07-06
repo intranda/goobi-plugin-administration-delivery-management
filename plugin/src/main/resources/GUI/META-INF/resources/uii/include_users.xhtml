@@ -465,7 +465,10 @@
                                         <f:selectItems value="#{item.selectItemList}" />
                                     </h:selectOneMenu>
                                 </ui:fragment>
-
+                                <h:outputText
+                                    styleClass="help-block font-light text-neutral-600 d-block"
+                                    value="#{item.helpMessage}"
+                                    style="display:#{NavigationForm.showHelp ? 'block' : 'none'}" />
                             </div>
                         </div>
 

@@ -232,8 +232,14 @@
                                         <f:selectItems value="#{item.selectItemList}" />
                                     </h:selectOneRadio>
                                 </h:panelGroup>
+                                <h:outputText
+                                    styleClass="help-block font-light text-neutral-600 d-block"
+                                    value="#{item.helpMessage}"
+                                    style="display:#{NavigationForm.showHelp ? 'block' : 'none'}" />
                             </div>
+
                         </div>
+
 
                     </ui:repeat>
 

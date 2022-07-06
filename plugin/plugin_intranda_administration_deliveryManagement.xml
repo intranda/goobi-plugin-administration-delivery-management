@@ -21,49 +21,46 @@
 
 <!-- institution data -->
 
-		<field type="institution" displayInTable="false" fieldType="input" label="Straße" name="street" position="page2" required="true" validation="" validationErrorDescription="Das Feld ist ein Pflichtfeld." helpMessage="" />
-
-		<field type="institution" displayInTable="false" fieldType="input" label="Hausnummer" name="number" position="page2" required="true" validation="[A-Za-z0-9]+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern und Buchstaben enthalten." helpMessage="" />
+		<field type="institution" displayInTable="false" fieldType="input" label="Straße" name="street" position="page2" required="true" validation="" validationErrorDescription="Das Feld ist ein Pflichtfeld." helpMessage="Bitte geben Sie die Straße Ihrer Institution, alternativ Ihre Straße an." />
+		<field type="institution" displayInTable="false" fieldType="input" label="Hausnummer" name="number" position="page2" required="true" validation="[A-Za-z0-9]+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern und Buchstaben enthalten." helpMessage="Tragen Sie bitte auch die zugehörige Hausnummer ein." />
+		<field type="institution" displayInTable="false" fieldType="input" label="Postleitzahl" name="zipcode" position="page2" required="true" validation="\d{5}" validationErrorDescription="Das Feld ist ein Pflichtfeld und muss eine fünfstellige Postleitzahl enthalten." helpMessage="Geben Sie bitte die Postleitzahl ein." />
 		<field type="institution" displayInTable="false" fieldType="input" label="Ort" name="city" position="page2" required="true" validation="" validationErrorDescription="" helpMessage="Das Feld ist ein Pflichtfeld." />
-		<field type="institution" displayInTable="false" fieldType="input" label="Postleitzahl" name="zipcode" position="page2" required="true" validation="\d{5}" validationErrorDescription="Das Feld ist ein Pflichtfeld und muss eine fünfstellige Postleitzahl enthalten." helpMessage="" />
-		<field type="institution" displayInTable="false" fieldType="input" label="E-Mail-Adresse" name="email" position="page2" required="true" validation="[a-zA-Z0-9.!#$%&amp;’*+/=?^_`{\|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+" validationErrorDescription="Keine gültige email Adresse angegeben." helpMessage="" />
-		<field type="institution" displayInTable="false" fieldType="input" label="Webseite (URL)" name="website" position="page2" required="false" validation="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&amp;//=]*)" validationErrorDescription="Der Wert entspricht keiner gültigen URL. Bitte im Schema 'https://www.abc.de' angeben." helpMessage="" />
-		<field type="institution" displayInTable="false" fieldType="input" label="Vorwahl" name="areacode" position="page2" required="true" validation="\d+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern enthalten." helpMessage="" />
-		<field type="institution" displayInTable="false" fieldType="input" label="Rufnummer" name="phonenumber" position="page2" required="true" validation="\d+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern enthalten." helpMessage="" />
-
+		<field type="institution" displayInTable="false" fieldType="input" label="E-Mail-Adresse" name="email" position="page2" required="true" validation="[a-zA-Z0-9.!#$%&amp;’*+/=?^_`{\|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+" validationErrorDescription="Keine gültige email Adresse angegeben." helpMessage="Bitte geben Sie hier die E-Mail-Adresse der Institution (z.B. eine E-Mail-Funktionsadresse), alternativ Ihre E-Mail-Adresse an." />
+		<field type="institution" displayInTable="false" fieldType="input" label="Vorwahl" name="areacode" position="page2" required="true" validation="\d+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern enthalten." helpMessage="Tragen Sie die Vorwahl ein, unter der Ihre Institution, alternativ Sie für uns erreichbar sind." />
+		<field type="institution" displayInTable="false" fieldType="input" label="Rufnummer" name="phonenumber" position="page2" required="true" validation="\d+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern enthalten." helpMessage="Tragen Sie die Rufnummer ein, unter der Ihre Institution, alternativ Sie für uns erreichbar sind." />
+		<field type="institution" displayInTable="false" fieldType="input" label="Webseite (URL)" name="website" position="page2" required="false" validation="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&amp;//=]*)" validationErrorDescription="Der Wert entspricht keiner gültigen URL. Bitte im Schema 'https://www.abc.de' angeben." helpMessage="Sie können die Website Ihrer Institution, alternativ Ihre Website angeben." />
+		
 <!-- first contact person -->
 
 		<field type="institution" displayInTable="false" fieldType="input" label="Funktion" name="contact-function" position="page3" required="false" validation=".{2,64}" validationErrorDescription="Anzahl der Zeichen zwischen 2 und 64" helpMessage="" />
 
 		<field type="institution" displayInTable="false" fieldType="input" label="Titel" name="contact-title" position="page3" required="false" validation="" validationErrorDescription="" helpMessage=""></field>
 		<field type="institution" displayInTable="false" fieldType="input" label="Vorname" name="contact-firstname" position="page3" required="true" validation="" validationErrorDescription="" helpMessage="" />
-
 		<field type="institution" displayInTable="false" fieldType="input" label="Nachname" name="contact-lastname" position="page3" required="true" validation="" validationErrorDescription="" helpMessage="" />
-		<field type="institution" displayInTable="false" fieldType="input" label="E-Mail-Adresse" name="contact-email" position="page3" required="true" validation="[a-zA-Z0-9.!#$%&amp;’*+/=?^_`{\|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+" validationErrorDescription="Keine gültige email Adresse angegeben." helpMessage="" />
-
 		<field type="institution" displayInTable="false" fieldType="input" label="Vorwahl" name="contact-areacode" position="page3" required="false" validation="\d+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern enthalten." helpMessage="" />
-
 		<field type="institution" displayInTable="false" fieldType="input" label="Rufnummer" name="contact-phonenumber" position="page3" required="false" validation="\d+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern enthalten." helpMessage="" />
+		<field type="institution" displayInTable="false" fieldType="input" label="E-Mail-Adresse" name="contact-email" position="page3" required="true" validation="[a-zA-Z0-9.!#$%&amp;’*+/=?^_`{\|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+" validationErrorDescription="Keine gültige email Adresse angegeben." helpMessage="" />
 
 <!-- second contact person -->
 		<field type="institution" displayInTable="false" fieldType="input" label="Funktion" name="contact2-function" position="page3a" required="false" validation=".{2,64}" validationErrorDescription="Anzahl der Zeichen zwischen 2 und 64" helpMessage="" />
-
 		<field type="institution" displayInTable="false" fieldType="input" label="Titel" name="contact2-title" position="page3a" required="false" validation="" validationErrorDescription="" helpMessage=""></field>
 		<field type="institution" displayInTable="false" fieldType="input" label="Vorname" name="contact2-firstname" position="page3a" required="true" validation="" validationErrorDescription="" helpMessage="" />
-
 		<field type="institution" displayInTable="false" fieldType="input" label="Nachname" name="contact2-lastname" position="page3a" required="true" validation="" validationErrorDescription="" helpMessage="" />
-		<field type="institution" displayInTable="false" fieldType="input" label="E-Mail-Adresse" name="contact2-email" position="page3a" required="true" validation="[a-zA-Z0-9.!#$%&amp;’*+/=?^_`{\|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+" validationErrorDescription="Keine gültige email Adresse angegeben." helpMessage="" />
-
 		<field type="institution" displayInTable="false" fieldType="input" label="Vorwahl" name="contact2-areacode" position="page3a" required="false" validation="\d+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern enthalten." helpMessage="" />
-
 		<field type="institution" displayInTable="false" fieldType="input" label="Rufnummer" name="contact2-phonenumber" position="page3a" required="false" validation="\d+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern enthalten." helpMessage="" />
+		<field type="institution" displayInTable="false" fieldType="input" label="E-Mail-Adresse" name="contact2-email" position="page3a" required="true" validation="[a-zA-Z0-9.!#$%&amp;’*+/=?^_`{\|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+" validationErrorDescription="Keine gültige email Adresse angegeben." helpMessage="" />
 
 <!-- permissions -->
 
-		<field type="institution" displayInTable="false" fieldType="combo" label="Zugriffs- und Nutzungsberechtigung: Ich möchte eine Zugriffs- und Nutzungsberechtigung als Standard-Einstellung für alle zukünftig abgelieferten Publikationen vergeben." name="institution-accesscondition" position="page4" required="false" validation="(false\|CC0\|CC-BY\|CC-BY-SA)" validationErrorDescription="Bitte auswählen" helpMessage="" alternativeLabel="Zugriffs- und Nutzungsberechtigung">
+		<field type="institution" displayInTable="false" fieldType="combo" label="Zugriffs- und Nutzungsberechtigung: Ich möchte eine Zugriffs- und Nutzungsberechtigung als Standard-Einstellung für alle zukünftig abgelieferten Publikationen vergeben." name="institution-accesscondition" position="page4" required="false" validation="" validationErrorDescription="Bitte auswählen" helpMessage="" alternativeLabel="Zugriffs- und Nutzungsberechtigung">
+			<value>Rechte vorbehalten</value>
 			<value>CC0</value>
-			<value>CC-BY</value>
-			<value>CC-BY-SA</value>
+			<value>CC BY</value>
+			<value>CC BY-SA</value>
+			<value>CC BY-ND</value>
+			<value>CC BY-NC</value>
+			<value>CC BY-NC-SA</value>
+			<value>CC BY-NC-ND</value>
 		</field>
 
 		<field type="institution" displayInTable="false" fieldType="combo" label="Automatische Erinnerung per E-Mail: Ich möchte per E-Mail eine automatische Erinnerung an die Ablieferungspflicht erhalten." name="institution-reminder" position="page4" required="false" validation="" validationErrorDescription="" helpMessage="" alternativeLabel="Automatische Erinnerung per E-Mail">
@@ -74,5 +71,25 @@
 
 	</fields>
 
+	<reminder>
+		<query type="month">select * from benutzer where benutzer.institution_id = (select id from institution where ExtractValue(additional_data, '/root/institution-reminder') = 'monatlich');</query>
+		<query type="quarter">select * from benutzer where benutzer.institution_id = (select id from institution where ExtractValue(additional_data, '/root/institution-reminder') = 'quartalsweise');</query>
+		<query type="year">select * from benutzer where benutzer.institution_id = (select id from institution where ExtractValue(additional_data, '/root/institution-reminder') = 'jährlich');</query>
+
+		<subject>Erinnerung!</subject>
+		<body>Hello {name},&lt;br /&gt;
+&lt;br /&gt;
+This is an automatic reminder for data delivery to the ZLB. &lt;br /&gt;&lt;br /&gt;
+
+Click here to login: &lt;a href="{url}"&gt;login.&lt;/a&gt;
+		</body>
+	</reminder>
+
+
+	<registration>
+		<recipient>robert@intranda.com</recipient>
+		<subject>Neuer Account wurde erstellt</subject>
+		<body>Es wurde ein neuer Account erstellt: {login}</body>
+	</registration>
 
 </config_plugin>
