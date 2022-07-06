@@ -258,12 +258,12 @@
                             value="edit"
                             target="#{AdministrationForm.administrationPlugin.editionMode}" />
                     </button>
-                </div>
                 <div class="dataTables_paginate">
                     <intranda:tablePaginator2
                         id="user"
                         name="users"
                         paginator="#{AdministrationForm.administrationPlugin.userPaginator}" />
+                </div>
                 </div>
             </h:panelGroup>
 
@@ -337,10 +337,7 @@
                                 for="loginAs"
                                 showDetail="true"
                                 styleClass="help-inline font-danger" />
-                            <h:outputText
-                                styleClass="help-block font-light"
-                                rendered="#{NavigationForm.showHelp}"
-                                value="#{msgs.helpLogin}" />
+                            <intranda:formHelp content="#{msgs.helpLogin}" />
                         </div>
                     </div>
 
@@ -384,10 +381,7 @@
                                 for="ldapGruppe"
                                 showDetail="true"
                                 styleClass="help-inline font-danger" />
-                            <h:outputText
-                                styleClass="help-block font-light"
-                                rendered="#{NavigationForm.showHelp}"
-                                value="#{msgs.helpLdapGruppe}" />
+                            <intranda:formHelp content="#{msgs.helpLdapGruppe}" />
                         </div>
                     </div>
 
@@ -414,61 +408,77 @@
                     <!-- additional data -->
                     <ui:repeat
                         var="item"
+                        varStatus="status"
                         value="#{AdministrationForm.administrationPlugin.configuredUserFields}">
+                        <ui:fragment rendered="#{item.fieldType=='input'}">
+                            <intranda:formInputText
+                                name="#{status.index}field"
+                                label="#{item.label}"
+                                field="#{item.value}"
+                                help="#{item.helpMessage}"
+                                fieldStyle="form-control"
+                                required="#{item.required}" />
+                        </ui:fragment>
+                        <ui:fragment rendered="#{item.fieldType=='textarea'}">
+                            <intranda:formInputTextArea
+                                name="#{status.index}field"
+                                label="#{item.label}"
+                                field="#{item.value}"
+                                help="#{item.helpMessage}"
+                                fieldStyle="form-control"
+                                required="#{item.required}" />
+                        </ui:fragment>
+                        <ui:fragment rendered="#{item.fieldType=='dropdown'}">
+                            <intranda:formInputDropDown
+                                label="#{item.label}"
+                                field="#{item.value}"
+                                help="#{item.helpMessage}"
+                                name="#{status.index}field"
+                                selectItems="#{item.selectItemList}"
+                                fieldStyle="form-control"
+                                required="#{item.required}" />
+                        </ui:fragment>
 
-                        <div
-                            class="form-group"
-                            style="">
+
+                        <ui:fragment rendered="#{item.fieldType=='combo'}">
                             <div
-                                class="col-sm-3 control-label"
-                                tabindex="-1">
-                                <h:outputLabel
-                                    for="id1"
-                                    value="#{item.label}" />
-                            </div>
-                            <div
-                                class="col-sm-9"
+                                class="form-group"
                                 style="">
-                                <ui:fragment rendered="#{item.fieldType=='input'}">
-                                    <h:inputText
-                                        id="input"
-                                        styleClass="form-control"
-                                        value="#{item.value}"
-                                        required="false"
-                                        readonly="false">
-                                    </h:inputText>
-                                </ui:fragment>
+                                <div
+                                    class="col-sm-3 control-label"
+                                    tabindex="-1">
+                                    <h:outputLabel
+                                        for="id"
+                                        value="#{item.label}" />
+                                </div>
+                                <div
+                                    class="col-sm-9"
+                                    style="">
+                                    <h:panelGroup
+                                        id="combo"
+                                        rendered="#{item.fieldType=='combo'}">
+                                        <h:selectBooleanCheckbox
+                                            id="combo1"
+                                            styleClass="form-control"
+                                            value="#{item.booleanValue}">
+                                            <f:ajax
+                                                render="@form"
+                                                execute="@this" />
+                                        </h:selectBooleanCheckbox>
+                                        <h:selectOneRadio
+                                            rendered="#{item.booleanValue}"
+                                            id="combo2"
+                                            styleClass="form-control"
+                                            value="#{item.subValue}">
 
-
-                                <ui:fragment rendered="#{item.fieldType=='textarea'}">
-
-                                    <h:inputTextarea
-                                        id="textarea"
-                                        styleClass="form-control"
-                                        value="#{item.value}"
-                                        required="false"
-                                        readonly="false">
-                                    </h:inputTextarea>
-
-                                </ui:fragment>
-
-
-                                <ui:fragment rendered="#{item.fieldType=='dropdown'}">
-
-                                    <h:selectOneMenu
-                                        id="dropdown"
-                                        styleClass="form-control"
-                                        value="#{item.value}">
-                                        <f:selectItem
-                                            itemValue="null"
-                                            itemLabel="#{msgs.bitteAuswaehlen}" />
-                                        <f:selectItems value="#{item.selectItemList}" />
-                                    </h:selectOneMenu>
-                                </ui:fragment>
+                                            <f:selectItems value="#{item.selectItemList}" />
+                                        </h:selectOneRadio>
+                                    </h:panelGroup>
+                                    <intranda:formHelp content="#{item.helpMessage}" />
+                                </div>
 
                             </div>
-                        </div>
-
+                        </ui:fragment>
                     </ui:repeat>
 
 

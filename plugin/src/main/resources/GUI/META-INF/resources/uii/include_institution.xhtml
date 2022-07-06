@@ -113,21 +113,7 @@
                     </x:column>
                 </x:dataTable>
 
-                <div class="dataTables_info">
-                    <!-- Neu-Schaltknopf -->
-                    <!--                     <button -->
-                    <!--                         jsf:id="new" -->
-                    <!--                         class="btn btn-primary font-size-s" -->
-                    <!--                         jsf:action="#{AdministrationForm.administrationPlugin.createNewInstitution}" -->
-                    <!--                         jsf:immediate="true"> -->
-                    <!--                         <i class="fa fa-plus margin-right-5"></i> -->
-                    <!--                         <h:outputText value="#{msgs.institution_createNew}" /> -->
-                    <!--                         <f:setPropertyActionListener -->
-                    <!--                             value="edit" -->
-                    <!--                             target="#{AdministrationForm.administrationPlugin.editionMode}" /> -->
-                    <!--                         <f:ajax render="@form" /> -->
-                    <!--                     </button> -->
-                </div>
+                <div class="dataTables_info"></div>
 
                 <div class="dataTables_paginate">
                     <intranda:tablePaginator
@@ -162,78 +148,75 @@
                         var="item"
                         value="#{AdministrationForm.administrationPlugin.configuredInstitutionFields}"
                         varStatus="status">
+                        <ui:fragment rendered="#{item.fieldType=='input'}">
+                            <intranda:formInputText
+                                name="#{status.index}field"
+                                label="#{item.label}"
+                                field="#{item.value}"
+                                help="#{item.helpMessage}"
+                                fieldStyle="form-control"
+                                required="#{item.required}" />
+                        </ui:fragment>
+                        <ui:fragment rendered="#{item.fieldType=='textarea'}">
+                            <intranda:formInputTextArea
+                                name="#{status.index}field"
+                                label="#{item.label}"
+                                field="#{item.value}"
+                                help="#{item.helpMessage}"
+                                fieldStyle="form-control"
+                                required="#{item.required}" />
+                        </ui:fragment>
+                        <ui:fragment rendered="#{item.fieldType=='dropdown'}">
+                            <intranda:formInputDropDown
+                                label="#{item.label}"
+                                field="#{item.value}"
+                                help="#{item.helpMessage}"
+                                name="#{status.index}field"
+                                selectItems="#{item.selectItemList}"
+                                fieldStyle="form-control"
+                                required="#{item.required}" />
+                        </ui:fragment>
 
-                        <div
-                            class="form-group"
-                            style="">
+
+                        <ui:fragment rendered="#{item.fieldType=='combo'}">
                             <div
-                                class="col-sm-3 control-label"
-                                tabindex="-1">
-                                <h:outputLabel
-                                    for="id"
-                                    value="#{item.label}" />
-                            </div>
-                            <div
-                                class="col-sm-9"
+                                class="form-group"
                                 style="">
-                                <ui:fragment rendered="#{item.fieldType=='input'}">
-                                    <h:inputText
-                                        id="id"
-                                        styleClass="form-control"
-                                        value="#{item.value}"
-                                        required="false"
-                                        readonly="false">
-                                    </h:inputText>
-                                </ui:fragment>
+                                <div
+                                    class="col-sm-3 control-label"
+                                    tabindex="-1">
+                                    <h:outputLabel
+                                        for="id"
+                                        value="#{item.label}" />
+                                </div>
+                                <div
+                                    class="col-sm-9"
+                                    style="">
+                                    <h:panelGroup
+                                        id="combo"
+                                        rendered="#{item.fieldType=='combo'}">
+                                        <h:selectBooleanCheckbox
+                                            id="combo1"
+                                            styleClass="form-control"
+                                            value="#{item.booleanValue}">
+                                            <f:ajax
+                                                render="@form"
+                                                execute="@this" />
+                                        </h:selectBooleanCheckbox>
+                                        <h:selectOneRadio
+                                            rendered="#{item.booleanValue}"
+                                            id="combo2"
+                                            styleClass="form-control"
+                                            value="#{item.subValue}">
 
+                                            <f:selectItems value="#{item.selectItemList}" />
+                                        </h:selectOneRadio>
+                                    </h:panelGroup>
+                                    <intranda:formHelp content="#{item.helpMessage}" />
+                                </div>
 
-                                <ui:fragment rendered="#{item.fieldType=='textarea'}">
-
-                                    <h:inputTextarea
-                                        id="textarea"
-                                        styleClass="form-control"
-                                        value="#{item.value}"
-                                        required="false"
-                                        readonly="false">
-                                    </h:inputTextarea>
-
-                                </ui:fragment>
-
-
-                                <ui:fragment rendered="#{item.fieldType=='dropdown'}">
-
-                                    <h:selectOneMenu
-                                        id="dropdown"
-                                        styleClass="form-control"
-                                        value="#{item.value}">
-                                        <f:selectItem
-                                            itemValue="null"
-                                            itemLabel="#{msgs.bitteAuswaehlen}" />
-                                        <f:selectItems value="#{item.selectItemList}" />
-                                    </h:selectOneMenu>
-                                </ui:fragment>
-                                <h:panelGroup
-                                    id="combo"
-                                    rendered="#{item.fieldType=='combo'}">
-                                    <h:selectBooleanCheckbox
-                                        id="combo1"
-                                        styleClass="form-control"
-                                        value="#{item.booleanValue}">
-                                        <f:ajax
-                                            render="@form"
-                                            execute="@this" />
-                                    </h:selectBooleanCheckbox>
-                                    <h:selectOneRadio
-                                        rendered="#{item.booleanValue}"
-                                        id="combo2"
-                                        styleClass="form-control"
-                                        value="#{item.subValue}">
-
-                                        <f:selectItems value="#{item.selectItemList}" />
-                                    </h:selectOneRadio>
-                                </h:panelGroup>
                             </div>
-                        </div>
+                        </ui:fragment>
 
                     </ui:repeat>
 

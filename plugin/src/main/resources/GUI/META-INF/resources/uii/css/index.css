@@ -31,6 +31,7 @@
 .form-horizontal.form-bordered .form-group:last-child {
 	border-bottom: 1px solid #ddd;
 }
+
 [id$="combo"] > table tr {
   display: flex;
   flex-direction: column;
@@ -39,3 +40,8 @@
 [id$="combo"] > table {
 	display: table;
 }
+
+.dataTables_wrapper .dataTables_paginate {
+  margin: 0px 5px 10px 0;
+}
+
