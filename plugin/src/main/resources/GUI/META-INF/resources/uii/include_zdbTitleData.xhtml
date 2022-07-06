@@ -21,7 +21,7 @@
         <h:form
             styleClass="form-horizontal form-bordered"
             rendered="#{AdministrationForm.administrationPlugin.editionMode==''}">
-            <div class="dataTables_wrapper">
+            <div class="dataTables_wrapper col-md-12">
                 <!-- search field -->
                 <div class="dataTables_length">
                     <h:outputText value="#{msgs.treffer}: #{AdministrationForm.administrationPlugin.processPaginator.totalResults}" />
@@ -373,7 +373,7 @@
                                         forceId="true"
                                         value="#{msgs.seite} #{AdministrationForm.administrationPlugin.processPaginator.pageNumberCurrent} #{msgs.von} #{AdministrationForm.administrationPlugin.processPaginator.pageNumberLast}"
                                         onclick="document.getElementById('zdb_txtMoveTo2').style.display='inline';
-                   document.getElementById('zdb_txtMoveTo1').style.display='none'; 
+                   document.getElementById('zdb_txtMoveTo1').style.display='none';
                    document.getElementById('zdb_txtMoveTo2').focus();
                    document.getElementById('zdb_txtMoveTo2').select();" />
 

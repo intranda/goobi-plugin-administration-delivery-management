@@ -8,8 +8,11 @@
 
 .dataTables_wrapper .dataTables_info {
   float: unset;
-  margin: 0;
-  margin-top: 16px;
+  margin: 16px 0;
+}
+
+.dataTables_filter {
+  margin-right: 0;
 }
 
 /* BS 3 overrides */
@@ -31,7 +34,6 @@
 .form-horizontal.form-bordered .form-group:last-child {
 	border-bottom: 1px solid #ddd;
 }
-
 [id$="combo"] > table tr {
   display: flex;
   flex-direction: column;
@@ -43,5 +45,12 @@
 
 .dataTables_wrapper .dataTables_paginate {
   margin: 0px 5px 10px 0;
+}
+
+.dataTables_wrapper .dataTables_length {
+  margin-left: 0;
+}
+.dataTables_wrapper .dataTables_filter {
+  margin-right: 0;
 }
 
