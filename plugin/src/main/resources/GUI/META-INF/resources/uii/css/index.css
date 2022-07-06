@@ -30,3 +30,8 @@
 .form-horizontal.form-bordered .form-group:last-child {
 	border-bottom: 1px solid #ddd;
 }
+
+.dataTables_wrapper .dataTables_paginate {
+  margin: 0px 5px 10px 0;
+}
+

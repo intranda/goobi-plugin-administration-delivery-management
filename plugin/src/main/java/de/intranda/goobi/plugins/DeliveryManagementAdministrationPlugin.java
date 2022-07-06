@@ -177,7 +177,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
             ConfiguredField field = new ConfiguredField(hc.getString("@type"), hc.getString("@name"), label, hc.getString("@fieldType", "input"),
                     hc.getBoolean("@displayInTable", false), hc.getString("@validationType", null), hc.getString("@regularExpression", null),
-                    hc.getString("/validationError", null), hc.getString("@helpMessage", ""));
+                    hc.getString("/validationError", null), hc.getString("@helpMessage", ""), hc.getBoolean("@required"));
 
             if (field.getFieldType().equals("dropdown") || field.getFieldType().equals("combo")) {
                 List<String> valueList = Arrays.asList(hc.getStringArray("/value"));

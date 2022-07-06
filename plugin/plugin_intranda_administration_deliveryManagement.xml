@@ -6,7 +6,7 @@
 
 	<!-- list of institutions to exclude in searches -->
 	<excludeInstitution>ZLB</excludeInstitution>
-	<excludeInstitution>goobi</excludeInstitution>
+	<excludeInstitution>goobi1</excludeInstitution>
 
 	<privacyStatement>&lt;p&gt;&lt;strong&gt;Formatierte Datenschutzerkl&amp;auml;rung&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;1.) Lorem ipsum&lt;/em&gt;&lt;/p&gt;
