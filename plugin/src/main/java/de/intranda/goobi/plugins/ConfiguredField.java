@@ -31,10 +31,10 @@ public class ConfiguredField {
 
     private List<String> selectItemList;
 
-    private String helpMessage = "abc";
+    private String helpMessage;
 
     public ConfiguredField(String type, String name, String label, String fieldType, boolean displayInTable, String validationType,
-            String regularExpression, String validationError) {
+            String regularExpression, String validationError, String helpMessage) {
         this.type = type;
         this.name = name;
         this.label = label;
@@ -43,6 +43,7 @@ public class ConfiguredField {
         this.validationType = validationType;
         this.regularExpression = regularExpression;
         this.validationError = validationError;
+        this.helpMessage = helpMessage;
     }
 
     public void setBooleanValue(boolean val) {
