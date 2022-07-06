@@ -22,11 +22,20 @@
   margin-right: 4px;
 }
 
-/* Target all radio btns in a table data cell (tr > td), exept the first one */
-.deliveryManagement td:not(:first-child) [type="radio"] {
-  margin-left: 8px;
+.deliveryManagement [id$="combo"] > table tr {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
 }
 
 .form-horizontal.form-bordered .form-group:last-child {
 	border-bottom: 1px solid #ddd;
+}
+[id$="combo"] > table tr {
+  display: flex;
+  flex-direction: column;
+}
+
+[id$="combo"] > table {
+	display: table;
 }
