@@ -152,13 +152,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         modes = new ArrayList<>();
         modes.add("displayMode_institution");
         modes.add("displayMode_user");
-
-        Path config = Paths.get(new Helper().getGoobiConfigDirectory(), "plugin_" + title + ".xml");
-        if (!StorageProvider.getInstance().isWritable(config)) {
-            Helper.setFehlerMeldung("plugin_administration_delivery_configurationFileNotWritable");
-        } else {
-            modes.add("displayMode_privacyPolicy");
-        }
+        modes.add("displayMode_privacyPolicy");
         modes.add("displayMode_zdbTitleData");
 
     }
@@ -178,6 +172,17 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     }
 
     private void loadConfiguration() {
+
+        modes = new ArrayList<>();
+        modes.add("displayMode_institution");
+        modes.add("displayMode_user");
+        Path config = Paths.get(new Helper().getGoobiConfigDirectory(), "plugin_" + title + ".xml");
+        if (!StorageProvider.getInstance().isWritable(config)) {
+            Helper.setFehlerMeldung("plugin_administration_delivery_configurationFileNotWritable");
+        } else {
+            modes.add("displayMode_privacyPolicy");
+        }
+        modes.add("displayMode_zdbTitleData");
 
         conf = ConfigPlugins.getPluginConfig(title);
         conf.setExpressionEngine(new XPathExpressionEngine());
