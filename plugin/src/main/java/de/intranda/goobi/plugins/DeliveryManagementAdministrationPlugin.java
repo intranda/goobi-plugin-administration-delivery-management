@@ -2,6 +2,8 @@ package de.intranda.goobi.plugins;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +24,7 @@ import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
 
 import de.sub.goobi.config.ConfigPlugins;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.InstitutionManager;
@@ -64,7 +67,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private String editionMode = "";
 
     @Getter
-    private String[] modes = { "displayMode_institution", "displayMode_user", "displayMode_privacyPolicy", "displayMode_zdbTitleData" };
+    private List<String> modes;//= { "displayMode_institution", "displayMode_user", "displayMode_privacyPolicy", "displayMode_zdbTitleData" };
 
     @Getter
     private Institution institution;
@@ -144,6 +147,22 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     @Setter
     private String zdbSearchField;
 
+    public DeliveryManagementAdministrationPlugin() {
+
+        modes = new ArrayList<>();
+        modes.add("displayMode_institution");
+        modes.add("displayMode_user");
+
+        Path config = Paths.get(new Helper().getGoobiConfigDirectory(), "plugin_" + title + ".xml");
+        if (!StorageProvider.getInstance().isWritable(config)) {
+            Helper.setFehlerMeldung("plugin_administration_delivery_configurationFileNotWritable");
+        } else {
+            modes.add("displayMode_privacyPolicy");
+        }
+        modes.add("displayMode_zdbTitleData");
+
+    }
+
     @Override
     public PluginType getType() {
         return PluginType.Administration;
@@ -159,6 +178,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     }
 
     private void loadConfiguration() {
+
         conf = ConfigPlugins.getPluginConfig(title);
         conf.setExpressionEngine(new XPathExpressionEngine());
 

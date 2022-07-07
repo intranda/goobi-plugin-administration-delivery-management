@@ -4,10 +4,13 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import de.sub.goobi.config.ConfigurationHelper;
 
 //@RunWith(PowerMockRunner.class)
 //@PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" ,"jdk.internal.reflect.*"})
@@ -26,6 +29,12 @@ public class DeliveryManagementPluginTest {
         String log4jFile = resourcesFolder + "log4j2.xml"; // for junit tests in eclipse
 
         System.setProperty("log4j.configurationFile", log4jFile);
+        Path goobiFolder = Paths.get(resourcesFolder, "goobi_config.properties");
+        String goobiMainFolder =goobiFolder.getParent().toString();
+        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder.toString();
+        ConfigurationHelper.resetConfigurationFile();
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiMainFolder + "/");
+
     }
 
     @Test
@@ -38,6 +47,6 @@ public class DeliveryManagementPluginTest {
     @Test
     public void testPossibleModes() throws IOException {
         DeliveryManagementAdministrationPlugin plugin = new DeliveryManagementAdministrationPlugin();
-        assertEquals(4, plugin.getModes().length);
+        assertEquals(3, plugin.getModes().size());
     }
 }
