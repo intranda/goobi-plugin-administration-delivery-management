@@ -88,20 +88,20 @@
                                             >
 
 
-                                            <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'displayMode_institution'}">
+                                            <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'plugin_administration_deliveryManagement_displayMode_institution'}">
                                                 <ui:include src="include_institution.xhtml" />
                                             </ui:fragment>
 
-                                            <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'displayMode_user'}">
+                                            <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'plugin_administration_deliveryManagement_displayMode_user'}">
                                                 <ui:include src="include_users.xhtml" />
                                             </ui:fragment>
 
-                                            <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'displayMode_privacyPolicy'}">
+                                            <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'plugin_administration_deliveryManagement_displayMode_privacyPolicy'}">
                                                 <ui:include src="include_privacyPolicy.xhtml" />
                                             </ui:fragment>
 
 
-                                            <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'displayMode_zdbTitleData'}">
+                                            <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'plugin_administration_deliveryManagement_displayMode_zdbTitleData'}">
                                                 <ui:include src="include_zdbTitleData.xhtml" />
                                             </ui:fragment>
 

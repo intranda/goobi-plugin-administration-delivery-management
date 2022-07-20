@@ -58,17 +58,17 @@
                 <!-- checkbox to include/exclude finished title data -->
                 <div class="dataTables_filter">
                     <button
-                        jsf:id="includeFinishedZdbData"
+                        jsf:id="plugin_administration_deliveryManagement_includeFinishedZdbData"
                         class="btn searchfieldbuttongroup hidden-xs"
                         jsf:action="#{AdministrationForm.administrationPlugin.generateZdbTitleList}"
                         jsf:immediate="true">
-                        <i class="fa #{AdministrationForm.administrationPlugin.includeFinishedZdbData?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                        <i class="fa #{AdministrationForm.administrationPlugin.plugin_administration_deliveryManagement_includeFinishedZdbData?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
                         <h:outputText
                             styleClass="font-size-s"
-                            value="#{msgs.includeFinishedZdbData}" />
+                            value="#{msgs.plugin_administration_deliveryManagement_includeFinishedZdbData}" />
                         <f:setPropertyActionListener
-                            target="#{AdministrationForm.administrationPlugin.includeFinishedZdbData}"
-                            value="#{not AdministrationForm.administrationPlugin.includeFinishedZdbData}" />
+                            target="#{AdministrationForm.administrationPlugin.plugin_administration_deliveryManagement_includeFinishedZdbData}"
+                            value="#{not AdministrationForm.administrationPlugin.plugin_administration_deliveryManagement_includeFinishedZdbData}" />
                     </button>
                 </div>
                 <!-- +++++++++++++++++  Display as table ++++++++++++++++++++++++ -->

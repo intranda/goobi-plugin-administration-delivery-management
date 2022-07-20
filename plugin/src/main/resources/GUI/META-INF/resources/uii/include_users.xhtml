@@ -62,13 +62,13 @@
                         class="btn searchfieldbuttongroup hidden-xs"
                         jsf:action="#{AdministrationForm.administrationPlugin.filterUser}"
                         jsf:immediate="true">
-                        <i class="fa #{AdministrationForm.administrationPlugin.showOnlyInactiveUser?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                        <i class="fa #{AdministrationForm.administrationPlugin.plugin_administration_deliveryManagement_showOnlyInactiveUser?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
                         <h:outputText
                             styleClass="font-size-s"
-                            value="#{msgs.showOnlyInactiveUser}" />
+                            value="#{msgs.plugin_administration_deliveryManagement_showOnlyInactiveUser}" />
                         <f:setPropertyActionListener
-                            target="#{AdministrationForm.administrationPlugin.showOnlyInactiveUser}"
-                            value="#{not AdministrationForm.administrationPlugin.showOnlyInactiveUser}" />
+                            target="#{AdministrationForm.administrationPlugin.plugin_administration_deliveryManagement_showOnlyInactiveUser}"
+                            value="#{not AdministrationForm.administrationPlugin.plugin_administration_deliveryManagement_showOnlyInactiveUser}" />
                     </button>
                 </div>
 

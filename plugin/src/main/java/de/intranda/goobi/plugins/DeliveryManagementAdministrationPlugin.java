@@ -60,14 +60,14 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private String title = "intranda_administration_deliveryManagement";
 
     @Getter
-    private String displayMode = "displayMode_institution";
+    private String displayMode = "plugin_administration_deliveryManagement_displayMode_institution";
 
     @Getter
     @Setter
     private String editionMode = "";
 
     @Getter
-    private List<String> modes;//= { "displayMode_institution", "displayMode_user", "displayMode_privacyPolicy", "displayMode_zdbTitleData" };
+    private List<String> modes;//= { "plugin_administration_deliveryManagement_displayMode_institution", "plugin_administration_deliveryManagement_displayMode_user", "plugin_administration_deliveryManagement_displayMode_privacyPolicy", "plugin_administration_deliveryManagement_displayMode_zdbTitleData" };
 
     @Getter
     private Institution institution;
@@ -100,7 +100,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     @Getter
     @Setter
-    private boolean showOnlyInactiveUser;
+    private boolean plugin_administration_deliveryManagement_showOnlyInactiveUser;
 
     @Getter
     @Setter
@@ -141,7 +141,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     @Getter
     @Setter
-    private boolean includeFinishedZdbData;
+    private boolean plugin_administration_deliveryManagement_includeFinishedZdbData;
 
     @Getter
     @Setter
@@ -150,10 +150,10 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     public DeliveryManagementAdministrationPlugin() {
 
         modes = new ArrayList<>();
-        modes.add("displayMode_institution");
-        modes.add("displayMode_user");
-        modes.add("displayMode_privacyPolicy");
-        modes.add("displayMode_zdbTitleData");
+        modes.add("plugin_administration_deliveryManagement_displayMode_institution");
+        modes.add("plugin_administration_deliveryManagement_displayMode_user");
+        modes.add("plugin_administration_deliveryManagement_displayMode_privacyPolicy");
+        modes.add("plugin_administration_deliveryManagement_displayMode_zdbTitleData");
 
     }
 
@@ -174,15 +174,15 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private void loadConfiguration() {
 
         modes = new ArrayList<>();
-        modes.add("displayMode_institution");
-        modes.add("displayMode_user");
+        modes.add("plugin_administration_deliveryManagement_displayMode_institution");
+        modes.add("plugin_administration_deliveryManagement_displayMode_user");
         Path config = Paths.get(new Helper().getGoobiConfigDirectory(), "plugin_" + title + ".xml");
         if (!StorageProvider.getInstance().isWritable(config)) {
             Helper.setFehlerMeldung("plugin_administration_delivery_configurationFileNotWritable");
         } else {
-            modes.add("displayMode_privacyPolicy");
+            modes.add("plugin_administration_deliveryManagement_displayMode_privacyPolicy");
         }
-        modes.add("displayMode_zdbTitleData");
+        modes.add("plugin_administration_deliveryManagement_displayMode_zdbTitleData");
 
         conf = ConfigPlugins.getPluginConfig(title);
         conf.setExpressionEngine(new XPathExpressionEngine());
@@ -221,16 +221,16 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     public void setDisplayMode(String displayMode) {
         if (this.displayMode == null || !this.displayMode.equals(displayMode)) {
             this.displayMode = displayMode;
-            if (displayMode.equals("displayMode_institution")) {
+            if (displayMode.equals("plugin_administration_deliveryManagement_displayMode_institution")) {
                 filterInstitution();
             }
-            if (displayMode.equals("displayMode_user")) {
+            if (displayMode.equals("plugin_administration_deliveryManagement_displayMode_user")) {
                 //                userBean.setHideInactiveUsers(false);
                 //                userBean.FilterKein();
                 filterUser();
             }
 
-            if (displayMode.equals("displayMode_zdbTitleData")) {
+            if (displayMode.equals("plugin_administration_deliveryManagement_displayMode_zdbTitleData")) {
                 generateZdbTitleList();
             }
         }
@@ -340,7 +340,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             sqlQuery.append("))");
         }
 
-        if (showOnlyInactiveUser) {
+        if (plugin_administration_deliveryManagement_showOnlyInactiveUser) {
             sqlQuery.append(" AND userstatus!='active'");
         }
 
@@ -505,7 +505,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         sb.append(
                 "(prozesse.ProzesseID IN (SELECT DISTINCT processid FROM metadata WHERE metadata.name = 'DocStruct' AND metadata.value = 'ZdbTitle')) ");
         sb.append("AND prozesse.istTemplate = false ");
-        if (!includeFinishedZdbData) {
+        if (!plugin_administration_deliveryManagement_includeFinishedZdbData) {
             sb.append("and not exists (select * from metadata m2 where m2.name='CatalogIDPeriodicalDB' and m2.processid = prozesse.ProzesseID) ");
         }
 
