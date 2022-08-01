@@ -496,10 +496,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     }
 
     public void generateZdbTitleList() {
-        // TODO search field
-        if (StringUtils.isNotBlank(zdbSearchField)) {
-            System.out.println(zdbSearchField);
-        }
 
         StringBuilder sb = new StringBuilder();
         sb.append(
@@ -507,6 +503,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         sb.append("AND prozesse.istTemplate = false ");
         if (!plugin_administration_deliveryManagement_includeFinishedZdbData) {
             sb.append("and not exists (select * from metadata m2 where m2.name='CatalogIDPeriodicalDB' and m2.processid = prozesse.ProzesseID) ");
+        }
+        if (StringUtils.isNotBlank(zdbSearchField)) {
+            sb.append("AND (prozesse.ProzesseID IN (SELECT DISTINCT processid FROM metadata WHERE metadata.value LIKE '%" + StringEscapeUtils.escapeSql(zdbSearchField) + "%'))");
         }
 
         ProcessManager m = new ProcessManager();
