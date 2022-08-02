@@ -505,7 +505,8 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             sb.append("and not exists (select * from metadata m2 where m2.name='CatalogIDPeriodicalDB' and m2.processid = prozesse.ProzesseID) ");
         }
         if (StringUtils.isNotBlank(zdbSearchField)) {
-            sb.append("AND (prozesse.ProzesseID IN (SELECT DISTINCT processid FROM metadata WHERE metadata.value LIKE '%" + StringEscapeUtils.escapeSql(zdbSearchField) + "%'))");
+            sb.append("AND (prozesse.ProzesseID IN (SELECT DISTINCT processid FROM metadata WHERE metadata.value LIKE '%"
+                    + StringEscapeUtils.escapeSql(zdbSearchField) + "%'))");
         }
 
         ProcessManager m = new ProcessManager();
@@ -535,7 +536,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 metadataList.add(md);
             }
 
-        } catch (IOException | InterruptedException | SwapException | DAOException | UGHException e1) {
+        } catch (IOException | SwapException | UGHException e1) {
             log.error(e1);
         }
     }
@@ -554,7 +555,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
         try {
             process.writeMetadataFile(fileformat);
-        } catch (WriteException | PreferencesException | IOException | InterruptedException | SwapException | DAOException e) {
+        } catch (WriteException | PreferencesException | IOException | SwapException e) {
             log.error(e);
         }
 
