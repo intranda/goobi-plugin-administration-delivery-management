@@ -110,6 +110,22 @@
                                 target="#{AdministrationForm.administrationPlugin.editionMode}" />
                             <f:ajax render="@all" />
                         </button>
+                        
+                        
+                        <button
+                            jsf:id="export"
+                            class="btn margin-right-5"
+                            jsf:rel="tooltip"
+                            aria-label="#{msgs.institution_export}"
+                            title="#{msgs.institution_export}"
+                            jsf:action="#{AdministrationForm.administrationPlugin.exportInstitutionCoreData}"
+                            >
+                            <i class="fa fa-download"></i>
+                            <f:setPropertyActionListener
+                                target="#{AdministrationForm.administrationPlugin.institution}"
+                                value="#{item}" />
+                        </button>
+                        
                     </x:column>
                 </x:dataTable>
 

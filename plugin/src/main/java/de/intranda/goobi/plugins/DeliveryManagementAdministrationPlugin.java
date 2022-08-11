@@ -7,6 +7,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
@@ -17,12 +24,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Process;
+import org.goobi.beans.Project;
 import org.goobi.beans.User;
+import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.DatabasePaginator;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 
 import de.sub.goobi.config.ConfigPlugins;
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -563,4 +577,98 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         generateZdbTitleList();
     }
 
+    public void exportInstitutionCoreData() {
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        if (!facesContext.getResponseComplete()) {
+            Map<String, String> data = institution.getAdditionalData();
+
+            Document doc = new Document();
+            Element root = new Element("data");
+            doc.setRootElement(root);
+            Element inst = new Element("institution");
+            root.addContent(inst);
+
+            createElement(inst, "institutionLongName", institution.getLongName());
+            createElement(inst, "institutionShortName", institution.getShortName());
+
+            for (Entry<String, String> entry : data.entrySet()) {
+                createElement(inst, entry.getKey(), entry.getValue());
+            }
+
+            List<User> allUser = UserManager.getAllUsers();
+            for (User user : allUser) {
+                if (user.getInstitution().getId().equals(institution.getId())) {
+                    Element u = new Element("user");
+                    root.addContent(u);
+
+                    createElement(u, "login", user.getLogin());
+                    createElement(u, "ldaploginName", user.getLdaplogin());
+                    // encryptedPassword
+                    // passwordSalt
+                    if (user.getLdapGruppe() != null) {
+                        createElement(u, "ldapName", user.getLdapGruppe().getTitel());
+                    }
+
+                    createElement(u, "firstname", user.getVorname());
+                    createElement(u, "lastname", user.getNachname());
+
+                    createElement(u, "email", user.getEmail());
+                    createElement(u, "location", user.getStandort());
+
+                    createElement(u, "tablesize", "" + user.getTabellengroesse());
+                    createElement(u, "sessiontimeout", "" + user.getSessiontimeout());
+
+                    createElement(u, "lang", user.getMetadatenSprache());
+                    createElement(u, "dashboard", user.getDashboardPlugin());
+
+                    for (Entry<String, String> entry : data.entrySet()) {
+                        createElement(u, entry.getKey(), entry.getValue());
+                    }
+
+                    Element grp = new Element("usergroups");
+                    u.addContent(grp);
+                    for (Usergroup ug : user.getBenutzergruppen()) {
+                        createElement(grp, "group", ug.getTitel());
+                    }
+
+                    Element projects = new Element("projects");
+                    u.addContent(projects);
+                    for (Project p : user.getProjekte()) {
+                        createElement(projects, "project", p.getTitel());
+                    }
+                }
+            }
+            // write xml to output stream
+
+            XMLOutputter outp = new XMLOutputter();
+            outp.setFormat(Format.getPrettyFormat());
+            String fileName = "export.xml";
+            /*
+             * Vorbereiten der Header-Informationen
+             */
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+
+            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType(fileName);
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
+
+            response.setContentType(contentType);
+
+            try {
+                ServletOutputStream out = response.getOutputStream();
+                outp.output(doc, out);
+                out.flush();
+            } catch (IOException e) {
+                log.error(e);
+            }
+            facesContext.responseComplete();
+        }
+    }
+
+    private void createElement(Element parent, String elementName, String elementValue) {
+        Element element = new Element(elementName);
+        element.setText(elementValue);
+        parent.addContent(element);
+    }
 }
