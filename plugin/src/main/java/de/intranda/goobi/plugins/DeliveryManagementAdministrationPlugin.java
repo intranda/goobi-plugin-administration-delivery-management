@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.Institution;
+import org.goobi.beans.Ldap;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
@@ -32,6 +33,8 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
@@ -39,12 +42,15 @@ import de.sub.goobi.config.ConfigPlugins;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.XmlTools;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.LdapManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.UserManager;
+import de.sub.goobi.persistence.managers.UsergroupManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -135,7 +141,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     @Getter
     private DatabasePaginator processPaginator;
 
-    private static final String zdbMetadatataType = "CatalogIDPeriodicalDB"; // TODO from dashboard config
+    private static final String ZDB_METADATA_TYPE = "CatalogIDPeriodicalDB"; // get this from dashboard config?
+
+    private static final String COMBO_FIELD_NAME = "combo";
 
     @Getter
     @Setter
@@ -144,9 +152,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     @Setter
     private Process process;
 
-    private Prefs prefs;
     private Fileformat fileformat;
-    private DigitalDocument digitalDocument;
 
     private DocStruct logical;
 
@@ -218,7 +224,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                     hc.getBoolean("@displayInTable", false), hc.getString("@validationType", null), hc.getString("@regularExpression", null),
                     hc.getString("/validationError", null), hc.getString("@helpMessage", ""), hc.getBoolean("@required"));
 
-            if (field.getFieldType().equals("dropdown") || field.getFieldType().equals("combo")) {
+            if (field.getFieldType().equals("dropdown") || field.getFieldType().equals(COMBO_FIELD_NAME)) {
                 List<String> valueList = Arrays.asList(hc.getStringArray("/value"));
                 field.setSelectItemList(valueList);
             }
@@ -239,8 +245,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 filterInstitution();
             }
             if (displayMode.equals("plugin_administration_deliveryManagement_displayMode_user")) {
-                //                userBean.setHideInactiveUsers(false);
-                //                userBean.FilterKein();
                 filterUser();
             }
 
@@ -255,7 +259,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             this.institution = institution;
             for (ConfiguredField field : configuredInstitutionFields) {
                 String value = institution.getAdditionalData().get(field.getName());
-                if (field.getFieldType().equals("combo") && StringUtils.isNotBlank(value) && !"false".equals(value)) {
+                if (field.getFieldType().equals(COMBO_FIELD_NAME) && StringUtils.isNotBlank(value) && !"false".equals(value)) {
                     field.setBooleanValue(true);
                     field.setSubValue(value);
                 } else {
@@ -268,7 +272,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     public void saveInstitution() {
         for (ConfiguredField field : configuredInstitutionFields) {
-            if (field.getFieldType().equals("combo") && field.getBooleanValue()) {
+            if (field.getFieldType().equals(COMBO_FIELD_NAME) && field.getBooleanValue()) {
                 institution.getAdditionalData().put(field.getName(), field.getSubValue());
             } else {
                 institution.getAdditionalData().put(field.getName(), field.getValue());
@@ -389,8 +393,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     }
 
     public void createNewInstitution() {
-        Institution institution = new Institution();
-        setInstitution(institution);
+        setInstitution(new Institution());
     }
 
     public void setUserIsActive(boolean active) {
@@ -413,7 +416,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             this.user = user;
             for (ConfiguredField field : configuredUserFields) {
                 String value = user.getAdditionalData().get(field.getName());
-                if (field.getFieldType().equals("combo") && StringUtils.isNotBlank(value) && !"false".equals(value)) {
+                if (field.getFieldType().equals(COMBO_FIELD_NAME) && StringUtils.isNotBlank(value) && !"false".equals(value)) {
                     field.setBooleanValue(true);
                     field.setSubValue(value);
                 } else {
@@ -425,7 +428,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     public void saveUser() {
         for (ConfiguredField field : configuredUserFields) {
-            if (field.getFieldType().equals("combo") && field.getBooleanValue()) {
+            if (field.getFieldType().equals(COMBO_FIELD_NAME) && field.getBooleanValue()) {
                 user.getAdditionalData().put(field.getName(), field.getSubValue());
             } else {
                 user.getAdditionalData().put(field.getName(), field.getValue());
@@ -455,8 +458,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     }
 
     public void createNewUser() {
-        User user = new User();
-        setUser(user);
+        setUser(new User());
     }
 
     public Integer getAuthenticationType() {
@@ -487,8 +489,8 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     public void setCurrentInstitutionID(Integer id) {
         if (id != null && id.intValue() != 0) {
-            Institution institution = InstitutionManager.getInstitutionById(id);
-            user.setInstitution(institution);
+            Institution i = InstitutionManager.getInstitutionById(id);
+            user.setInstitution(i);
         }
     }
 
@@ -529,24 +531,24 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     public void openProcess() {
         metadataList = new ArrayList<>();
-        prefs = process.getRegelsatz().getPreferences();
+        Prefs prefs = process.getRegelsatz().getPreferences();
         try {
             fileformat = process.readMetadataFile();
-            digitalDocument = fileformat.getDigitalDocument();
+            DigitalDocument digitalDocument = fileformat.getDigitalDocument();
             logical = digitalDocument.getLogicalDocStruct();
             List<Metadata> mdl = logical.getAllMetadata();
             boolean identifierAvailable = false;
 
             for (Metadata md : mdl) {
                 metadataList.add(md);
-                if (md.getType().getName().equals(zdbMetadatataType)) {
+                if (md.getType().getName().equals(ZDB_METADATA_TYPE)) {
                     identifierAvailable = true;
                 }
             }
             // TODO fill with additional fields from dashboard config
 
             if (!identifierAvailable) {
-                Metadata md = new Metadata(prefs.getMetadataTypeByName(zdbMetadatataType));
+                Metadata md = new Metadata(prefs.getMetadataTypeByName(ZDB_METADATA_TYPE));
                 metadataList.add(md);
             }
 
@@ -596,30 +598,30 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             }
 
             List<User> allUser = UserManager.getAllUsers();
-            for (User user : allUser) {
-                if (user.getInstitution().getId().equals(institution.getId())) {
+            for (User usr : allUser) {
+                if (usr.getInstitution().getId().equals(institution.getId())) {
                     Element u = new Element("user");
                     root.addContent(u);
 
-                    createElement(u, "login", user.getLogin());
-                    createElement(u, "ldaploginName", user.getLdaplogin());
+                    createElement(u, "login", usr.getLogin());
+                    createElement(u, "ldaploginName", usr.getLdaplogin());
                     // encryptedPassword
                     // passwordSalt
-                    if (user.getLdapGruppe() != null) {
-                        createElement(u, "ldapName", user.getLdapGruppe().getTitel());
+                    if (usr.getLdapGruppe() != null) {
+                        createElement(u, "ldapName", usr.getLdapGruppe().getTitel());
                     }
 
-                    createElement(u, "firstname", user.getVorname());
-                    createElement(u, "lastname", user.getNachname());
+                    createElement(u, "firstname", usr.getVorname());
+                    createElement(u, "lastname", usr.getNachname());
 
-                    createElement(u, "email", user.getEmail());
-                    createElement(u, "location", user.getStandort());
+                    createElement(u, "email", usr.getEmail());
+                    createElement(u, "location", usr.getStandort());
 
-                    createElement(u, "tablesize", "" + user.getTabellengroesse());
-                    createElement(u, "sessiontimeout", "" + user.getSessiontimeout());
+                    createElement(u, "tablesize", "" + usr.getTabellengroesse());
+                    createElement(u, "sessiontimeout", "" + usr.getSessiontimeout());
 
-                    createElement(u, "lang", user.getMetadatenSprache());
-                    createElement(u, "dashboard", user.getDashboardPlugin());
+                    createElement(u, "lang", usr.getMetadatenSprache());
+                    createElement(u, "dashboard", usr.getDashboardPlugin());
 
                     for (Entry<String, String> entry : data.entrySet()) {
                         createElement(u, entry.getKey(), entry.getValue());
@@ -627,13 +629,13 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
                     Element grp = new Element("usergroups");
                     u.addContent(grp);
-                    for (Usergroup ug : user.getBenutzergruppen()) {
+                    for (Usergroup ug : usr.getBenutzergruppen()) {
                         createElement(grp, "group", ug.getTitel());
                     }
 
                     Element projects = new Element("projects");
                     u.addContent(projects);
-                    for (Project p : user.getProjekte()) {
+                    for (Project p : usr.getProjekte()) {
                         createElement(projects, "project", p.getTitel());
                     }
                 }
@@ -670,5 +672,169 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         Element element = new Element(elementName);
         element.setText(elementValue);
         parent.addContent(element);
+    }
+
+    private void importInstitutionCoreData(Path path) {
+        SAXBuilder saxBuilder = XmlTools.getSAXBuilder();
+        Document doc = null;
+        try {
+            doc = saxBuilder.build(path.toFile());
+        } catch (JDOMException | IOException e) {
+            return;
+        }
+
+        Element root = doc.getRootElement();
+        Element institutionElement = root.getChild("institution");
+        String longName = institutionElement.getChildText("institutionLongName");
+        List<Institution> existingInstitutions = InstitutionManager.getAllInstitutionsAsList();
+        Institution currentInstitution = null;
+        for (Institution inst : existingInstitutions) {
+            if (inst.getLongName().equals(longName)) {
+                // merge data
+                importInstitutionData(inst, institutionElement);
+                currentInstitution = inst;
+                break;
+            }
+        }
+
+        // if inst not found, create new one, save
+        if (currentInstitution == null) {
+            currentInstitution = new Institution();
+            importInstitutionData(currentInstitution, institutionElement);
+        }
+        // save institution data
+        InstitutionManager.saveInstitution(currentInstitution);
+
+        List<User> existingUser = UserManager.getAllUsers();
+        List<Element> userList = root.getChildren("user");
+
+        for (Element userElement : userList) {
+            String login = userElement.getChildText("login");
+            User currentUser = null;
+
+            // check if user exists, merge
+            for (User u : existingUser) {
+                if (u.getLogin().equals(login)) {
+                    // merge data
+                    currentUser = u;
+                    currentUser.setInstitution(currentInstitution);
+                    importUserData(currentUser, userElement);
+                    break;
+                }
+            }
+            // or create new one
+            if (currentUser == null) {
+                currentUser = new User();
+                currentUser.setInstitution(currentInstitution);
+                try {
+                    UserManager.saveUser(currentUser);
+                } catch (DAOException e) {
+                    log.error(e);
+                }
+                importUserData(currentUser, userElement);
+            }
+        }
+    }
+
+    private void importUserData(User currentUser, Element userElement) {
+        List<Usergroup> userGroups = UsergroupManager.getAllUsergroups();
+        List<Project> projects = ProjectManager.getAllProjects();
+
+        for (Element element : userElement.getChildren()) {
+            switch (element.getName()) {
+                case "login":
+                    currentUser.setLogin(element.getValue());
+                    break;
+                case "ldaploginName":
+                    currentUser.setLdaplogin(element.getValue());
+                    break;
+                case "ldapName":
+                    for (Ldap ldap : LdapManager.getAllLdapsAsList()) {
+                        if (ldap.getTitel().equals(element.getText())) {
+                            currentUser.setLdapGruppe(ldap);
+                        }
+                    }
+                    break;
+                case "firstname":
+                    currentUser.setVorname(element.getValue());
+                    break;
+                case "lastname":
+                    currentUser.setNachname(element.getValue());
+                    break;
+                case "email":
+                    currentUser.setEmail(element.getValue());
+                    break;
+                case "location":
+                    currentUser.setStandort(element.getValue());
+                    break;
+                case "tablesize":
+                    currentUser.setTabellengroesse(Integer.valueOf(element.getValue()));
+                    break;
+                case "sessiontimeout":
+                    currentUser.setSessiontimeout(Integer.valueOf(element.getValue()));
+                    break;
+                case "lang":
+                    currentUser.setMetadatenSprache(element.getValue());
+                    break;
+                case "dashboard":
+                    currentUser.setDashboardPlugin(element.getValue());
+                    break;
+                case "usergroups":
+                    for (Element child : element.getChildren()) {
+                        String userGroupName = child.getValue();
+                        for (Usergroup grp : userGroups) {
+                            if (grp.getTitel().equals(userGroupName)) {
+                                if (grp.getBenutzer().contains(currentUser)) {
+                                    grp.getBenutzer().add(currentUser);
+                                    try {
+                                        UsergroupManager.saveUsergroup(grp);
+                                    } catch (DAOException e) {
+                                        log.error(e);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case "projects":
+                    for (Element child : element.getChildren()) {
+                        String projectName = child.getValue();
+                        for (Project p : projects) {
+                            if (p.getTitel().equals(projectName)) {
+                                if (!p.getBenutzer().contains(currentUser)) {
+                                    p.getBenutzer().add(currentUser);
+                                    try {
+                                        ProjectManager.saveProject(p);
+                                    } catch (DAOException e) {
+                                        log.error(e);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    currentUser.getAdditionalData().put(element.getName(), element.getValue());
+            }
+        }
+
+        // save user
+        try {
+            UserManager.saveUser(currentUser);
+        } catch (DAOException e) {
+            log.error(e);
+        }
+    }
+
+    private void importInstitutionData(Institution inst, Element institutionElement) {
+        for (Element element : institutionElement.getChildren()) {
+            if (element.getName().equals("institutionLongName")) {
+                inst.setLongName(element.getText());
+            } else if (element.getName().equals("institutionShortName")) {
+                inst.setShortName(element.getText());
+            } else {
+                inst.getAdditionalData().put(element.getName(), element.getValue());
+            }
+        }
     }
 }
