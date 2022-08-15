@@ -33,6 +33,9 @@ import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.DatabasePaginator;
+import org.goobi.persistence.ExtendedInstitution;
+import org.goobi.persistence.ExtendedInstitutionPaginator;
+import org.goobi.persistence.ExtendendInstitutionManager;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
 import org.jdom2.Document;
@@ -76,27 +79,28 @@ import ugh.exceptions.WriteException;
 @Log4j2
 public class DeliveryManagementAdministrationPlugin implements IAdministrationPlugin {
 
-    //    - Suche und Sortierung von Nutzern
     //    - Übersichtsanzeige einer Institution (Auflistung bereits abgelieferter Publikationen (Vorgänge) mit Anzeige konfigurierter Metadaten einer Institution; Datum letzte Lieferung)
-    //    - Import und Export von Stammdaten einer Institution als json oder xml
-    //    - Übersicht über freizuschaltende Nutzer und Möglichkeit, eine Freischaltung zu ermöglichen oder zu verhindern
-    //    - Mailversand über erfolgte oder verweigerte Freischaltung
+
+    private static final String INSTITUTION_MODE = "plugin_administration_deliveryManagement_displayMode_institution";
+    private static final String USER_MODE = "plugin_administration_deliveryManagement_displayMode_user";
+    private static final String PRIVACY_MODE = "plugin_administration_deliveryManagement_displayMode_privacyPolicy";
+    private static final String ZDB_DATA_MODE = "plugin_administration_deliveryManagement_displayMode_zdbTitleData";
 
     @Getter
     private String title = "intranda_administration_deliveryManagement";
 
     @Getter
-    private String displayMode = "plugin_administration_deliveryManagement_displayMode_institution";
+    private String displayMode = INSTITUTION_MODE;
 
     @Getter
     @Setter
     private String editionMode = "";
 
     @Getter
-    private List<String> modes;//= { "plugin_administration_deliveryManagement_displayMode_institution", "plugin_administration_deliveryManagement_displayMode_user", "plugin_administration_deliveryManagement_displayMode_privacyPolicy", "plugin_administration_deliveryManagement_displayMode_zdbTitleData" };
+    private List<String> modes;
 
     @Getter
-    private Institution institution;
+    private ExtendedInstitution institution;
 
     @Getter
     private List<ConfiguredField> configuredInstitutionFields = null;
@@ -112,7 +116,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private String institutionSort;
 
     @Getter
-    private DatabasePaginator institutionPaginator;
+    private ExtendedInstitutionPaginator institutionPaginator;
 
     @Getter
     private User user;
@@ -126,7 +130,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     @Getter
     @Setter
-    private boolean plugin_administration_deliveryManagement_showOnlyInactiveUser;
+    private boolean showOnlyInactiveUser;
 
     @Getter
     @Setter
@@ -167,7 +171,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     @Getter
     @Setter
-    private boolean plugin_administration_deliveryManagement_includeFinishedZdbData;
+    private boolean includeFinishedZdbData;
 
     @Getter
     @Setter
@@ -176,10 +180,10 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     public DeliveryManagementAdministrationPlugin() {
 
         modes = new ArrayList<>();
-        modes.add("plugin_administration_deliveryManagement_displayMode_institution");
-        modes.add("plugin_administration_deliveryManagement_displayMode_user");
-        modes.add("plugin_administration_deliveryManagement_displayMode_privacyPolicy");
-        modes.add("plugin_administration_deliveryManagement_displayMode_zdbTitleData");
+        modes.add(INSTITUTION_MODE);
+        modes.add(USER_MODE);
+        modes.add(PRIVACY_MODE);
+        modes.add(ZDB_DATA_MODE);
 
     }
 
@@ -200,15 +204,15 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private void loadConfiguration() {
 
         modes = new ArrayList<>();
-        modes.add("plugin_administration_deliveryManagement_displayMode_institution");
-        modes.add("plugin_administration_deliveryManagement_displayMode_user");
+        modes.add(INSTITUTION_MODE);
+        modes.add(USER_MODE);
         Path config = Paths.get(new Helper().getGoobiConfigDirectory(), "plugin_" + title + ".xml");
         if (!StorageProvider.getInstance().isWritable(config)) {
             Helper.setFehlerMeldung("plugin_administration_delivery_configurationFileNotWritable");
         } else {
-            modes.add("plugin_administration_deliveryManagement_displayMode_privacyPolicy");
+            modes.add(PRIVACY_MODE);
         }
-        modes.add("plugin_administration_deliveryManagement_displayMode_zdbTitleData");
+        modes.add(ZDB_DATA_MODE);
 
         conf = ConfigPlugins.getPluginConfig(title);
         conf.setExpressionEngine(new XPathExpressionEngine());
@@ -218,7 +222,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         configuredInstitutionFields = new ArrayList<>();
         configuredUserFields = new ArrayList<>();
 
-        privacyPolicyText = conf.getString("/privacyStatement", "");
+        privacyPolicyText = conf.getString("/privacyStatement", ""); //NOSONAR
 
         excludeInstitutions = Arrays.asList(conf.getStringArray("/excludeInstitution"));
 
@@ -235,7 +239,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 field.setSelectItemList(valueList);
             }
 
-            if ("institution".equals(field.getType())) {
+            if ("institution".equals(field.getType())) { //NOSONAR
                 configuredInstitutionFields.add(field);
             } else {
                 configuredUserFields.add(field);
@@ -247,20 +251,20 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     public void setDisplayMode(String displayMode) {
         if (this.displayMode == null || !this.displayMode.equals(displayMode)) {
             this.displayMode = displayMode;
-            if (displayMode.equals("plugin_administration_deliveryManagement_displayMode_institution")) {
+            if (displayMode.equals(INSTITUTION_MODE)) {
                 filterInstitution();
             }
-            if (displayMode.equals("plugin_administration_deliveryManagement_displayMode_user")) {
+            if (displayMode.equals(USER_MODE)) {
                 filterUser();
             }
 
-            if (displayMode.equals("plugin_administration_deliveryManagement_displayMode_zdbTitleData")) {
+            if (displayMode.equals(ZDB_DATA_MODE)) {
                 generateZdbTitleList();
             }
         }
     }
 
-    public void setInstitution(Institution institution) {
+    public void setInstitution(ExtendedInstitution institution) {
         if (this.institution == null || !this.institution.equals(institution)) {
             this.institution = institution;
             for (ConfiguredField field : configuredInstitutionFields) {
@@ -285,18 +289,18 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             }
         }
 
-        InstitutionManager.saveInstitution(institution);
+        ExtendendInstitutionManager.saveInstitution(institution);
         filterInstitution();
     }
 
     public void deleteInstitution() {
-        InstitutionManager.deleteInstitution(institution);
+        ExtendendInstitutionManager.deleteInstitution(institution);
         filterInstitution();
     }
 
     public void filterInstitution() {
-        InstitutionManager manager = new InstitutionManager();
-        institutionPaginator = new DatabasePaginator(getInsitutionSqlSortString(), institutionSearchFilter, manager, "institution_all");
+        ExtendendInstitutionManager manager = new ExtendendInstitutionManager();
+        institutionPaginator = new ExtendedInstitutionPaginator(getInsitutionSqlSortString(), institutionSearchFilter, manager);
     }
 
     private String getInsitutionSqlSortString() {
@@ -364,7 +368,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             sqlQuery.append("))");
         }
 
-        if (plugin_administration_deliveryManagement_showOnlyInactiveUser) {
+        if (showOnlyInactiveUser) {
             sqlQuery.append(" AND userstatus!='active'");
         }
 
@@ -399,7 +403,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     }
 
     public void createNewInstitution() {
-        setInstitution(new Institution());
+        setInstitution(new ExtendedInstitution(new Institution()));
     }
 
     public void setUserIsActive(boolean active) {
@@ -495,7 +499,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     public void setCurrentInstitutionID(Integer id) {
         if (id != null && id.intValue() != 0) {
-            Institution i = InstitutionManager.getInstitutionById(id);
+            Institution i = ExtendendInstitutionManager.getInstitutionById(id);
             user.setInstitution(i);
         }
     }
@@ -523,7 +527,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         sb.append(
                 "(prozesse.ProzesseID IN (SELECT DISTINCT processid FROM metadata WHERE metadata.name = 'DocStruct' AND metadata.value = 'ZdbTitle')) ");
         sb.append("AND prozesse.istTemplate = false ");
-        if (!plugin_administration_deliveryManagement_includeFinishedZdbData) {
+        if (!includeFinishedZdbData) {
             sb.append("and not exists (select * from metadata m2 where m2.name='CatalogIDPeriodicalDB' and m2.processid = prozesse.ProzesseID) ");
         }
         if (StringUtils.isNotBlank(zdbSearchField)) {
@@ -608,7 +612,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                     Element u = new Element("user");
                     root.addContent(u);
 
-                    createElement(u, "login", usr.getLogin());
+                    createElement(u, "login", usr.getLogin()); //NOSONAR
                     createElement(u, "ldaploginName", usr.getLdaplogin());
                     // encryptedPassword
                     // passwordSalt
@@ -875,6 +879,8 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             importInstitutionCoreData(importFile);
             editionMode = "";
             filterInstitution();
+            // delete file after import
+            StorageProvider.getInstance().deleteFile(importFile);
         } catch (IOException e) {
             log.error("Error while uploading files", e);
         }
