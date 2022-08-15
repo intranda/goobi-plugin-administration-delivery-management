@@ -1,7 +1,11 @@
 package de.intranda.goobi.plugins;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -37,6 +41,8 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.file.UploadedFile;
 
 import de.sub.goobi.config.ConfigPlugins;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -545,7 +551,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                     identifierAvailable = true;
                 }
             }
-            // TODO fill with additional fields from dashboard config
 
             if (!identifierAvailable) {
                 Metadata md = new Metadata(prefs.getMetadataTypeByName(ZDB_METADATA_TYPE));
@@ -590,7 +595,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             Element inst = new Element("institution");
             root.addContent(inst);
 
-            createElement(inst, "institutionLongName", institution.getLongName());
+            createElement(inst, "institutionLongName", institution.getLongName());//NOSONAR
             createElement(inst, "institutionShortName", institution.getShortName());
 
             for (Entry<String, String> entry : data.entrySet()) {
@@ -783,35 +788,33 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                     for (Element child : element.getChildren()) {
                         String userGroupName = child.getValue();
                         for (Usergroup grp : userGroups) {
-                            if (grp.getTitel().equals(userGroupName)) {
-                                if (grp.getBenutzer().contains(currentUser)) {
-                                    grp.getBenutzer().add(currentUser);
-                                    try {
-                                        UsergroupManager.saveUsergroup(grp);
-                                    } catch (DAOException e) {
-                                        log.error(e);
-                                    }
+                            if (grp.getTitel().equals(userGroupName) && grp.getBenutzer().contains(currentUser)) {
+                                grp.getBenutzer().add(currentUser);
+                                try {
+                                    UsergroupManager.saveUsergroup(grp);
+                                } catch (DAOException e) {
+                                    log.error(e);
                                 }
                             }
                         }
                     }
+
                     break;
                 case "projects":
                     for (Element child : element.getChildren()) {
                         String projectName = child.getValue();
                         for (Project p : projects) {
-                            if (p.getTitel().equals(projectName)) {
-                                if (!p.getBenutzer().contains(currentUser)) {
-                                    p.getBenutzer().add(currentUser);
-                                    try {
-                                        ProjectManager.saveProject(p);
-                                    } catch (DAOException e) {
-                                        log.error(e);
-                                    }
+                            if (p.getTitel().equals(projectName) && !p.getBenutzer().contains(currentUser)) {
+                                p.getBenutzer().add(currentUser);
+                                try {
+                                    ProjectManager.saveProject(p);
+                                } catch (DAOException e) {
+                                    log.error(e);
                                 }
                             }
                         }
                     }
+
                     break;
                 default:
                     currentUser.getAdditionalData().put(element.getName(), element.getValue());
@@ -835,6 +838,45 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             } else {
                 inst.getAdditionalData().put(element.getName(), element.getValue());
             }
+        }
+    }
+
+    public Path copyFile(String fileName, InputStream in) {
+        try {
+            String extension = fileName.substring(fileName.indexOf("."));
+            Path importFile = Files.createTempFile(fileName, extension); // NOSONAR, temp file is save to use
+            try (OutputStream out = new FileOutputStream(importFile.toFile())) {
+                int read = 0;
+                byte[] bytes = new byte[1024];
+                while ((read = in.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
+                out.flush();
+            }
+            return importFile;
+        } catch (IOException e) {
+            log.error(e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    log.error(e);
+                }
+            }
+        }
+        return null;
+    }
+
+    public void handleFileUpload(FileUploadEvent event) {
+        try {
+            UploadedFile upload = event.getFile();
+            Path importFile = copyFile(upload.getFileName(), upload.getInputStream());
+            importInstitutionCoreData(importFile);
+            editionMode = "";
+            filterInstitution();
+        } catch (IOException e) {
+            log.error("Error while uploading files", e);
         }
     }
 }
