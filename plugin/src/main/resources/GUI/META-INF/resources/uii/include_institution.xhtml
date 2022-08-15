@@ -145,7 +145,7 @@
                                 value="#{item}" />
                         </button>
 
-
+                        <!-- open process list -->
                         <button
                             jsf:id="showImports"
                             class="btn margin-right-5"
@@ -163,9 +163,27 @@
                             <f:setPropertyActionListener
                                 value="imports"
                                 target="#{AdministrationForm.administrationPlugin.editionMode}" />
-<!--                             <f:ajax render="@all" /> -->
                         </button>
 
+                        <!-- show special plugin view -->
+                        <button
+                            class="btn margin-right-5"
+                            jsf:rel="tooltip"
+                            aria-label="#{msgs.plugin_administration_deliveryManagement_displayImports}"
+                            jsf:title="#{msgs.plugin_administration_deliveryManagement_displayImports}"
+                            jsf:action="#{AdministrationForm.administrationPlugin.generateInstitutionProcessTitleList}">
+                            <i class="fa fa-files-o"></i>
+                            <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
+                            <f:setPropertyActionListener
+                                target="#{AdministrationForm.administrationPlugin.institution}"
+                                value="#{item}" />
+                            <f:setPropertyActionListener
+                                value="imports"
+                                target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                            <f:ajax render="@all" />
+                        </button>
 
                     </x:column>
                 </x:dataTable>
@@ -200,28 +218,245 @@
 
 
 
-<!--             <h:panelGroup -->
-<!--                 layout="block" -->
-<!--                 styleClass="dataTables_wrapper edit-mode" -->
-<!--                 rendered="#{AdministrationForm.administrationPlugin.editionMode=='imports'}"> -->
+                        <h:panelGroup
+                            layout="block"
+                            styleClass="dataTables_wrapper edit-mode"
+                            rendered="#{AdministrationForm.administrationPlugin.editionMode=='imports'}">
 
-<!--                 <h:outputText value="#{AdministrationForm.administrationPlugin.institution.longName}" /> -->
 
-<!--                 <div class="form-actions"> -->
-<!--                     <button -->
-<!--                         class="btn margin-sides-10 font-size-s pull-right" -->
-<!--                         jsf:id="cancelImports" -->
-<!--                         type="submit" -->
-<!--                         jsf:immediate="true"> -->
-<!--                         <h:outputText value="#{msgs.abbrechen}" /> -->
-<!--                         <f:setPropertyActionListener -->
-<!--                             value="" -->
-<!--                             target="#{AdministrationForm.administrationPlugin.editionMode}" /> -->
-<!--                         <f:ajax render="@all" /> -->
-<!--                     </button> -->
-<!--                 </div> -->
-<!--             </h:panelGroup> -->
+                <div class="dataTables_length">
+                    <h:outputText value="#{AdministrationForm.administrationPlugin.institution.longName}: #{AdministrationForm.administrationPlugin.institutionProcessPaginator.totalResults}" />
+                </div>
+<table
+                    role="grid"
+                    id="processTable"
+                    class="table table-hover table-nomargin dataTable table-bordered responsive">
+                    <!-- ### Columnheader row ### -->
+                    <thead>
+                        <tr role="row">
 
+
+                            <!-- Embedded Metadata -->
+                            <intranda:columnheader
+                                addClass="tableColumnOverflow maxWidth300"
+                                value="#{msgs.metadata}"
+                                sortable="false" />
+
+                            <th
+                                scope="col"
+                                role="columnheader"
+                                class="tableColumnOverflow maxWidth300"
+                                aria-sort="#{AdministrationForm.administrationPlugin.sortField== 'titelDesc' ? 'descending' : AdministrationForm.administrationPlugin.sortField== 'titelAsc' ? 'ascending' :'none'}">
+                                <button
+                                    class="button-link"
+                                    style="width: 100%; text-align: left;"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.generateInstitutionProcessTitleList}"
+                                    aria-label="#{msgs.defaultSortField} #{msgs.prozessTitel} #{AdministrationForm.administrationPlugin.sortField== 'titelDesc' ? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung== 'titelAsc' ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
+                                    <h:outputText value="#{msgs.prozessTitel}" />
+                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.sortField== 'titelDesc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.sortField== 'titelAsc' ?'fa-sort-asc':'fa-sort'}"></span>
+                                    <f:setPropertyActionListener
+                                        target="#{AdministrationForm.administrationPlugin.sortField}"
+                                        value="#{AdministrationForm.administrationPlugin.sortField== 'titelAsc' ? 'titelDesc' : 'titelAsc' }" />
+                                    <f:ajax render="@form" />
+                                </button>
+                            </th>
+
+
+                            <th
+                                scope="col"
+                                role="columnheader"
+                                class="tableColumnOverflow maxwidth200"
+                                aria-sort="#{AdministrationForm.administrationPlugin.sortField== 'creationDateDesc' ? 'descending' : AdministrationForm.administrationPlugin.sortField== 'creationDateAsc' ? 'ascending' :'none'}">
+                                <button
+                                    class="button-link"
+                                    style="width: 100%; text-align: left;"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.generateInstitutionProcessTitleList}"
+                                    aria-label="#{msgs.defaultSortField} #{msgs.prozessTitel} #{AdministrationForm.administrationPlugin.sortField== 'creationDateDesc' ? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung== 'creationDateAsc' ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
+                                    <h:outputText value="#{msgs.vorgangsdatum}" />
+                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.sortField== 'creationDateDesc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.sortField== 'creationDateAsc' ?'fa-sort-asc':'fa-sort'}"></span>
+                                    <f:setPropertyActionListener
+                                        target="#{AdministrationForm.administrationPlugin.sortField}"
+                                        value="#{AdministrationForm.administrationPlugin.sortField== 'creationDateAsc' ? 'creationDateDesc' : 'creationDateAsc' }" />
+                                    <f:ajax render="@form" />
+                                </button>
+                            </th>
+
+
+
+
+
+
+                            <!-- Buttons -->
+                            <intranda:columnheader
+                                addClass="width200"
+                                value="#{msgs.auswahl}"
+                                sortable="false" />
+                        </tr>
+                    </thead>
+                    <ui:repeat
+                        var="zdbItem"
+                        value="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.list}"
+                        varStatus="status">
+                        <tr role="row">
+
+                            <!-- Embedded Metadata -->
+                            <td>
+                                <table>
+                                    <ui:repeat
+                                        var="metadata"
+                                        value="#{zdbItem.metadataList}"
+                                        varStatus="metadatastatus"
+                                        id="metadatalist">
+                                        <h:panelGroup rendered="#{metadata.one != 'DocStruct' and metadata.one != 'index.Titel'}">
+
+                                            <tr>
+                                                <td style="border: none !important; padding: 2px; vertical-align: top;">
+                                                    <h:outputText value="#{msgs['process_grid_'.concat(metadata.one)]}:" />
+                                                </td>
+                                                <td style="border: none !important; padding: 2px; white-space: normal;">
+                                                    <h:outputText value="#{metadata.two}" />
+                                                </td>
+                                            </tr>
+                                        </h:panelGroup>
+                                    </ui:repeat>
+                                </table>
+                            </td>
+
+                            
+                            <td>
+                                <h:outputText value="#{zdbItem.titel}" />
+                            </td>
+
+                            <!-- Vorgangsdatum -->
+                            <td>
+                                <h:outputText value="#{zdbItem.erstellungsdatumAsString}">
+                                    <!-- <f:convertDateTime locale="#{SpracheForm.locale}" type="date" dateStyle="medium"/> -->
+                                </h:outputText>
+                            </td>
+
+                            <!-- Buttons -->
+                            <td class="width200">
+
+
+                                <!-- Metadaten-Schaltknopf - Allow writing -->
+                                <h:commandLink
+                                    action="#{AdministrationForm.administrationPlugin.openProcess}"
+                                    id="action15"
+                                    rel="tooltip"
+                                    title="#{msgs.metadatenBearbeiten}"
+                                    pt:aria-label="#{msgs.metadatenBearbeiten}">
+                                    <i class="btn fa fa-book " />
+
+                                    <f:setPropertyActionListener
+                                        value="edit"
+                                        target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                                    <f:setPropertyActionListener
+                                        value="#{zdbItem}"
+                                        target="#{AdministrationForm.administrationPlugin.process}" />
+
+                                </h:commandLink>
+
+
+
+                            </td>
+                        </tr>
+                    </ui:repeat>
+                </table>
+
+                <div
+                    class="dataTables_info"
+                    style="float: left;"></div>
+                <div class="dataTables_paginate">
+
+                    <ui:fragment id="zdb_paginator">
+                        <!-- paginator -->
+                        <h:panelGroup rendered="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.totalResults > LoginForm.myBenutzer.tabellengroesse}">
+
+                            <div class="pull-right">
+
+                                <button
+                                    class="btn font-size-s margin-sides-10"
+                                    aria-label="#{msgs.firstPage}"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.cmdMoveFirst}"
+                                    jsf:id="navfirst">
+                                    <i class="fa fa-angle-double-left"></i>
+                                    <f:ajax render="@form" />
+                                </button>
+                                <button
+                                    class="btn btn-primary font-size-s navigator-previous"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.cmdMovePrevious}"
+                                    jsf:id="navprev">
+                                    <i class="fa fa-angle-left"></i>
+                                    <h:outputText value=" #{msgs.pagePrevious}" />
+                                    <f:ajax render="@form" />
+                                </button>
+
+                                <div class="margin-sides-10">
+                                    <!-- aktuelle Seite anzeigen -->
+                                    <x:outputText
+                                        id="item_txtMoveTo1"
+                                        forceId="true"
+                                        value="#{msgs.seite} #{AdministrationForm.administrationPlugin.institutionProcessPaginator.pageNumberCurrent} #{msgs.von} #{AdministrationForm.administrationPlugin.institutionProcessPaginator.pageNumberLast}"
+                                        onclick="document.getElementById('item_txtMoveTo2').style.display='inline';
+                   document.getElementById('item_txtMoveTo1').style.display='none';
+                   document.getElementById('item_txtMoveTo2').focus();
+                   document.getElementById('item_txtMoveTo2').select();" />
+
+                                    <!-- Seite direkt anspringen -->
+                                    <x:inputText
+                                        id="item_txtMoveTo2"
+                                        forceId="true"
+                                        value="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.txtMoveTo}"
+                                        style="display:none;width:30px"
+                                        required="true"
+                                        onblur="document.getElementById('item_txtMoveTo2').style.display='none';document.getElementById('item_txtMoveTo1').style.display='inline';"
+                                        onkeypress="return submitEnter('item_cmdMoveTo',event)" />
+                                    <x:commandButton
+                                        action="#{NavigationForm.Reload}"
+                                        id="item_cmdMoveTo"
+                                        forceId="true"
+                                        value="go"
+                                        style="display:none">
+                                    </x:commandButton>
+                                </div>
+
+                                <button
+                                    class="btn btn-primary font-size-s navigator-next"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.cmdMoveNext}"
+                                    jsf:id="navnext">
+                                    <h:outputText value="#{msgs.pageNext} " />
+                                    <i class="fa fa-angle-right"></i>
+                                    <f:ajax render="@form" />
+                                </button>
+                                <button
+                                    class="btn font-size-s margin-sides-10"
+                                    aria-label="#{msgs.lastPage}"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.cmdMoveLast}"
+                                    jsf:id="navlast">
+                                    <i class="fa fa-angle-double-right"></i>
+                                    <f:ajax render="@form" />
+                                </button>
+                            </div>
+                        </h:panelGroup>
+</ui:fragment>
+</div>
+
+
+
+                            <div class="form-actions">
+                                <button
+                                    class="btn margin-sides-10 font-size-s pull-right"
+                                    jsf:id="cancelImports"
+                                    type="submit"
+                                    jsf:immediate="true">
+                                    <h:outputText value="#{msgs.abbrechen}" />
+                                    <f:setPropertyActionListener
+                                        value=""
+                                        target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                                    <f:ajax render="@all" />
+                                </button>
+                            </div>
+                        </h:panelGroup>
 
 
             <h:panelGroup

@@ -152,6 +152,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     @Getter
     private DatabasePaginator processPaginator;
 
+    @Getter
+    private DatabasePaginator institutionProcessPaginator;
+
     private static final String ZDB_METADATA_TYPE = "CatalogIDPeriodicalDB"; // get this from dashboard config?
 
     private static final String COMBO_FIELD_NAME = "combo";
@@ -544,6 +547,16 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         processPaginator = new DatabasePaginator("prozesse.titel", sb.toString(), m, "process_all");
     }
 
+    public void generateInstitutionProcessTitleList() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("(prozesse.ProzesseID in (select prozesseID from prozesseeigenschaften where ");
+        sb.append("prozesseeigenschaften.Titel = 'Institution' AND prozesseeigenschaften.Wert = '");
+        sb.append(institution.getShortName());
+        sb.append("')) AND prozesse.istTemplate = false ");
+        ProcessManager m = new ProcessManager();
+        institutionProcessPaginator = new DatabasePaginator("prozesse.titel", sb.toString(), m, "process_all");
+    }
+
     public void openProcess() {
         metadataList = new ArrayList<>();
         Prefs prefs = process.getRegelsatz().getPreferences();
@@ -600,7 +613,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         bean.setModusAnzeige("aktuell");
         return bean.FilterAlleStart();
     }
-
 
     public void exportInstitutionCoreData() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
