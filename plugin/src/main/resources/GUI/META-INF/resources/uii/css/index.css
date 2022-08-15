@@ -54,3 +54,40 @@
   margin-right: 0;
 }
 
+/* Upload btn in include_institution */
+.ui-fileupload-buttonbar.ui-widget-header.ui-corner-top {
+  height: unset;
+  padding: 0;
+}
+
+.include__institution .ui-fileupload-content.ui-widget-content.ui-corner-bottom {
+  display: none;
+}
+
+.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left.ui-fileupload-choose {
+  height: 2.7rem;
+  padding-top: 1px;
+}
+
+.ui-fileupload.ui-widget.ui-fileupload-responsive {
+  display: flex;
+}
+
+.include__institution .ui-fileupload-buttonbar.ui-widget-header.ui-corner-top {
+  display: inline;
+  background-color: var(--clr-primary-400);
+  /*! height: 27px; */
+}
+.ui-button-icon-left.ui-icon.ui-c.ui-icon-plusthick::before {
+  content: "\e934" !important;
+}
+
+.ui-button-icon-left.ui-icon {
+
+  transform: translateY(-21%);
+
+}
+
+.pull-right button:last-child {
+  margin-right: -4px;
+}
