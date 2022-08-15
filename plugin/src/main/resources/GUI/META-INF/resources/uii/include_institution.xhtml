@@ -66,6 +66,23 @@
                         <h:outputText value="#{item.longName}" />
                     </x:column>
 
+                    <x:column>
+                        <f:facet name="header">
+                            <button
+                                class="button-link"
+                                style="width: 100%; text-align: left;"
+                                jsf:action="#{AdministrationForm.administrationPlugin.filterInstitution}">
+                                <h:outputText value="#{msgs.plugin_administration_deliveryManagement_lastChangeDate}" />
+                                <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.institutionSort== 'lastDate Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.institutionSort== 'lastDate' ?'fa-sort-asc':'fa-sort'}"></span>
+                                <f:setPropertyActionListener
+                                    target="#{AdministrationForm.administrationPlugin.institutionSort}"
+                                    value="#{AdministrationForm.administrationPlugin.institutionSort== 'lastDate' ? 'lastDate Desc' : 'lastDate' }" />
+                                <f:ajax render="@form" />
+                            </button>
+                        </f:facet>
+                        <h:outputText value="#{item.lastUploadDate}" />
+                    </x:column>
+
                     <c:forEach
                         items="#{AdministrationForm.administrationPlugin.configuredInstitutionFields}"
                         var="cif">
@@ -146,7 +163,9 @@
                     aria-label="#{msgs.plugin_administration_deliveryManagement_uploadInstitutionData}"
                     title="#{msgs.plugin_administration_deliveryManagement_uploadInstitutionData}">
                     <i class="fa fa-upload"></i>
-                    <h:outputText value="#{msgs.plugin_administration_deliveryManagement_uploadInstitutionData}" style="margin-left:5px" />
+                    <h:outputText
+                        value="#{msgs.plugin_administration_deliveryManagement_uploadInstitutionData}"
+                        style="margin-left:5px" />
                     <f:passThroughAttribute
                         name="data-toggle"
                         value="tooltip" />

@@ -315,6 +315,10 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 case "benutzer.email Desc":
                 case "institution.shortName":
                 case "institution.shortName Desc":
+                case "institution.longName":
+                case "institution.longName Desc":
+                case "lastDate":
+                case "lastDate Desc":
                     sort = institutionSort;
                     break;
                 default:

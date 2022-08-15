@@ -7,12 +7,15 @@ import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class ExtendedInstitution implements DatabaseObject{
 
     @Getter
     private Institution institution;
 
+    @Getter
+    @Setter
     private Date lastUploadDate;
 
 
