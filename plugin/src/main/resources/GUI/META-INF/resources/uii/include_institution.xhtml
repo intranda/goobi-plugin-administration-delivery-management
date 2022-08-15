@@ -145,6 +145,28 @@
                                 value="#{item}" />
                         </button>
 
+
+                        <button
+                            jsf:id="showImports"
+                            class="btn margin-right-5"
+                            jsf:rel="tooltip"
+                            aria-label="#{msgs.plugin_administration_deliveryManagement_displayImports}"
+                            jsf:title="#{msgs.plugin_administration_deliveryManagement_displayImports}"
+                            jsf:action="#{AdministrationForm.administrationPlugin.showImports}">
+                            <i class="fa fa-files-o"></i>
+                            <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
+                            <f:setPropertyActionListener
+                                target="#{AdministrationForm.administrationPlugin.institution}"
+                                value="#{item}" />
+                            <f:setPropertyActionListener
+                                value="imports"
+                                target="#{AdministrationForm.administrationPlugin.editionMode}" />
+<!--                             <f:ajax render="@all" /> -->
+                        </button>
+
+
                     </x:column>
                 </x:dataTable>
 
@@ -156,26 +178,6 @@
                         paginator="#{AdministrationForm.administrationPlugin.institutionPaginator}" />
                 </div>
 
-                <!--
-                <button
-                    jsf:id="fileupload"
-                    class="btn btn-primary margin-right-5"
-                    jsf:rel="tooltip"
-                    aria-label="#{msgs.plugin_administration_deliveryManagement_uploadInstitutionData}"
-                    title="#{msgs.plugin_administration_deliveryManagement_uploadInstitutionData}">
-                    <i class="fa fa-upload"></i>
-                    <h:outputText
-                        value="#{msgs.plugin_administration_deliveryManagement_uploadInstitutionData}"
-                        style="margin-left:5px" />
-                    <f:passThroughAttribute
-                        name="data-toggle"
-                        value="tooltip" />
-                    <f:setPropertyActionListener
-                        value="upload"
-                        target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                    <f:ajax render="@all" />
-                </button>
-                -->
 
                 <p:fileUpload
                     listener="#{AdministrationForm.administrationPlugin.handleFileUpload}"
@@ -193,74 +195,33 @@
                         name="aria-label"
                         value="#{msgs.plugin_administration_deliveryManagement_uploadFile}" />
                 </p:fileUpload>
-
-
-                <!--
-                <div class="form-actions">
-                -->
-                    <!-- Cancel -->
-                <!--
-                    <button
-                        class="btn margin-sides-10 font-size-s pull-right"
-                        jsf:id="cancelUpload"
-                        type="submit"
-                        jsf:immediate="true">
-                        <h:outputText value="#{msgs.abbrechen}" />
-                        <f:setPropertyActionListener
-                            value=""
-                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                        <f:ajax render="@all" />
-                    </button>
-                </div>
-                -->
-
             </h:panelGroup>
 
 
 
-            <!--
-            <h:panelGroup
-                layout="block"
-                styleClass="dataTables_wrapper edit-mode"
-                rendered="#{AdministrationForm.administrationPlugin.editionMode=='upload'}">
 
+<!--             <h:panelGroup -->
+<!--                 layout="block" -->
+<!--                 styleClass="dataTables_wrapper edit-mode" -->
+<!--                 rendered="#{AdministrationForm.administrationPlugin.editionMode=='imports'}"> -->
 
-                <p:fileUpload
-                    listener="#{AdministrationForm.administrationPlugin.handleFileUpload}"
-                    id="upload"
-                    name="uploadName"
-                    auto="true"
-                    style="text-align:center;"
-                    mode="advanced"
-                    multiple="false"
-                    dragDropSupport="true"
-                    label="#{msgs.plugin_administration_deliveryManagement_uploadFile}"
-                    allowTypes="/(\.|\/)(xml)$/"
-                    update="@form">
-                    <f:passThroughAttribute
-                        name="aria-label"
-                        value="#{msgs.plugin_administration_deliveryManagement_uploadFile}" />
-                </p:fileUpload>
+<!--                 <h:outputText value="#{AdministrationForm.administrationPlugin.institution.longName}" /> -->
 
+<!--                 <div class="form-actions"> -->
+<!--                     <button -->
+<!--                         class="btn margin-sides-10 font-size-s pull-right" -->
+<!--                         jsf:id="cancelImports" -->
+<!--                         type="submit" -->
+<!--                         jsf:immediate="true"> -->
+<!--                         <h:outputText value="#{msgs.abbrechen}" /> -->
+<!--                         <f:setPropertyActionListener -->
+<!--                             value="" -->
+<!--                             target="#{AdministrationForm.administrationPlugin.editionMode}" /> -->
+<!--                         <f:ajax render="@all" /> -->
+<!--                     </button> -->
+<!--                 </div> -->
+<!--             </h:panelGroup> -->
 
-                <div class="form-actions">
-            -->
-                    <!-- Cancel -->
-                    <!--
-                    <button
-                        class="btn margin-sides-10 font-size-s pull-right"
-                        jsf:id="cancelUpload"
-                        type="submit"
-                        jsf:immediate="true">
-                        <h:outputText value="#{msgs.abbrechen}" />
-                        <f:setPropertyActionListener
-                            value=""
-                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                        <f:ajax render="@all" />
-                    </button>
-                </div>
-            </h:panelGroup>
-                    -->
 
 
             <h:panelGroup

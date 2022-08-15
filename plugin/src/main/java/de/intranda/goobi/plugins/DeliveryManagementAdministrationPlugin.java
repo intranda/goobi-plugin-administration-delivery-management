@@ -33,6 +33,7 @@ import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.DatabasePaginator;
+import org.goobi.managedbeans.ProcessBean;
 import org.goobi.persistence.ExtendedInstitution;
 import org.goobi.persistence.ExtendedInstitutionPaginator;
 import org.goobi.persistence.ExtendendInstitutionManager;
@@ -591,6 +592,15 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         // update metadata list
         generateZdbTitleList();
     }
+
+    public String showImports() {
+        String filter = "processproperty:Institution:" + institution.getShortName();
+        ProcessBean bean = Helper.getBeanByClass(ProcessBean.class);
+        bean.setFilter(filter);
+        bean.setModusAnzeige("aktuell");
+        return bean.FilterAlleStart();
+    }
+
 
     public void exportInstitutionCoreData() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
