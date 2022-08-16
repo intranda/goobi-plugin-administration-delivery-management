@@ -62,13 +62,13 @@
                         class="btn searchfieldbuttongroup hidden-xs"
                         jsf:action="#{AdministrationForm.administrationPlugin.generateZdbTitleList}"
                         jsf:immediate="true">
-                        <i class="fa #{AdministrationForm.administrationPlugin.plugin_administration_deliveryManagement_includeFinishedZdbData?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                        <i class="fa #{AdministrationForm.administrationPlugin.includeFinishedZdbData?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
                         <h:outputText
                             styleClass="font-size-s"
                             value="#{msgs.plugin_administration_deliveryManagement_includeFinishedZdbData}" />
                         <f:setPropertyActionListener
-                            target="#{AdministrationForm.administrationPlugin.plugin_administration_deliveryManagement_includeFinishedZdbData}"
-                            value="#{not AdministrationForm.administrationPlugin.plugin_administration_deliveryManagement_includeFinishedZdbData}" />
+                            target="#{AdministrationForm.administrationPlugin.includeFinishedZdbData}"
+                            value="#{not AdministrationForm.administrationPlugin.includeFinishedZdbData}" />
                     </button>
                 </div>
                 <!-- +++++++++++++++++  Display as table ++++++++++++++++++++++++ -->
@@ -149,25 +149,23 @@
                                 <table>
                                     <ui:repeat
                                         var="metadata"
-                                        value="#{zdbItem.metadataList}"
-                                        varStatus="metadatastatus"
-                                        id="metadatalist">
-                                        <h:panelGroup rendered="#{metadata.one != 'DocStruct' and metadata.one != 'index.Titel'}">
-
+                                        value="#{AdministrationForm.administrationPlugin.metadataDisplayList}"
+                                        varStatus="metadatastatus">
+                                        <ui:fragment rendered="#{zdbItem.getMetadataValue(metadata) != ''}">
                                             <tr>
                                                 <td style="border: none !important; padding: 2px; vertical-align: top;">
-                                                    <h:outputText value="#{msgs['process_grid_'.concat(metadata.one)]}:" />
+                                                    <h:outputText value="#{msgs['process_grid_'.concat(metadata)]}:" />
                                                 </td>
                                                 <td style="border: none !important; padding: 2px; white-space: normal;">
-                                                    <h:outputText value="#{metadata.two}" />
+                                                    <h:outputText value="#{zdbItem.getMetadataValue(metadata)}" />
                                                 </td>
                                             </tr>
-                                        </h:panelGroup>
+                                        </ui:fragment>
                                     </ui:repeat>
                                 </table>
                             </td>
 
-                            
+
                             <td>
                                 <h:outputText value="#{zdbItem.titel}" />
                             </td>
@@ -175,7 +173,6 @@
                             <!-- Vorgangsdatum -->
                             <td>
                                 <h:outputText value="#{zdbItem.erstellungsdatumAsString}">
-                                    <!-- <f:convertDateTime locale="#{SpracheForm.locale}" type="date" dateStyle="medium"/> -->
                                 </h:outputText>
                             </td>
 
@@ -185,7 +182,7 @@
 
                                 <!-- Metadaten-Schaltknopf - Allow writing -->
                                 <h:commandLink
-                                    action="#{AdministrationForm.administrationPlugin.openProcess}"
+                                    action="#{AdministrationForm.administrationPlugin.openProcess(true)}"
                                     id="action15"
                                     rel="tooltip"
                                     title="#{msgs.metadatenBearbeiten}"
@@ -329,7 +326,6 @@
                     <f:setPropertyActionListener
                         value=""
                         target="#{AdministrationForm.administrationPlugin.editionMode}" />
-
                 </button>
 
                 <!-- Cancel -->

@@ -181,6 +181,11 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     @Setter
     private String zdbSearchField;
 
+    // metadata to display
+    @Getter
+    private List<String> metadataDisplayList;
+
+
     public DeliveryManagementAdministrationPlugin() {
 
         modes = new ArrayList<>();
@@ -249,6 +254,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 configuredUserFields.add(field);
             }
         }
+
+        metadataDisplayList = Arrays.asList(conf.getStringArray("/metadata"));
+
         filterInstitution(); // temporary fix to load the data for the first page
     }
 
@@ -557,7 +565,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         institutionProcessPaginator = new DatabasePaginator("prozesse.titel", sb.toString(), m, "process_all");
     }
 
-    public void openProcess() {
+    public void openProcess(boolean includeZdbID) {
         metadataList = new ArrayList<>();
         Prefs prefs = process.getRegelsatz().getPreferences();
         try {
@@ -574,7 +582,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 }
             }
 
-            if (!identifierAvailable) {
+            if (!identifierAvailable && includeZdbID) {
                 Metadata md = new Metadata(prefs.getMetadataTypeByName(ZDB_METADATA_TYPE));
                 metadataList.add(md);
             }

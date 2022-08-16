@@ -90,7 +90,38 @@ Click here to login: &lt;a href="{url}"&gt;login.&lt;/a&gt;
 	<registration>
 		<recipient>robert@intranda.com</recipient>
 		<subject>Neuer Account wurde erstellt</subject>
-		<body>Es wurde ein neuer Account erstellt: {login}</body>
+		<body>Es wurde ein neuer Account erstellt</body>
 	</registration>
+
+
+    <!-- metadata to display in process list -->
+    <metadata>TitleDocMain</metadata>
+    <metadata>TitleDocSub1</metadata>
+    <metadata>PublicationYear</metadata>
+    <metadata>DocLanguage</metadata>
+    <metadata>OtherCorporate</metadata>
+    <metadata>Copyright</metadata>
+    <metadata>AccessLicense</metadata>
+    <metadata>Author</metadata>
+    <metadata>ActionNote</metadata>
+    <metadata>CatalogIDDigital</metadata>
+    <metadata>DDC</metadata>
+    <metadata>Edition</metadata>
+    <metadata>FSK</metadata>
+    <metadata>ISSN</metadata>
+    <metadata>ISBN</metadata>
+    <metadata>ISMN</metadata>
+    <metadata>UPC</metadata>
+    <metadata>EAN</metadata>
+    <metadata>OrderNumber</metadata>
+    <metadata>DOI</metadata>
+    <metadata>URN</metadata>
+    <metadata>Handle</metadata>
+    <metadata>Identifikation</metadata>
+    <metadata>NoteStatementOfResponsibility</metadata>
+    <metadata>PublisherCorporate</metadata>
+    <metadata>PublisherName</metadata>
+
+
 
 </config_plugin>

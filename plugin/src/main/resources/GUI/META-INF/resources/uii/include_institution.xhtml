@@ -145,7 +145,7 @@
                                 value="#{item}" />
                         </button>
 
-                        <!-- open process list -->
+                        <!-- open process list
                         <button
                             jsf:id="showImports"
                             class="btn margin-right-5"
@@ -163,7 +163,7 @@
                             <f:setPropertyActionListener
                                 value="imports"
                                 target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                        </button>
+                        </button> -->
 
                         <!-- show special plugin view -->
                         <button
@@ -218,16 +218,16 @@
 
 
 
-                        <h:panelGroup
-                            layout="block"
-                            styleClass="dataTables_wrapper edit-mode"
-                            rendered="#{AdministrationForm.administrationPlugin.editionMode=='imports'}">
+            <h:panelGroup
+                layout="block"
+                styleClass="dataTables_wrapper edit-mode"
+                rendered="#{AdministrationForm.administrationPlugin.editionMode=='imports'}">
 
 
                 <div class="dataTables_length">
                     <h:outputText value="#{AdministrationForm.administrationPlugin.institution.longName}: #{AdministrationForm.administrationPlugin.institutionProcessPaginator.totalResults}" />
                 </div>
-<table
+                <table
                     role="grid"
                     id="processTable"
                     class="table table-hover table-nomargin dataTable table-bordered responsive">
@@ -301,28 +301,28 @@
 
                             <!-- Embedded Metadata -->
                             <td>
+
                                 <table>
+
                                     <ui:repeat
                                         var="metadata"
-                                        value="#{zdbItem.metadataList}"
-                                        varStatus="metadatastatus"
-                                        id="metadatalist">
-                                        <h:panelGroup rendered="#{metadata.one != 'DocStruct' and metadata.one != 'index.Titel'}">
-
+                                        value="#{AdministrationForm.administrationPlugin.metadataDisplayList}"
+                                        varStatus="metadatastatus">
+                                        <ui:fragment rendered="#{zdbItem.getMetadataValue(metadata) != ''}">
                                             <tr>
                                                 <td style="border: none !important; padding: 2px; vertical-align: top;">
-                                                    <h:outputText value="#{msgs['process_grid_'.concat(metadata.one)]}:" />
+                                                    <h:outputText value="#{msgs['process_grid_'.concat(metadata)]}:" />
                                                 </td>
                                                 <td style="border: none !important; padding: 2px; white-space: normal;">
-                                                    <h:outputText value="#{metadata.two}" />
+                                                    <h:outputText value="#{zdbItem.getMetadataValue(metadata)}" />
                                                 </td>
                                             </tr>
-                                        </h:panelGroup>
+                                        </ui:fragment>
                                     </ui:repeat>
                                 </table>
                             </td>
 
-                            
+
                             <td>
                                 <h:outputText value="#{zdbItem.titel}" />
                             </td>
@@ -330,7 +330,6 @@
                             <!-- Vorgangsdatum -->
                             <td>
                                 <h:outputText value="#{zdbItem.erstellungsdatumAsString}">
-                                    <!-- <f:convertDateTime locale="#{SpracheForm.locale}" type="date" dateStyle="medium"/> -->
                                 </h:outputText>
                             </td>
 
@@ -340,7 +339,7 @@
 
                                 <!-- Metadaten-Schaltknopf - Allow writing -->
                                 <h:commandLink
-                                    action="#{AdministrationForm.administrationPlugin.openProcess}"
+                                    action="#{AdministrationForm.administrationPlugin.openProcess(false)}"
                                     id="action15"
                                     rel="tooltip"
                                     title="#{msgs.metadatenBearbeiten}"
@@ -348,7 +347,7 @@
                                     <i class="btn fa fa-book " />
 
                                     <f:setPropertyActionListener
-                                        value="edit"
+                                        value="editProcess"
                                         target="#{AdministrationForm.administrationPlugin.editionMode}" />
                                     <f:setPropertyActionListener
                                         value="#{zdbItem}"
@@ -438,27 +437,76 @@
                                 </button>
                             </div>
                         </h:panelGroup>
-</ui:fragment>
-</div>
+                    </ui:fragment>
+                </div>
 
 
 
-                            <div class="form-actions">
-                                <button
-                                    class="btn margin-sides-10 font-size-s pull-right"
-                                    jsf:id="cancelImports"
-                                    type="submit"
-                                    jsf:immediate="true">
-                                    <h:outputText value="#{msgs.abbrechen}" />
-                                    <f:setPropertyActionListener
-                                        value=""
-                                        target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                                    <f:ajax render="@all" />
-                                </button>
-                            </div>
-                        </h:panelGroup>
+                <div class="form-actions">
+                    <button
+                        class="btn margin-sides-10 font-size-s pull-right"
+                        jsf:id="cancelImports"
+                        type="submit"
+                        jsf:immediate="true">
+                        <h:outputText value="#{msgs.abbrechen}" />
+                        <f:setPropertyActionListener
+                            value=""
+                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                        <f:ajax render="@all" />
+                    </button>
+                </div>
+            </h:panelGroup>
+
+            <h:panelGroup
+                layout="block"
+                styleClass="dataTables_wrapper edit-mode"
+                rendered="#{AdministrationForm.administrationPlugin.editionMode=='editProcess'}">
+
+                <ui:repeat
+                    var="meta"
+                    value="#{AdministrationForm.administrationPlugin.metadataList}"
+                    varStatus="status">
 
 
+                    <intranda:formInputText
+                        id="id_#{status.index}"
+                        name="meta"
+                        label="#{meta.type.getLanguage(SpracheForm.locale.language)}"
+                        field="#{meta.value}"
+                        help="#{msgs.helpProcessTitle}"
+                        fieldStyle="form-control"
+                        required="false" />
+                </ui:repeat>
+
+
+                <div class="form-actions">
+
+                    <!-- Save -->
+                    <button
+                        class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+                        jsf:id="saveProcessEdition"
+                        type="submit"
+                        jsf:action="#{AdministrationForm.administrationPlugin.saveZdbTitleData}">
+                        <i class="fa fa-save margin-right-5"></i>
+                        <h:outputText value="#{msgs.speichern}" />
+                        <f:setPropertyActionListener
+                            value=""
+                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                    </button>
+
+                    <!-- Cancel -->
+                    <button
+                        class="btn margin-sides-10 font-size-s pull-right"
+                        jsf:id="cancelProcessEdition"
+                        type="submit"
+                        jsf:immediate="true">
+                        <h:outputText value="#{msgs.abbrechen}" />
+                        <f:setPropertyActionListener
+                            value=""
+                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                    </button>
+                </div>
+            </h:panelGroup>
             <h:panelGroup
                 layout="block"
                 styleClass="dataTables_wrapper edit-mode"
