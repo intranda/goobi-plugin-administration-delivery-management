@@ -80,8 +80,6 @@ import ugh.exceptions.WriteException;
 @Log4j2
 public class DeliveryManagementAdministrationPlugin implements IAdministrationPlugin {
 
-    //    - Übersichtsanzeige einer Institution (Auflistung bereits abgelieferter Publikationen (Vorgänge) mit Anzeige konfigurierter Metadaten einer Institution; Datum letzte Lieferung)
-
     private static final String INSTITUTION_MODE = "plugin_administration_deliveryManagement_displayMode_institution";
     private static final String USER_MODE = "plugin_administration_deliveryManagement_displayMode_user";
     private static final String PRIVACY_MODE = "plugin_administration_deliveryManagement_displayMode_privacyPolicy";
@@ -183,12 +181,11 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     @Getter
     @Setter
-    private String  processSearchField;
+    private String processSearchField;
 
     // metadata to display
     @Getter
     private List<String> metadataDisplayList;
-
 
     public DeliveryManagementAdministrationPlugin() {
 
@@ -338,10 +335,10 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                     sort = institutionSort;
                     break;
                 case "items":
-                    sort="CAST(items as SIGNED INTEGER)";
+                    sort = "CAST(items as SIGNED INTEGER)";
                     break;
                 case "items Desc":
-                    sort="CAST(items as SIGNED INTEGER) Desc";
+                    sort = "CAST(items as SIGNED INTEGER) Desc";
                     break;
                 default:
                     // free configured field
@@ -572,12 +569,10 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         sb.append(institution.getShortName());
         sb.append("')) AND prozesse.istTemplate = false ");
 
-
         if (StringUtils.isNotBlank(processSearchField)) {
             sb.append("AND (prozesse.ProzesseID IN (SELECT DISTINCT processid FROM metadata WHERE metadata.value LIKE '%"
                     + StringEscapeUtils.escapeSql(processSearchField) + "%'))");
         }
-
 
         ProcessManager m = new ProcessManager();
         institutionProcessPaginator = new DatabasePaginator("prozesse.titel", sb.toString(), m, "process_all");
