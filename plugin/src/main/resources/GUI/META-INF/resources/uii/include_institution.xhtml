@@ -243,10 +243,35 @@
 
 
                 <div class="dataTables_length">
-                    <h:outputText value="#{AdministrationForm.administrationPlugin.institution.longName}: #{AdministrationForm.administrationPlugin.institutionProcessPaginator.totalResults}" />
+                    <h:outputText value="#{AdministrationForm.administrationPlugin.institution.longName} / #{msgs.treffer}: #{AdministrationForm.administrationPlugin.institutionProcessPaginator.totalResults}" />
                 </div>
                 
-                
+                <div class="dataTables_filter">
+                    <div class="input-group input-group">
+                        <span class="input-group-addon">
+                            <i class="fa fa-search"></i>
+                        </span>
+                        <h:inputText
+                            id="processsearchfield"
+                            styleClass="form-control searchfield"
+                            value="#{AdministrationForm.administrationPlugin.processSearchField}">
+                        </h:inputText>
+                        <div class="input-group-btn">
+                            <button
+                                jsf:id="processsearchButton"
+                                jsf:forceId="true"
+                                class="btn"
+                                style="text-align: center; line-height: 100%; padding: 0px 10px"
+                                jsf:action="#{AdministrationForm.administrationPlugin.generateInstitutionProcessTitleList}">#{msgs.search}</button>
+                        </div>
+                    </div>
+                    <x:commandButton
+                        type="submit"
+                        id="processsearchButton2"
+                        forceId="true"
+                        style="display:none"
+                        action="#{AdministrationForm.administrationPlugin.generateInstitutionProcessTitleList}" />
+                </div>
                 
                 
                 <table

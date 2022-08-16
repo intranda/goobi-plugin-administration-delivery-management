@@ -181,6 +181,10 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     @Setter
     private String zdbSearchField;
 
+    @Getter
+    @Setter
+    private String  processSearchField;
+
     // metadata to display
     @Getter
     private List<String> metadataDisplayList;
@@ -567,6 +571,14 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         sb.append("prozesseeigenschaften.Titel = 'Institution' AND prozesseeigenschaften.Wert = '");
         sb.append(institution.getShortName());
         sb.append("')) AND prozesse.istTemplate = false ");
+
+
+        if (StringUtils.isNotBlank(processSearchField)) {
+            sb.append("AND (prozesse.ProzesseID IN (SELECT DISTINCT processid FROM metadata WHERE metadata.value LIKE '%"
+                    + StringEscapeUtils.escapeSql(processSearchField) + "%'))");
+        }
+
+
         ProcessManager m = new ProcessManager();
         institutionProcessPaginator = new DatabasePaginator("prozesse.titel", sb.toString(), m, "process_all");
     }
