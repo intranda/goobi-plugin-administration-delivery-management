@@ -25,7 +25,7 @@ public class ExtendendInstitutionManager implements IManager {
     @Override
     public int getHitSize(String order, String filter, Institution institution) {
         try {
-            return getInstitutionCount(order, filter);
+            return getInstitutionCount(filter);
         } catch (SQLException e) {
             log.error(e);
         }
@@ -110,10 +110,10 @@ public class ExtendendInstitutionManager implements IManager {
         }
     }
 
-    private static int getInstitutionCount(String order, String filter) throws SQLException {
+    private static int getInstitutionCount(String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM institution");
+        sql.append("SELECT count(1) FROM institution");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
@@ -129,23 +129,6 @@ public class ExtendendInstitutionManager implements IManager {
             }
         }
     }
-
-    //
-    //    public static ResultSetHandler<ExtendedInstitution> resultSetToInstitutionHandler = new ResultSetHandler<ExtendedInstitution>() {
-    //        @Override
-    //        public ExtendedInstitution handle(ResultSet rs) throws SQLException {
-    //            try {
-    //                if (rs.next()) {
-    //                    return convert(rs);
-    //                }
-    //            } finally {
-    //                if (rs != null) {
-    //                    rs.close();
-    //                }
-    //            }
-    //            return null;
-    //        }
-    //    };
 
     private static ResultSetHandler<List<ExtendedInstitution>> resultSetToInstitutionListHandler = new ResultSetHandler<List<ExtendedInstitution>>() {
         @Override
