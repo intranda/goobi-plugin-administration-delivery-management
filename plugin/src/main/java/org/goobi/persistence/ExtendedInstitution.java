@@ -18,6 +18,9 @@ public class ExtendedInstitution implements DatabaseObject{
     @Setter
     private Date lastUploadDate;
 
+    @Getter
+    @Setter
+    private int numberOfUploads;
 
     public ExtendedInstitution(Institution institution) {
         super();

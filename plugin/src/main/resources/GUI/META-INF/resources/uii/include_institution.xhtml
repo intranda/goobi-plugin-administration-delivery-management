@@ -82,6 +82,24 @@
                         </f:facet>
                         <h:outputText value="#{item.lastUploadDate}" />
                     </x:column>
+                    <x:column>
+                        <f:facet name="header">
+                            <button
+                                class="button-link"
+                                style="width: 100%; text-align: left;"
+                                jsf:action="#{AdministrationForm.administrationPlugin.filterInstitution}">
+                                <h:outputText value="#{msgs.plugin_administration_deliveryManagement_numberOfUploads}" />
+                                <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.institutionSort== 'items Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.institutionSort== 'items' ?'fa-sort-asc':'fa-sort'}"></span>
+                                <f:setPropertyActionListener
+                                    target="#{AdministrationForm.administrationPlugin.institutionSort}"
+                                    value="#{AdministrationForm.administrationPlugin.institutionSort== 'items' ? 'items Desc' : 'items' }" />
+                                <f:ajax render="@form" />
+                            </button>
+                        </f:facet>
+                        <h:outputText value="#{item.numberOfUploads}" />
+                    </x:column>
+
+
 
                     <c:forEach
                         items="#{AdministrationForm.administrationPlugin.configuredInstitutionFields}"
@@ -227,6 +245,10 @@
                 <div class="dataTables_length">
                     <h:outputText value="#{AdministrationForm.administrationPlugin.institution.longName}: #{AdministrationForm.administrationPlugin.institutionProcessPaginator.totalResults}" />
                 </div>
+                
+                
+                
+                
                 <table
                     role="grid"
                     id="processTable"

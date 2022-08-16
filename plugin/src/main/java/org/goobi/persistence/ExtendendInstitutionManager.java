@@ -68,8 +68,8 @@ public class ExtendendInstitutionManager implements IManager {
     private static List<ExtendedInstitution> getInstitutions(String order, String filter, Integer start, Integer count) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM institution LEFT JOIN (SELECT wert, MAX(creationDate) as lastDate FROM prozesseeigenschaften WHERE ");
-        sql.append("titel = 'Institution' GROUP BY wert) AS t ON institution.shortName = t.wert");
+        sql.append("SELECT * FROM institution LEFT JOIN (SELECT wert, MAX(creationDate) as lastDate, count(creationDate) as items ");
+        sql.append("FROM prozesseeigenschaften WHERE titel = 'Institution' GROUP BY wert) AS t ON institution.shortName = t.wert");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
@@ -161,6 +161,7 @@ public class ExtendendInstitutionManager implements IManager {
         Timestamp time = rs.getTimestamp("lastDate");
 
         ei.setLastUploadDate(time == null ? null : new Date(time.getTime()));
+        ei.setNumberOfUploads(rs.getInt("items"));
         return ei;
     }
 
