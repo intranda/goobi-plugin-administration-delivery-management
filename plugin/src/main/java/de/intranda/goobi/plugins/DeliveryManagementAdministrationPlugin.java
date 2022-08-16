@@ -333,6 +333,12 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 case "lastDate Desc":
                     sort = institutionSort;
                     break;
+                case "items":
+                    sort="CAST(items as SIGNED INTEGER)";
+                    break;
+                case "items Desc":
+                    sort="CAST(items as SIGNED INTEGER) Desc";
+                    break;
                 default:
                     // free configured field
                     if (institutionSort.endsWith("Desc")) {
