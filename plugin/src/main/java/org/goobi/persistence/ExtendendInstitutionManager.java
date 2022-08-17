@@ -71,7 +71,7 @@ public class ExtendendInstitutionManager implements IManager {
         sql.append("SELECT * FROM institution LEFT JOIN (SELECT wert, MAX(creationDate) as lastDate, count(creationDate) as items ");
         sql.append("FROM prozesseeigenschaften WHERE titel = 'Institution' GROUP BY wert) AS t ON institution.shortName = t.wert");
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+            sql.append(" WHERE " + filter); //NOSONAR
         }
         if (order != null && !order.isEmpty()) {
             sql.append(" ORDER BY " + order);
@@ -81,8 +81,7 @@ public class ExtendendInstitutionManager implements IManager {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<ExtendedInstitution> ret = new QueryRunner().query(connection, sql.toString(), resultSetToInstitutionListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), resultSetToInstitutionListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

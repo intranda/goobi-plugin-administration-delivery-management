@@ -35,7 +35,7 @@ public class ConfiguredField {
 
     private boolean required;
 
-    public ConfiguredField(String type, String name, String label, String fieldType, boolean displayInTable, String validationType,
+    public ConfiguredField(String type, String name, String label, String fieldType, boolean displayInTable, String validationType,//NOSONAR
             String regularExpression, String validationError, String helpMessage, boolean required) {
         this.type = type;
         this.name = name;
