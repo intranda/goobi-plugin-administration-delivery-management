@@ -158,6 +158,9 @@
                             title="#{msgs.plugin_administration_deliveryManagement_downloadInstitutionData}"
                             jsf:action="#{AdministrationForm.administrationPlugin.exportInstitutionCoreData}">
                             <i class="fa fa-download"></i>
+                            <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
                             <f:setPropertyActionListener
                                 target="#{AdministrationForm.administrationPlugin.institution}"
                                 value="#{item}" />
