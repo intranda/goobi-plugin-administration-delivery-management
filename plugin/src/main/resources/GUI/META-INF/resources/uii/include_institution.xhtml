@@ -188,6 +188,7 @@
 
                         <!-- show special plugin view -->
                         <button
+                            jsf:disabled="#{item.numberOfUploads == 0}"
                             class="btn margin-right-5"
                             jsf:rel="tooltip"
                             aria-label="#{msgs.plugin_administration_deliveryManagement_displayImports}"
