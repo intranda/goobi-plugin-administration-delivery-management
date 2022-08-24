@@ -37,6 +37,7 @@ import org.goobi.managedbeans.ProcessBean;
 import org.goobi.persistence.ExtendedInstitution;
 import org.goobi.persistence.ExtendedInstitutionPaginator;
 import org.goobi.persistence.ExtendendInstitutionManager;
+import org.goobi.persistence.UserPaginator;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
 import org.jdom2.Document;
@@ -136,7 +137,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private String userSort;
 
     @Getter
-    private DatabasePaginator userPaginator;
+    private UserPaginator userPaginator;
 
     // is set to true, when the account was disabled and gets activated
     private boolean activateAccount = false;
@@ -395,7 +396,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             sqlQuery.append(" AND userstatus!='active'");
         }
 
-        userPaginator = new DatabasePaginator(getUserSqlSortString(), sqlQuery.toString(), m, "");
+        userPaginator = new UserPaginator(getUserSqlSortString(), sqlQuery.toString(), m);
     }
 
     private String getUserSqlSortString() {
