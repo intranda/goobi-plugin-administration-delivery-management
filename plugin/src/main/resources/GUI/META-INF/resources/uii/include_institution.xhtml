@@ -112,7 +112,7 @@
                                     class="button-link"
                                     style="width: 100%; text-align: left;"
                                     jsf:action="#{AdministrationForm.administrationPlugin.filterInstitution}">
-                                    <h:outputText value="#{cif.label}" />
+                                    <h:outputText value="#{msgs[cif.label]}" />
                                     <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.institutionSort==(cif.name).concat(' Desc') ?'fa-sort-desc':AdministrationForm.administrationPlugin.institutionSort== cif.name ?'fa-sort-asc':'fa-sort'}"></span>
                                     <f:setPropertyActionListener
                                         target="#{AdministrationForm.administrationPlugin.institutionSort}"
@@ -165,26 +165,6 @@
                                 target="#{AdministrationForm.administrationPlugin.institution}"
                                 value="#{item}" />
                         </button>
-
-                        <!-- open process list
-                        <button
-                            jsf:id="showImports"
-                            class="btn margin-right-5"
-                            jsf:rel="tooltip"
-                            aria-label="#{msgs.plugin_administration_deliveryManagement_displayImports}"
-                            jsf:title="#{msgs.plugin_administration_deliveryManagement_displayImports}"
-                            jsf:action="#{AdministrationForm.administrationPlugin.showImports}">
-                            <i class="fa fa-files-o"></i>
-                            <f:passThroughAttribute
-                                name="data-toggle"
-                                value="tooltip" />
-                            <f:setPropertyActionListener
-                                target="#{AdministrationForm.administrationPlugin.institution}"
-                                value="#{item}" />
-                            <f:setPropertyActionListener
-                                value="imports"
-                                target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                        </button> -->
 
                         <!-- show special plugin view -->
                         <button
@@ -587,7 +567,7 @@
                         <ui:fragment rendered="#{item.fieldType=='input'}">
                             <intranda:formInputText
                                 name="#{status.index}field"
-                                label="#{item.label}"
+                                label="#{msgs[item.label]}"
                                 field="#{item.value}"
                                 help="#{item.helpMessage}"
                                 fieldStyle="form-control"
@@ -596,21 +576,23 @@
                         <ui:fragment rendered="#{item.fieldType=='textarea'}">
                             <intranda:formInputTextArea
                                 name="#{status.index}field"
-                                label="#{item.label}"
+                                label="#{msgs[item.label]}"
                                 field="#{item.value}"
                                 help="#{item.helpMessage}"
                                 fieldStyle="form-control"
                                 required="#{item.required}" />
                         </ui:fragment>
                         <ui:fragment rendered="#{item.fieldType=='dropdown'}">
-                            <intranda:formInputDropDown
-                                label="#{item.label}"
+                            <intranda:formInputDropDown2
+                                label="#{msgs[item.label]}"
                                 field="#{item.value}"
                                 help="#{item.helpMessage}"
                                 name="#{status.index}field"
                                 selectItems="#{item.selectItemList}"
                                 fieldStyle="form-control"
-                                required="#{item.required}" />
+                                required="#{item.required}" 
+                                itemValue="#{var}"
+                                itemLabel="#{msgs[var]}"/>
                         </ui:fragment>
 
 
@@ -623,7 +605,7 @@
                                     tabindex="-1">
                                     <h:outputLabel
                                         for="id"
-                                        value="#{item.label}" />
+                                        value="#{msgs[item.label]}" />
                                 </div>
                                 <div
                                     class="col-sm-9"
@@ -645,7 +627,7 @@
                                             styleClass="form-control"
                                             value="#{item.subValue}">
 
-                                            <f:selectItems value="#{item.selectItemList}" />
+                                            <f:selectItems value="#{item.selectItemList}" itemLabel="#{msgs[val]}" itemValue="#{val}" var="val" />
                                         </h:selectOneRadio>
                                     </h:panelGroup>
                                     <intranda:formHelp content="#{item.helpMessage}" />

@@ -933,4 +933,17 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             log.error("Error while uploading files", e);
         }
     }
+
+    public void openInstitution() {
+        // save current user
+        saveUser();
+        // get institution from user
+        ExtendedInstitution inst = new ExtendedInstitution(user.getInstitution());
+        // load institution data
+        setInstitution(inst);
+        // switch to institution view
+        displayMode = INSTITUTION_MODE;
+        // open edit mode
+        editionMode = "edit";
+    }
 }

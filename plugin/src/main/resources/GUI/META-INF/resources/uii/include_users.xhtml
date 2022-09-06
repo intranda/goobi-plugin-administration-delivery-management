@@ -299,17 +299,38 @@
                         name="standort"
                         fieldStyle="form-control" />
 
-                    <intranda:formInputDropDown
-                        classLeft="col-sm-3 control-label notFocusable"
-                        id="institution"
-                        label="#{msgs.institution}"
-                        field="#{AdministrationForm.administrationPlugin.currentInstitutionID}"
-                        help="#{msgs.helpUserInstitution}"
-                        name="institutionName"
-                        selectItems="#{BenutzerverwaltungForm.institutionsAsSelectList}"
-                        fieldStyle="form-control"
-                        required="true" />
 
+                        <div class="form-group">
+                            <div class="col-sm-3 control-label notFocusable control-label">
+                                <h:outputLabel for="institution" value="#{msgs.institution}" />
+                                <i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip"/>
+
+                            <!-- open institution -->
+                            <button
+                                class="btn margin-right-5 pull-right"
+                                jsf:rel="tooltip"
+                                aria-label="#{msgs.plugin_administration_deliveryManagement_openInsititution}"
+                                jsf:title="#{msgs.plugin_administration_deliveryManagement_openInsititution}"
+                                jsf:action="#{AdministrationForm.administrationPlugin.openInstitution}">
+                                <i class="fa fa-search"></i>
+                                <f:passThroughAttribute
+                                    name="data-toggle"
+                                    value="tooltip" />
+                            </button>
+
+                            </div>
+                            <div class="col-sm-9">
+                                <h:selectOneMenu id="institution" styleClass="form-control"
+                                    value="#{AdministrationForm.administrationPlugin.currentInstitutionID}"  readonly="false">
+                                    <f:selectItem itemValue="null" itemLabel="#{msgs.bitteAuswaehlen}" />
+                                    <f:selectItems value="#{BenutzerverwaltungForm.institutionsAsSelectList}" />
+                                </h:selectOneMenu>
+                                <h:message for="institution" showDetail="true" styleClass="help-inline font-danger"/>
+                                <intranda:formHelp content="#{msgs.helpUserInstitution}" />
+                            </div>
+                        </div>
+                        
+        
                     <div class="form-group">
                         <div class="col-sm-3 control-label">
                             <h:outputLabel
@@ -413,7 +434,7 @@
                         <ui:fragment rendered="#{item.fieldType=='input'}">
                             <intranda:formInputText
                                 name="#{status.index}field"
-                                label="#{item.label}"
+                                label="#{msgs[item.label]}"
                                 field="#{item.value}"
                                 help="#{item.helpMessage}"
                                 fieldStyle="form-control"
@@ -422,21 +443,23 @@
                         <ui:fragment rendered="#{item.fieldType=='textarea'}">
                             <intranda:formInputTextArea
                                 name="#{status.index}field"
-                                label="#{item.label}"
+                                label="#{msgs[item.label]}"
                                 field="#{item.value}"
                                 help="#{item.helpMessage}"
                                 fieldStyle="form-control"
                                 required="#{item.required}" />
                         </ui:fragment>
                         <ui:fragment rendered="#{item.fieldType=='dropdown'}">
-                            <intranda:formInputDropDown
-                                label="#{item.label}"
+                            <intranda:formInputDropDown2
+                                label="#{msgs[item.label]}"
                                 field="#{item.value}"
                                 help="#{item.helpMessage}"
                                 name="#{status.index}field"
                                 selectItems="#{item.selectItemList}"
                                 fieldStyle="form-control"
-                                required="#{item.required}" />
+                                required="#{item.required}"
+                                itemValue="#{var}"
+                                itemLabel="#{msgs[var]}" />
                         </ui:fragment>
 
 
@@ -449,7 +472,7 @@
                                     tabindex="-1">
                                     <h:outputLabel
                                         for="id"
-                                        value="#{item.label}" />
+                                        value="#{msgs[item.label]}" />
                                 </div>
                                 <div
                                     class="col-sm-9"
@@ -471,7 +494,7 @@
                                             styleClass="form-control"
                                             value="#{item.subValue}">
 
-                                            <f:selectItems value="#{item.selectItemList}" />
+                                            <f:selectItems value="#{item.selectItemList}" itemLabel="#{msgs[val]}" itemValue="#{val}" var="val" />
                                         </h:selectOneRadio>
                                     </h:panelGroup>
                                     <intranda:formHelp content="#{item.helpMessage}" />
