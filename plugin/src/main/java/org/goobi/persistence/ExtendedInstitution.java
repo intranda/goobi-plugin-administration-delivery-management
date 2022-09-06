@@ -11,6 +11,8 @@ import lombok.Setter;
 
 public class ExtendedInstitution implements DatabaseObject{
 
+    private static final long serialVersionUID = -1087233851619523134L;
+
     @Getter
     private Institution institution;
 

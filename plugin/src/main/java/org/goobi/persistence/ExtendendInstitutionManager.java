@@ -22,6 +22,8 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ExtendendInstitutionManager implements IManager {
 
+    private static final long serialVersionUID = -1229688637023945312L;
+
     @Override
     public int getHitSize(String order, String filter, Institution institution) {
         try {

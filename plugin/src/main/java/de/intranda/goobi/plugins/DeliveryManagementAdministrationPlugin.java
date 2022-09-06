@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -81,6 +82,7 @@ import ugh.exceptions.WriteException;
 @Log4j2
 public class DeliveryManagementAdministrationPlugin implements IAdministrationPlugin {
 
+    private static final long serialVersionUID = -3392517381597202123L;
     private static final String INSTITUTION_MODE = "plugin_administration_deliveryManagement_displayMode_institution";
     private static final String USER_MODE = "plugin_administration_deliveryManagement_displayMode_user";
     private static final String PRIVACY_MODE = "plugin_administration_deliveryManagement_displayMode_privacyPolicy";
@@ -103,7 +105,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private ExtendedInstitution institution;
 
     @Getter
-    private List<ConfiguredField> configuredInstitutionFields = null;
+    private transient Map<String, List<ConfiguredField>> configuredInstitutionFields = null;
 
     private List<String> excludeInstitutions;
 
@@ -122,7 +124,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private User user;
 
     @Getter
-    private List<ConfiguredField> configuredUserFields = null;
+    private transient List<ConfiguredField> configuredUserFields = null;
 
     @Getter
     @Setter
@@ -165,7 +167,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     @Setter
     private Process process;
 
-    private Fileformat fileformat;
+    private transient Fileformat fileformat;
 
     private DocStruct logical;
 
@@ -230,7 +232,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
         List<HierarchicalConfiguration> configuredFields = conf.configurationsAt("/fields/field");
 
-        configuredInstitutionFields = new ArrayList<>();
+        configuredInstitutionFields = new LinkedHashMap<>();
         configuredUserFields = new ArrayList<>();
 
         privacyPolicyText = conf.getString("/privacyStatement", ""); //NOSONAR
@@ -243,7 +245,8 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
             ConfiguredField field = new ConfiguredField(hc.getString("@type"), hc.getString("@name"), label, hc.getString("@fieldType", "input"),
                     hc.getBoolean("@displayInTable", false), hc.getString("@validationType", null), hc.getString("@regularExpression", null),
-                    hc.getString("/validationError", null), hc.getString("@helpMessage", ""), hc.getBoolean("@required"));
+                    hc.getString("/validationError", null), hc.getString("@helpMessage", ""), hc.getBoolean("@required"),
+                    hc.getString("@placeholderText", ""));
 
             if (field.getFieldType().equals("dropdown") || field.getFieldType().equals(COMBO_FIELD_NAME)) {
                 List<String> valueList = Arrays.asList(hc.getStringArray("/value"));
@@ -251,7 +254,13 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             }
 
             if ("institution".equals(field.getType())) { //NOSONAR
-                configuredInstitutionFields.add(field);
+                String position = hc.getString("@position");
+                List<ConfiguredField> fields = configuredInstitutionFields.get(position);
+                if (fields == null) {
+                    fields = new ArrayList<>();
+                }
+                fields.add(field);
+                configuredInstitutionFields.put(position, fields);
             } else {
                 configuredUserFields.add(field);
             }
@@ -281,25 +290,28 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     public void setInstitution(ExtendedInstitution institution) {
         if (this.institution == null || !this.institution.equals(institution)) {
             this.institution = institution;
-            for (ConfiguredField field : configuredInstitutionFields) {
-                String value = institution.getAdditionalData().get(field.getName());
-                if (field.getFieldType().equals(COMBO_FIELD_NAME) && StringUtils.isNotBlank(value) && !"false".equals(value)) {
-                    field.setBooleanValue(true);
-                    field.setSubValue(value);
-                } else {
-                    field.setValue(value);
+            for (Entry<String, List<ConfiguredField>> fields : configuredInstitutionFields.entrySet()) {
+                for (ConfiguredField field : fields.getValue()) {
+                    String value = institution.getAdditionalData().get(field.getName());
+                    if (field.getFieldType().equals(COMBO_FIELD_NAME) && StringUtils.isNotBlank(value) && !"false".equals(value)) {
+                        field.setBooleanValue(true);
+                        field.setSubValue(value);
+                    } else {
+                        field.setValue(value);
+                    }
                 }
-
             }
         }
     }
 
     public void saveInstitution() {
-        for (ConfiguredField field : configuredInstitutionFields) {
-            if (field.getFieldType().equals(COMBO_FIELD_NAME) && field.getBooleanValue()) {
-                institution.getAdditionalData().put(field.getName(), field.getSubValue());
-            } else {
-                institution.getAdditionalData().put(field.getName(), field.getValue());
+        for (Entry<String, List<ConfiguredField>> fields : configuredInstitutionFields.entrySet()) {
+            for (ConfiguredField field : fields.getValue()) {
+                if (field.getFieldType().equals(COMBO_FIELD_NAME) && field.getBooleanValue()) {
+                    institution.getAdditionalData().put(field.getName(), field.getSubValue());
+                } else {
+                    institution.getAdditionalData().put(field.getName(), field.getValue());
+                }
             }
         }
 

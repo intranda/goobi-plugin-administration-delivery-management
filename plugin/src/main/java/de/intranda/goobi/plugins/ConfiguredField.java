@@ -35,8 +35,10 @@ public class ConfiguredField {
 
     private boolean required;
 
-    public ConfiguredField(String type, String name, String label, String fieldType, boolean displayInTable, String validationType,//NOSONAR
-            String regularExpression, String validationError, String helpMessage, boolean required) {
+    private String placeholderText;
+
+    public ConfiguredField(String type, String name, String label, String fieldType, boolean displayInTable, String validationType, //NOSONAR
+            String regularExpression, String validationError, String helpMessage, boolean required, String placeholderText) {
         this.type = type;
         this.name = name;
         this.label = label;
@@ -47,6 +49,7 @@ public class ConfiguredField {
         this.validationError = validationError;
         this.helpMessage = helpMessage;
         this.required = required;
+        this.placeholderText = placeholderText;
     }
 
     public void setBooleanValue(boolean val) {

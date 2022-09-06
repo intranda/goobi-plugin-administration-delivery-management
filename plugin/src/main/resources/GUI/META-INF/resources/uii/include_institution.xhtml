@@ -101,28 +101,28 @@
 
 
 
-                    <c:forEach
-                        items="#{AdministrationForm.administrationPlugin.configuredInstitutionFields}"
-                        var="cif">
-                        <x:column
-                            style="max-width:250px;"
-                            rendered="#{cif.displayInTable}">
-                            <f:facet name="header">
-                                <button
-                                    class="button-link"
-                                    style="width: 100%; text-align: left;"
-                                    jsf:action="#{AdministrationForm.administrationPlugin.filterInstitution}">
-                                    <h:outputText value="#{msgs[cif.label]}" />
-                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.institutionSort==(cif.name).concat(' Desc') ?'fa-sort-desc':AdministrationForm.administrationPlugin.institutionSort== cif.name ?'fa-sort-asc':'fa-sort'}"></span>
-                                    <f:setPropertyActionListener
-                                        target="#{AdministrationForm.administrationPlugin.institutionSort}"
-                                        value="#{AdministrationForm.administrationPlugin.institutionSort== cif.name.concat(' Desc') ? cif.name : cif.name.concat(' Desc')}" />
-                                    <f:ajax render="@form" />
-                                </button>
-                            </f:facet>
-                            <h:outputText value="#{item.additionalData[cif.name]}" />
-                        </x:column>
-                    </c:forEach>
+<!--                     <c:forEach -->
+<!--                         items="#{AdministrationForm.administrationPlugin.configuredInstitutionFields}" -->
+<!--                         var="cif"> -->
+<!--                         <x:column -->
+<!--                             style="max-width:250px;" -->
+<!--                             rendered="#{cif.displayInTable}"> -->
+<!--                             <f:facet name="header"> -->
+<!--                                 <button -->
+<!--                                     class="button-link" -->
+<!--                                     style="width: 100%; text-align: left;" -->
+<!--                                     jsf:action="#{AdministrationForm.administrationPlugin.filterInstitution}"> -->
+<!--                                     <h:outputText value="#{msgs[cif.label]}" /> -->
+<!--                                     <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.institutionSort==(cif.name).concat(' Desc') ?'fa-sort-desc':AdministrationForm.administrationPlugin.institutionSort== cif.name ?'fa-sort-asc':'fa-sort'}"></span> -->
+<!--                                     <f:setPropertyActionListener -->
+<!--                                         target="#{AdministrationForm.administrationPlugin.institutionSort}" -->
+<!--                                         value="#{AdministrationForm.administrationPlugin.institutionSort== cif.name.concat(' Desc') ? cif.name : cif.name.concat(' Desc')}" /> -->
+<!--                                     <f:ajax render="@form" /> -->
+<!--                                 </button> -->
+<!--                             </f:facet> -->
+<!--                             <h:outputText value="#{item.additionalData[cif.name]}" /> -->
+<!--                         </x:column> -->
+<!--                     </c:forEach> -->
 
 
                     <x:column width="150px;">
@@ -549,20 +549,30 @@
                         help="#{msgs.institution_help_shortName}"
                         name="shortName"
                         fieldStyle="form-control"
-                        render="@form" />
+                        execute="@this" 
+                        render="@form"
+                        
+                        />
                     <intranda:formInputTextAjax
                         name="longTitle"
                         label="#{msgs.institution_longName}"
                         field="#{AdministrationForm.administrationPlugin.institution.longName}"
                         help="#{msgs.institution_help_longName}"
                         fieldStyle="form-control"
+                        execute="@this"
                         render="@form" />
 
 
+<ui:repeat var="key" value="#{AdministrationForm.administrationPlugin.configuredInstitutionFields.keySet()}">
+<h:outputText>#{key}</h:outputText>
+</ui:repeat>
+
                     <!-- additional data -->
+                    <c:forEach items="#{AdministrationForm.administrationPlugin.configuredInstitutionFields}" var="entry">
+                    
                     <ui:repeat
                         var="item"
-                        value="#{AdministrationForm.administrationPlugin.configuredInstitutionFields}"
+                        value="#{entry.value}"
                         varStatus="status">
                         <ui:fragment rendered="#{item.fieldType=='input'}">
                             <intranda:formInputText
@@ -637,7 +647,7 @@
                         </ui:fragment>
 
                     </ui:repeat>
-
+</c:forEach>
                 </div>
 
 
