@@ -91,3 +91,26 @@
 .pull-right button:last-child {
   margin-right: -4px;
 }
+
+.btn--in-label {
+  background-color: rgb(54, 142, 224);
+  color: #fff;
+  /*float: none !important; */
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  right: -5px;
+  width: 4.8rem;
+}
+
+/* SEARCH BTN INSIDE FORM LABELS */
+.btn--in-label:hover {
+  
+  background-color: #1e74c5;
+  color: #fff;
+}
+
+.font-asterisk-absolute {
+  position: absolute;
+  margin-left: 3px;
+}

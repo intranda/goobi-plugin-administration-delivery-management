@@ -303,11 +303,11 @@
                         <div class="form-group">
                             <div class="col-sm-3 control-label notFocusable control-label">
                                 <h:outputLabel for="institution" value="#{msgs.institution}" />
-                                <i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip"/>
+                                <i class="fa fa-asterisk font-asterisk font-asterisk-absolute" title="#{msgs.requiredField}" data-toggle="tooltip"/>
 
                             <!-- open institution -->
                             <button
-                                class="btn margin-right-5 pull-right"
+                                class="btn margin-right-5 pull-right btn--in-label"
                                 jsf:rel="tooltip"
                                 aria-label="#{msgs.plugin_administration_deliveryManagement_openInsititution}"
                                 jsf:title="#{msgs.plugin_administration_deliveryManagement_openInsititution}"
@@ -329,19 +329,18 @@
                                 <intranda:formHelp content="#{msgs.helpUserInstitution}" />
                             </div>
                         </div>
-                        
-        
+
+
                     <div class="form-group">
                         <div class="col-sm-3 control-label">
                             <h:outputLabel
                                 for="loginAs"
-                                value="#{msgs.login}" />
-                            <h:panelGroup>
+                                value="#{msgs.login}">
                                 <i
                                     class="fa fa-asterisk pull-right font-asterisk"
                                     title="#{msgs.requiredField}"
                                     data-toggle="tooltip" />
-                            </h:panelGroup>
+                            </h:outputLabel>
                         </div>
                         <div class="col-sm-9">
                             <x:inputText
@@ -379,13 +378,12 @@
                         <div class="col-sm-3 control-label">
                             <h:outputLabel
                                 for="ldapGruppe"
-                                value="#{msgs.user_edit_loginType}" />
-                            <h:panelGroup>
+                                value="#{msgs.user_edit_loginType}">
                                 <i
                                     class="fa fa-asterisk pull-right font-asterisk"
                                     title="#{msgs.requiredField}"
                                     data-toggle="tooltip" />
-                            </h:panelGroup>
+                            </h:outputLabel>
                         </div>
                         <div class="col-sm-9">
                             <h:selectOneMenu
