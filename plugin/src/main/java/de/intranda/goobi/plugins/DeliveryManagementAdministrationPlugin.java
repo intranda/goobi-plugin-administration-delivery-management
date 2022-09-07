@@ -244,9 +244,8 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             String label = hc.getString("@alternativeLabel", hc.getString("@label"));
 
             ConfiguredField field = new ConfiguredField(hc.getString("@type"), hc.getString("@name"), label, hc.getString("@fieldType", "input"),
-                    hc.getBoolean("@displayInTable", false), hc.getString("@validationType", null), hc.getString("@regularExpression", null),
-                    hc.getString("/validationError", null), hc.getString("@helpMessage", ""), hc.getBoolean("@required"),
-                    hc.getString("@placeholderText", ""));
+                    hc.getString("@validation", null), hc.getString("@validationErrorDescription", null), hc.getString("@helpMessage", ""),
+                    hc.getBoolean("@required"), hc.getString("@placeholderText", ""));
 
             if (field.getFieldType().equals("dropdown") || field.getFieldType().equals(COMBO_FIELD_NAME)) {
                 List<String> valueList = Arrays.asList(hc.getStringArray("/value"));
@@ -298,6 +297,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                         field.setSubValue(value);
                     } else {
                         field.setValue(value);
+                    }
+                    if ("page3a".equals(fields.getKey()) && StringUtils.isNotBlank(value)) {
+                        displaySecondContact = true;
                     }
                 }
             }
@@ -957,5 +959,22 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         displayMode = INSTITUTION_MODE;
         // open edit mode
         editionMode = "edit";
+    }
+
+    @Getter
+    private boolean displaySecondContact = false;
+
+    public void disableContact() {
+        // delete content from second contract page
+        List<ConfiguredField> ucfList = configuredInstitutionFields.get("page3a");
+        for (ConfiguredField ucf : ucfList) {
+            ucf.setValue("");
+        }
+        displaySecondContact = false;
+    }
+
+    public void createNewContact() {
+        // show fields for second contract in ui
+        displaySecondContact = true;
     }
 }

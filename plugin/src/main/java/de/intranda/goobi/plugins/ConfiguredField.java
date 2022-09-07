@@ -2,6 +2,9 @@ package de.intranda.goobi.plugins;
 
 import java.util.List;
 
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+
 import org.apache.commons.lang.StringUtils;
 
 import lombok.Data;
@@ -16,10 +19,6 @@ public class ConfiguredField {
     private String label;
 
     private String fieldType;
-
-    private boolean displayInTable;
-
-    private String validationType;
 
     private String regularExpression;
 
@@ -37,14 +36,14 @@ public class ConfiguredField {
 
     private String placeholderText;
 
-    public ConfiguredField(String type, String name, String label, String fieldType, boolean displayInTable, String validationType, //NOSONAR
-            String regularExpression, String validationError, String helpMessage, boolean required, String placeholderText) {
+    private boolean fieldValid = true;
+
+    public ConfiguredField(String type, String name, String label, String fieldType, String regularExpression, String validationError, //NOSONAR
+            String helpMessage, boolean required, String placeholderText) {
         this.type = type;
         this.name = name;
         this.label = label;
         this.fieldType = fieldType;
-        this.displayInTable = displayInTable;
-        this.validationType = validationType;
         this.regularExpression = regularExpression;
         this.validationError = validationError;
         this.helpMessage = helpMessage;
@@ -62,6 +61,23 @@ public class ConfiguredField {
 
     public boolean getBooleanValue() {
         return StringUtils.isNotBlank(value) && "true".equals(value);
+    }
+
+    public void validateField(FacesContext context, UIComponent comp, Object obj) { //NOSONAR
+        if (obj instanceof Boolean) {
+            return;
+        }
+
+        String testValue = (String) obj;
+        fieldValid = true;
+
+        //  simple field validation
+        if (StringUtils.isBlank(testValue) && required) {
+            fieldValid = false;
+        }
+        if (StringUtils.isNotBlank(testValue) && StringUtils.isNotBlank(regularExpression) && !testValue.matches(regularExpression)) {
+            fieldValid = false;
+        }
     }
 
 }

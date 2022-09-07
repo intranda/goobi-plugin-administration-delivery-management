@@ -99,32 +99,6 @@
                         <h:outputText value="#{item.numberOfUploads}" />
                     </x:column>
 
-
-
-<!--                     <c:forEach -->
-<!--                         items="#{AdministrationForm.administrationPlugin.configuredInstitutionFields}" -->
-<!--                         var="cif"> -->
-<!--                         <x:column -->
-<!--                             style="max-width:250px;" -->
-<!--                             rendered="#{cif.displayInTable}"> -->
-<!--                             <f:facet name="header"> -->
-<!--                                 <button -->
-<!--                                     class="button-link" -->
-<!--                                     style="width: 100%; text-align: left;" -->
-<!--                                     jsf:action="#{AdministrationForm.administrationPlugin.filterInstitution}"> -->
-<!--                                     <h:outputText value="#{msgs[cif.label]}" /> -->
-<!--                                     <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.institutionSort==(cif.name).concat(' Desc') ?'fa-sort-desc':AdministrationForm.administrationPlugin.institutionSort== cif.name ?'fa-sort-asc':'fa-sort'}"></span> -->
-<!--                                     <f:setPropertyActionListener -->
-<!--                                         target="#{AdministrationForm.administrationPlugin.institutionSort}" -->
-<!--                                         value="#{AdministrationForm.administrationPlugin.institutionSort== cif.name.concat(' Desc') ? cif.name : cif.name.concat(' Desc')}" /> -->
-<!--                                     <f:ajax render="@form" /> -->
-<!--                                 </button> -->
-<!--                             </f:facet> -->
-<!--                             <h:outputText value="#{item.additionalData[cif.name]}" /> -->
-<!--                         </x:column> -->
-<!--                     </c:forEach> -->
-
-
                     <x:column width="150px;">
                         <f:facet name="header">
                             <h:outputText value="#{msgs.auswahl}" />
@@ -229,7 +203,7 @@
                 <div class="dataTables_length">
                     <h:outputText value="#{AdministrationForm.administrationPlugin.institution.longName} / #{msgs.treffer}: #{AdministrationForm.administrationPlugin.institutionProcessPaginator.totalResults}" />
                 </div>
-                
+
                 <div class="dataTables_filter">
                     <div class="input-group input-group">
                         <span class="input-group-addon">
@@ -256,8 +230,8 @@
                         style="display:none"
                         action="#{AdministrationForm.administrationPlugin.generateInstitutionProcessTitleList}" />
                 </div>
-                
-                
+
+
                 <table
                     role="grid"
                     id="processTable"
@@ -538,6 +512,7 @@
                     </button>
                 </div>
             </h:panelGroup>
+
             <h:panelGroup
                 layout="block"
                 styleClass="dataTables_wrapper edit-mode"
@@ -549,10 +524,8 @@
                         help="#{msgs.institution_help_shortName}"
                         name="shortName"
                         fieldStyle="form-control"
-                        execute="@this" 
-                        render="@form"
-                        
-                        />
+                        execute="@this"
+                        render="@form" />
                     <intranda:formInputTextAjax
                         name="longTitle"
                         label="#{msgs.institution_longName}"
@@ -563,91 +536,191 @@
                         render="@form" />
 
 
-<ui:repeat var="key" value="#{AdministrationForm.administrationPlugin.configuredInstitutionFields.keySet()}">
-<h:outputText>#{key}</h:outputText>
-</ui:repeat>
-
                     <!-- additional data -->
-                    <c:forEach items="#{AdministrationForm.administrationPlugin.configuredInstitutionFields}" var="entry">
-                    
-                    <ui:repeat
-                        var="item"
-                        value="#{entry.value}"
-                        varStatus="status">
-                        <ui:fragment rendered="#{item.fieldType=='input'}">
-                            <intranda:formInputText
-                                name="#{status.index}field"
-                                label="#{msgs[item.label]}"
-                                field="#{item.value}"
-                                help="#{item.helpMessage}"
-                                fieldStyle="form-control"
-                                required="#{item.required}" />
-                        </ui:fragment>
-                        <ui:fragment rendered="#{item.fieldType=='textarea'}">
-                            <intranda:formInputTextArea
-                                name="#{status.index}field"
-                                label="#{msgs[item.label]}"
-                                field="#{item.value}"
-                                help="#{item.helpMessage}"
-                                fieldStyle="form-control"
-                                required="#{item.required}" />
-                        </ui:fragment>
-                        <ui:fragment rendered="#{item.fieldType=='dropdown'}">
-                            <intranda:formInputDropDown2
-                                label="#{msgs[item.label]}"
-                                field="#{item.value}"
-                                help="#{item.helpMessage}"
-                                name="#{status.index}field"
-                                selectItems="#{item.selectItemList}"
-                                fieldStyle="form-control"
-                                required="#{item.required}" 
-                                itemValue="#{var}"
-                                itemLabel="#{msgs[var]}"/>
-                        </ui:fragment>
+                    <c:forEach
+                        items="#{AdministrationForm.administrationPlugin.configuredInstitutionFields}"
+                        var="entry">
 
-
-                        <ui:fragment rendered="#{item.fieldType=='combo'}">
+                        <ui:fragment rendered="#{entry.key!='page3a' or AdministrationForm.administrationPlugin.displaySecondContact}">
                             <div
-                                class="form-group"
-                                style="">
-                                <div
-                                    class="col-sm-3 control-label"
-                                    tabindex="-1">
-                                    <h:outputLabel
-                                        for="id"
-                                        value="#{msgs[item.label]}" />
-                                </div>
-                                <div
-                                    class="col-sm-9"
-                                    style="">
-                                    <h:panelGroup
-                                        id="combo"
-                                        rendered="#{item.fieldType=='combo'}">
-                                        <h:selectBooleanCheckbox
-                                            id="combo1"
+                                class="box-title"
+                                jsf:rendered="#{entry.key!='page2'}">
+                                <h2>
+                                    <h:outputText
+                                        rendered="#{entry.key=='page2'}"
+                                        value="#{msgs.plugin_rest_usercreation_new_institution}" />
+                                    <h:outputText
+                                        rendered="#{entry.key=='page3'}"
+                                        value="#{msgs.plugin_rest_usercreation_new_contact}" />
+                                    <h:outputText
+                                        rendered="#{entry.key=='page3a'}"
+                                        value="#{msgs.plugin_rest_usercreation_new_contact}" />
+
+                                    <h:outputText
+                                        rendered="#{entry.key=='page4'}"
+                                        value="#{msgs.plugin_rest_usercreation_new_additionalData}" />
+                                </h2>
+                                <button
+                                    jsf:rendered="#{!AdministrationForm.administrationPlugin.displaySecondContact and entry.key=='page3'}"
+                                    jsf:id="createNewContact"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.createNewContact}"
+                                    style="margin-bottom: 20px;"
+                                    class="btn btn-link ms-auto pull-right">
+
+                                    <ui:include src="/uii/includes/icon-plus.xhtml" />
+                                    <span>
+                                        <h:outputText value="#{msgs.plugin_rest_usercreation_new_createNewContact}" />
+                                    </span>
+                                </button>
+
+                                <button
+                                    jsf:rendered="#{entry.key=='page3a'}"
+                                    jsf:id="disableContact"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.disableContact}"
+                                    style="float: right"
+                                    class="btn btn-link ms-auto pull-right">
+
+                                    <span>
+                                        <h:outputText value="#{msgs.plugin_rest_usercreation_new_disableContact}" />
+                                    </span>
+                                </button>
+                            </div>
+                            <ui:repeat
+                                var="item"
+                                value="#{entry.value}"
+                                varStatus="status">
+
+                                <div class="form-group">
+                                    <div
+                                        class="col-sm-3 control-label"
+                                        tabindex="-1">
+                                        <h:outputLabel
+                                            for="#{status.index}field"
+                                            value="#{msgs[item.label]}">
+                                        </h:outputLabel>
+                                        <h:panelGroup rendered="#{item.required}">
+                                            <i
+                                                class="fa fa-asterisk pull-right font-asterisk"
+                                                data-bs-original-title="#{msgs.requiredField}"
+                                                data-toggle="tooltip" />
+                                        </h:panelGroup>
+                                    </div>
+                                    <div class="col-sm-9">
+
+
+
+
+                                        <x:inputText
+                                            rendered="#{item.fieldType=='input'}"
+                                            pt:aria-label="#{msgs[item.label]}"
                                             styleClass="form-control"
-                                            value="#{item.booleanValue}">
+                                            value="#{item.value}"
+                                            validator="#{item.validateField}"
+                                            >
+<!--                         onfocus="focusField(this);" -->
                                             <f:ajax
+                                             event="blur"
                                                 render="@form"
                                                 execute="@this" />
-                                        </h:selectBooleanCheckbox>
-                                        <h:selectOneRadio
-                                            rendered="#{item.booleanValue}"
-                                            id="combo2"
-                                            styleClass="form-control"
-                                            value="#{item.subValue}">
+<!--                                                 execute="@this focusField" -->
+                                            <f:passThroughAttribute
+                                                name="placeholder"
+                                                value="#{msgs[item.placeholderText]}" />
+                                        </x:inputText>
 
-                                            <f:selectItems value="#{item.selectItemList}" itemLabel="#{msgs[val]}" itemValue="#{val}" var="val" />
-                                        </h:selectOneRadio>
-                                    </h:panelGroup>
-                                    <intranda:formHelp content="#{item.helpMessage}" />
+
+                        <h:panelGroup
+                            layout="block"
+                            rendered="#{!item.fieldValid}"
+                            styleClass="font-danger validation-message">
+                            <h:outputText value="#{item.validationError}" />
+                        </h:panelGroup>
+                        <h:outputText
+                            styleClass="help-block font-light"
+                            rendered="#{NavigationForm.showHelp}"
+                            value="#{item.helpMessage}" />
+
+
+
+
+                                        <h:message
+                                            for="#{status.index}field"
+                                            showDetail="true"
+                                            styleClass="help-inline font-danger" />
+                                        <intranda:formHelp content="#{item.helpMessage}" />
+                                    </div>
                                 </div>
 
-                            </div>
-                        </ui:fragment>
 
-                    </ui:repeat>
-</c:forEach>
+
+                                <!--                                 <ui:fragment rendered="#{item.fieldType=='textarea'}"> -->
+                                <!--                                     <intranda:formInputTextArea -->
+                                <!--                                         name="#{status.index}field" -->
+                                <!--                                         label="#{msgs[item.label]}" -->
+                                <!--                                         field="#{item.value}" -->
+                                <!--                                         help="#{item.helpMessage}" -->
+                                <!--                                         fieldStyle="form-control" -->
+                                <!--                                         required="#{item.required}" /> -->
+                                <!--                                 </ui:fragment> -->
+                                <!--                                 <ui:fragment rendered="#{item.fieldType=='dropdown'}"> -->
+                                <!--                                     <intranda:formInputDropDown2 -->
+                                <!--                                         label="#{msgs[item.label]}" -->
+                                <!--                                         field="#{item.value}" -->
+                                <!--                                         help="#{item.helpMessage}" -->
+                                <!--                                         name="#{status.index}field" -->
+                                <!--                                         selectItems="#{item.selectItemList}" -->
+                                <!--                                         fieldStyle="form-control" -->
+                                <!--                                         required="#{item.required}" -->
+                                <!--                                         itemValue="#{var}" -->
+                                <!--                                         itemLabel="#{msgs[var]}" /> -->
+                                <!--                                 </ui:fragment> -->
+
+
+                                <!--                                 <ui:fragment rendered="#{item.fieldType=='combo'}"> -->
+                                <!--                                     <div -->
+                                <!--                                         class="form-group" -->
+                                <!--                                         style=""> -->
+                                <!--                                         <div -->
+                                <!--                                             class="col-sm-3 control-label" -->
+                                <!--                                             tabindex="-1"> -->
+                                <!--                                             <h:outputLabel -->
+                                <!--                                                 for="id" -->
+                                <!--                                                 value="#{msgs[item.label]}" /> -->
+                                <!--                                         </div> -->
+                                <!--                                         <div -->
+                                <!--                                             class="col-sm-9" -->
+                                <!--                                             style=""> -->
+                                <!--                                             <h:panelGroup -->
+                                <!--                                                 id="combo" -->
+                                <!--                                                 rendered="#{item.fieldType=='combo'}"> -->
+                                <!--                                                 <h:selectBooleanCheckbox -->
+                                <!--                                                     id="combo1" -->
+                                <!--                                                     styleClass="form-control" -->
+                                <!--                                                     value="#{item.booleanValue}"> -->
+                                <!--                                                     <f:ajax -->
+                                <!--                                                         render="@form" -->
+                                <!--                                                         execute="@this" /> -->
+                                <!--                                                 </h:selectBooleanCheckbox> -->
+                                <!--                                                 <h:selectOneRadio -->
+                                <!--                                                     rendered="#{item.booleanValue}" -->
+                                <!--                                                     id="combo2" -->
+                                <!--                                                     styleClass="form-control" -->
+                                <!--                                                     value="#{item.subValue}"> -->
+
+                                <!--                                                     <f:selectItems -->
+                                <!--                                                         value="#{item.selectItemList}" -->
+                                <!--                                                         itemLabel="#{msgs[val]}" -->
+                                <!--                                                         itemValue="#{val}" -->
+                                <!--                                                         var="val" /> -->
+                                <!--                                                 </h:selectOneRadio> -->
+                                <!--                                             </h:panelGroup> -->
+                                <!--                                             <intranda:formHelp content="#{item.helpMessage}" /> -->
+                                <!--                                         </div> -->
+                                <!--                                     </div> -->
+                                <!--                                 </ui:fragment> -->
+                            </ui:repeat>
+                        </ui:fragment>
+                    </c:forEach>
                 </div>
 
 
