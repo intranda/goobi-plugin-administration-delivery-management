@@ -194,6 +194,10 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     @Getter
     private List<String> metadataDisplayList;
 
+    @Getter
+    private boolean displaySecondContact = false;
+
+
     public DeliveryManagementAdministrationPlugin() {
 
         modes = new ArrayList<>();
@@ -475,6 +479,8 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                     field.setValue(user.getAdditionalData().get(field.getName()));
                 }
             }
+            ExtendedInstitution inst = new ExtendedInstitution(user.getInstitution());
+            setInstitution(inst);
         }
     }
 
@@ -965,8 +971,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         editionMode = "edit";
     }
 
-    @Getter
-    private boolean displaySecondContact = false;
 
     public void disableContact() {
         // delete content from second contract page
