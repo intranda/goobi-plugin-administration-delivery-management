@@ -89,6 +89,10 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private static final String ZDB_DATA_MODE = "plugin_administration_deliveryManagement_displayMode_zdbTitleData";
 
     @Getter
+    @Setter
+    private String focusField;
+
+    @Getter
     private String title = "intranda_administration_deliveryManagement";
 
     @Getter
@@ -132,7 +136,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     @Getter
     @Setter
-    private boolean showOnlyInactiveUser;
+    private boolean showOnlyInactiveUser = true;
 
     @Getter
     @Setter

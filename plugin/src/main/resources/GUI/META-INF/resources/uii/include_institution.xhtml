@@ -492,7 +492,7 @@
                         jsf:id="saveProcessEdition"
                         type="submit"
                         jsf:action="#{AdministrationForm.administrationPlugin.saveZdbTitleData}">
-                        <i class="fa fa-save margin-right-5"></i>
+                        <span class="fa fa-save margin-right-5" />
                         <h:outputText value="#{msgs.speichern}" />
                         <f:setPropertyActionListener
                             value=""
@@ -512,6 +512,7 @@
                     </button>
                 </div>
             </h:panelGroup>
+
 
             <h:panelGroup
                 layout="block"
@@ -599,46 +600,117 @@
                                             value="#{msgs[item.label]}">
                                         </h:outputLabel>
                                         <h:panelGroup rendered="#{item.required}">
-                                            <i
+                                            <span
                                                 class="fa fa-asterisk pull-right font-asterisk"
                                                 data-bs-original-title="#{msgs.requiredField}"
                                                 data-toggle="tooltip" />
                                         </h:panelGroup>
                                     </div>
                                     <div class="col-sm-9">
-
-
-
-
                                         <x:inputText
                                             rendered="#{item.fieldType=='input'}"
                                             pt:aria-label="#{msgs[item.label]}"
                                             styleClass="form-control"
                                             value="#{item.value}"
                                             validator="#{item.validateField}"
-                                            >
-<!--                         onfocus="focusField(this);" -->
+                                            onfocus="focusField(this);">
                                             <f:ajax
-                                             event="blur"
+                                                event="blur"
                                                 render="@form"
-                                                execute="@this" />
-<!--                                                 execute="@this focusField" -->
+                                                execute="@this focusField" />
                                             <f:passThroughAttribute
                                                 name="placeholder"
                                                 value="#{msgs[item.placeholderText]}" />
                                         </x:inputText>
 
+                                        <x:inputTextarea
+                                            rendered="#{item.fieldType=='textarea'}"
+                                            pt:aria-label="#{msgs[item.label]}"
+                                            styleClass="form-control"
+                                            value="#{item.value}"
+                                            validator="#{item.validateField}"
+                                            onfocus="focusField(this);">
+                                            <f:ajax
+                                                event="blur"
+                                                render="@form"
+                                                execute="@this focusField" />
+                                            <f:passThroughAttribute
+                                                name="placeholder"
+                                                value="#{msgs[item.placeholderText]}" />
+                                        </x:inputTextarea>
 
-                        <h:panelGroup
-                            layout="block"
-                            rendered="#{!item.fieldValid}"
-                            styleClass="font-danger validation-message">
-                            <h:outputText value="#{item.validationError}" />
-                        </h:panelGroup>
-                        <h:outputText
-                            styleClass="help-block font-light"
-                            rendered="#{NavigationForm.showHelp}"
-                            value="#{item.helpMessage}" />
+                                        <h:selectOneMenu
+                                            rendered="#{item.fieldType=='dropdown'}"
+                                            pt:aria-label="#{msgs[item.label]}"
+                                            styleClass="form-control"
+                                            value="#{item.value}"
+                                            validator="#{item.validateField}"
+                                            onfocus="focusField(this);">
+                                            <f:selectItems
+                                                value="#{item.selectItemList}"
+                                                var="var"
+                                                itemLabel="#{msgs[var]}"
+                                                itemValue="#{var}" />
+                                        </h:selectOneMenu>
+
+                                        <ui:fragment rendered="#{item.fieldType=='combo'}">
+                                            <div
+                                                class="form-group"
+                                                style="">
+                                                <div
+                                                    class="col-sm-3 control-label"
+                                                    tabindex="-1">
+                                                    <h:outputLabel
+                                                        for="id"
+                                                        value="#{msgs[item.label]}" />
+                                                </div>
+                                                <div
+                                                    class="col-sm-9"
+                                                    style="">
+                                                    <h:panelGroup id="combo">
+                                                        <h:selectBooleanCheckbox
+                                                            id="combo1"
+                                                            styleClass="form-control"
+                                                            value="#{item.booleanValue}"
+                                                            validator="#{item.validateField}"
+                                                            onfocus="focusField(this);">
+                                                            <f:ajax
+                                                                render="@form"
+                                                                execute="@this focusField" />
+                                                        </h:selectBooleanCheckbox>
+                                                        <h:selectOneRadio
+                                                            rendered="#{item.booleanValue}"
+                                                            id="combo2"
+                                                            styleClass="form-control"
+                                                            value="#{item.subValue}"
+                                                            validator="#{item.validateField}"
+                                                            onfocus="focusField(this);">
+                                                            <f:ajax
+                                                                render="@form"
+                                                                execute="@this focusField" />
+                                                            <f:selectItems
+                                                                value="#{item.selectItemList}"
+                                                                itemLabel="#{msgs[val]}"
+                                                                itemValue="#{val}"
+                                                                var="val" />
+                                                        </h:selectOneRadio>
+                                                    </h:panelGroup>
+                                                    <intranda:formHelp content="#{item.helpMessage}" />
+                                                </div>
+                                            </div>
+
+                                        </ui:fragment>
+
+                                        <h:panelGroup
+                                            layout="block"
+                                            rendered="#{!item.fieldValid}"
+                                            styleClass="font-danger validation-message">
+                                            <h:outputText value="#{item.validationError}" />
+                                        </h:panelGroup>
+                                        <h:outputText
+                                            styleClass="help-block font-light"
+                                            rendered="#{NavigationForm.showHelp}"
+                                            value="#{item.helpMessage}" />
 
 
 
@@ -650,74 +722,6 @@
                                         <intranda:formHelp content="#{item.helpMessage}" />
                                     </div>
                                 </div>
-
-
-
-                                <!--                                 <ui:fragment rendered="#{item.fieldType=='textarea'}"> -->
-                                <!--                                     <intranda:formInputTextArea -->
-                                <!--                                         name="#{status.index}field" -->
-                                <!--                                         label="#{msgs[item.label]}" -->
-                                <!--                                         field="#{item.value}" -->
-                                <!--                                         help="#{item.helpMessage}" -->
-                                <!--                                         fieldStyle="form-control" -->
-                                <!--                                         required="#{item.required}" /> -->
-                                <!--                                 </ui:fragment> -->
-                                <!--                                 <ui:fragment rendered="#{item.fieldType=='dropdown'}"> -->
-                                <!--                                     <intranda:formInputDropDown2 -->
-                                <!--                                         label="#{msgs[item.label]}" -->
-                                <!--                                         field="#{item.value}" -->
-                                <!--                                         help="#{item.helpMessage}" -->
-                                <!--                                         name="#{status.index}field" -->
-                                <!--                                         selectItems="#{item.selectItemList}" -->
-                                <!--                                         fieldStyle="form-control" -->
-                                <!--                                         required="#{item.required}" -->
-                                <!--                                         itemValue="#{var}" -->
-                                <!--                                         itemLabel="#{msgs[var]}" /> -->
-                                <!--                                 </ui:fragment> -->
-
-
-                                <!--                                 <ui:fragment rendered="#{item.fieldType=='combo'}"> -->
-                                <!--                                     <div -->
-                                <!--                                         class="form-group" -->
-                                <!--                                         style=""> -->
-                                <!--                                         <div -->
-                                <!--                                             class="col-sm-3 control-label" -->
-                                <!--                                             tabindex="-1"> -->
-                                <!--                                             <h:outputLabel -->
-                                <!--                                                 for="id" -->
-                                <!--                                                 value="#{msgs[item.label]}" /> -->
-                                <!--                                         </div> -->
-                                <!--                                         <div -->
-                                <!--                                             class="col-sm-9" -->
-                                <!--                                             style=""> -->
-                                <!--                                             <h:panelGroup -->
-                                <!--                                                 id="combo" -->
-                                <!--                                                 rendered="#{item.fieldType=='combo'}"> -->
-                                <!--                                                 <h:selectBooleanCheckbox -->
-                                <!--                                                     id="combo1" -->
-                                <!--                                                     styleClass="form-control" -->
-                                <!--                                                     value="#{item.booleanValue}"> -->
-                                <!--                                                     <f:ajax -->
-                                <!--                                                         render="@form" -->
-                                <!--                                                         execute="@this" /> -->
-                                <!--                                                 </h:selectBooleanCheckbox> -->
-                                <!--                                                 <h:selectOneRadio -->
-                                <!--                                                     rendered="#{item.booleanValue}" -->
-                                <!--                                                     id="combo2" -->
-                                <!--                                                     styleClass="form-control" -->
-                                <!--                                                     value="#{item.subValue}"> -->
-
-                                <!--                                                     <f:selectItems -->
-                                <!--                                                         value="#{item.selectItemList}" -->
-                                <!--                                                         itemLabel="#{msgs[val]}" -->
-                                <!--                                                         itemValue="#{val}" -->
-                                <!--                                                         var="val" /> -->
-                                <!--                                                 </h:selectOneRadio> -->
-                                <!--                                             </h:panelGroup> -->
-                                <!--                                             <intranda:formHelp content="#{item.helpMessage}" /> -->
-                                <!--                                         </div> -->
-                                <!--                                     </div> -->
-                                <!--                                 </ui:fragment> -->
                             </ui:repeat>
                         </ui:fragment>
                     </c:forEach>
@@ -731,7 +735,7 @@
                         jsf:id="absenden"
                         type="submit"
                         jsf:action="#{AdministrationForm.administrationPlugin.saveInstitution}">
-                        <i class="fa fa-save margin-right-5"></i>
+                        <span class="fa fa-save margin-right-5" />
                         <h:outputText value="#{msgs.speichern}" />
                         <f:setPropertyActionListener
                             value=""
@@ -761,7 +765,7 @@
                             class="btn btn-danger"
                             data-toggle="modal"
                             data-target="#deleteModal">
-                            <i class="fa fa-trash-o margin-right-5" />
+                            <span class="fa fa-trash-o margin-right-5" />
                             <h:outputText value="#{msgs.loeschen}" />
                         </button>
                         <div
@@ -793,7 +797,7 @@
                                             jsf:id="confirmDelete"
                                             class="btn btn-danger"
                                             jsf:action="#{AdministrationForm.administrationPlugin.deleteInstitution}">
-                                            <i class="fa fa-trash-o margin-right-5" />
+                                            <span class="fa fa-trash-o margin-right-5" />
                                             <f:setPropertyActionListener
                                                 value=""
                                                 target="#{AdministrationForm.administrationPlugin.editionMode}" />

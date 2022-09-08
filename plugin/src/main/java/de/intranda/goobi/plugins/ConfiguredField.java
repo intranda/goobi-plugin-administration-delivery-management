@@ -64,12 +64,27 @@ public class ConfiguredField {
     }
 
     public void validateField(FacesContext context, UIComponent comp, Object obj) { //NOSONAR
+        fieldValid = true;
         if (obj instanceof Boolean) {
+            boolean val = (boolean) obj;
+            if (val && StringUtils.isBlank(value)) {
+                fieldValid = false;
+            }
             return;
         }
 
         String testValue = (String) obj;
-        fieldValid = true;
+
+        if ("combo".equals(fieldType)) {
+            if (comp.getClientId().endsWith("combo")) {
+                if ("null".equals(testValue)) {
+                    testValue = null;
+                }
+
+            } else if (comp.getClientId().endsWith("combo2") && StringUtils.isBlank(testValue) && getBooleanValue()) {
+                fieldValid = false;
+            }
+        }
 
         //  simple field validation
         if (StringUtils.isBlank(testValue) && required) {

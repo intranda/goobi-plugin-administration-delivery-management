@@ -16,14 +16,18 @@
     <composite:implementation>
 
         <!-- Custom plugin styles -->
-		<link
-			type="text/css"
-			rel="stylesheet"
-			href="#{HelperForm.applicationWebsiteUrl}uii/css/index.css" />
+        <link
+            type="text/css"
+            rel="stylesheet"
+            href="#{HelperForm.applicationWebsiteUrl}uii/css/index.css" />
 
 
         <script src="template/js/plugins/tinymce/tinymce.min.js"></script>
 
+
+        <h:inputHidden
+            id="focusField"
+            value="#{AdministrationForm.administrationPlugin.focusField}" />
 
         <main class="#{AdministrationForm.administrationPlugin.editionMode=='edit' ? 'editMode' : ''}">
             <h:panelGroup>
@@ -34,7 +38,7 @@
                                 class="box-title"
                                 jsf:id="box-title">
                                 <h2>
-                                    <i class="fa fa-plug"></i>
+                                    <span class="fa fa-plug"/>
                                     <h:outputText value="#{msgs[AdministrationForm.administrationPlugin.title]}" />
                                     <h:outputText
                                         value=": #{msgs[AdministrationForm.administrationPlugin.displayMode]}"
@@ -52,8 +56,7 @@
                                                 id="details"
                                                 action="#{NavigationForm.Reload}"
                                                 value="#{msgs[mode]}"
-                                                disabled="#{AdministrationForm.administrationPlugin.editionMode == 'edit'}"
-                                                >
+                                                disabled="#{AdministrationForm.administrationPlugin.editionMode == 'edit'}">
                                                 <f:setPropertyActionListener
                                                     target="#{AdministrationForm.administrationPlugin.displayMode}"
                                                     value="#{mode}" />
@@ -84,8 +87,7 @@
 
                                         <h:panelGroup
                                             id="plugin-main-content"
-                                            layout="block"
-                                            >
+                                            layout="block">
 
 
                                             <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'plugin_administration_deliveryManagement_displayMode_institution'}">
@@ -118,6 +120,33 @@
         </main>
         <script type="text/javascript">
                                     //<![CDATA[
+                                    function focusField( elem ) {
+                                        document.getElementById( "focusField" ).value = elem.id;
+                                    }
+
+                                    function updateFocus() {
+                                        var focus = $( '#focusField' ).val();
+                                        const inp = document.getElementById( focus );
+                                        if ( inp != null ) {
+                                            inp.focus();
+                                        }
+                                    }
+
+                                    jsf.ajax.addOnEvent( function( data ) {
+                                        var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
+                                        var source = data.source;
+                                        switch ( ajaxstatus ) {
+                                            case "begin": // This is called right before ajax request is been sent.
+                                                break;
+                                            case "complete": // This is called right after ajax response is received.
+                                                break;
+                                            case "success": // This is called when ajax response is successfully processed.
+                                                // find element,set focus
+                                                updateFocus();
+                                                break;
+                                        }
+                                    } );
+                                    
                                     var simpleTinyMceConfig = {
                                         selector: '.textarea-html',
                                         setup: function( editor ) {
@@ -131,9 +160,18 @@
                                         height: 600,
                                         plugins: [ 'print code preview fullscreen' ],
                                         menu: {
-                                            edit: {title: 'Edit', items: 'undo redo | cut copy paste pastetext | selectall'},
-                                            format: {title: 'Format', items: 'bold italic underline strikethrough | formats | removeformat'},
-                                            tools: {title: 'Tools', items: 'spellchecker code'}
+                                            edit: {
+                                                title: 'Edit',
+                                                items: 'undo redo | cut copy paste pastetext | selectall'
+                                            },
+                                            format: {
+                                                title: 'Format',
+                                                items: 'bold italic underline strikethrough | formats | removeformat'
+                                            },
+                                            tools: {
+                                                title: 'Tools',
+                                                items: 'spellchecker code'
+                                            }
                                         },
                                         menubar: 'edit format tools',
                                         toolbar: false,
@@ -151,21 +189,21 @@
                                                 $( "#" + editor.id.replace( ":", "\\:" ) ).trigger( "change" );
                                             } );
                                         }
-
+                                    
                                     };
-
+                                    
                                     function initTinyMce() {
                                         console.log( "Init tinyMce" );
                                         tinymce.init( simpleTinyMceConfig );
                                     };
-
+                                    
                                     $( window ).on( "load", function() {
                                         renderInputFields()
                                     } );
                                     $( document ).ready( function() {
                                         renderInputFields()
                                     } );
-
+                                    
                                     jsf.ajax.addOnEvent( function( data ) {
                                         var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
                                         switch ( ajaxstatus ) {
@@ -174,7 +212,7 @@
                                                 break;
                                         }
                                     } );
-
+                                    
                                     function renderInputFields( ajaxData ) {
                                         if ( typeof tinyMCE !== 'undefined' ) {
                                             if ( ajaxData === undefined || ajaxData.status == "begin" ) {
