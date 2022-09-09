@@ -89,11 +89,6 @@
                                             id="plugin-main-content"
                                             layout="block">
 
-
-                                            <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'plugin_administration_deliveryManagement_displayMode_institution'}">
-                                                <ui:include src="include_institution.xhtml" />
-                                            </ui:fragment>
-
                                             <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'plugin_administration_deliveryManagement_displayMode_user'}">
                                                 <ui:include src="include_users.xhtml" />
                                             </ui:fragment>

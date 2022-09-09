@@ -8,6 +8,7 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:p="http://primefaces.org/ui"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
     <composite:interface>
@@ -26,7 +27,7 @@
                 <div class="dataTables_filter">
                     <div class="input-group input-group">
                         <span class="input-group-addon">
-                            <i class="fa fa-search"></i>
+                            <span class="fa fa-search" />
                         </span>
                         <h:inputText
                             id="searchfield"
@@ -62,7 +63,7 @@
                         class="btn searchfieldbuttongroup hidden-xs"
                         jsf:action="#{AdministrationForm.administrationPlugin.filterUser}"
                         jsf:immediate="true">
-                        <i class="fa #{AdministrationForm.administrationPlugin.showOnlyInactiveUser?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                        <span class="fa #{AdministrationForm.administrationPlugin.showOnlyInactiveUser?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                         <h:outputText
                             styleClass="font-size-s"
                             value="#{msgs.plugin_administration_deliveryManagement_showOnlyInactiveUser}" />
@@ -72,179 +73,185 @@
                     </button>
                 </div>
 
-                <table
-                    role="grid"
-                    id="tableUserAll"
-                    class="table table-hover table-nomargin dataTable table-bordered responsive">
-                    <!-- ### Columnheader row ### -->
-                    <thead>
-                        <tr role="row">
-                            <th
-                                scope="col"
-                                role="columnheader">
-                                <button
-                                    class="button-link"
-                                    style="width: 100%; text-align: left;"
-                                    jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">
-                                    <h:outputText value="#{msgs.benutzer}" />
-                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.userSort== 'benutzer.Nachname Desc, benutzer.Vorname Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.userSort== 'benutzer.Nachname, benutzer.Vorname' ?'fa-sort-asc':'fa-sort'}"></span>
-                                    <f:setPropertyActionListener
-                                        target="#{AdministrationForm.administrationPlugin.userSort}"
-                                        value="#{AdministrationForm.administrationPlugin.userSort== 'benutzer.Nachname, benutzer.Vorname' ? 'benutzer.Nachname Desc, benutzer.Vorname Desc' : 'benutzer.Nachname, benutzer.Vorname' }" />
-                                    <f:ajax render="@form" />
-                                </button>
-                            </th>
-
-                            <th
-                                scope="col"
-                                role="columnheader">
-                                <button
-                                    class="button-link"
-                                    style="width: 100%; text-align: left;"
-                                    jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">
-                                    <h:outputText value="#{msgs.login}" />
-                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.userSort== 'benutzer.login Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.userSort== 'benutzer.login' ?'fa-sort-asc':'fa-sort'}"></span>
-                                    <f:setPropertyActionListener
-                                        target="#{AdministrationForm.administrationPlugin.userSort}"
-                                        value="#{AdministrationForm.administrationPlugin.userSort== 'benutzer.login' ? 'benutzer.login Desc' : 'benutzer.login' }" />
-                                    <f:ajax render="@form" />
-                                </button>
-                            </th>
-
-                            <th
-                                scope="col"
-                                role="columnheader">
-                                <button
-                                    class="button-link"
-                                    style="width: 100%; text-align: left;"
-                                    jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">
-                                    <h:outputText value="#{msgs.email}" />
-                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.userSort== 'benutzer.email Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.userSort== 'benutzer.email' ?'fa-sort-asc':'fa-sort'}"></span>
-                                    <f:setPropertyActionListener
-                                        target="#{AdministrationForm.administrationPlugin.userSort}"
-                                        value="#{AdministrationForm.administrationPlugin.userSort== 'benutzer.email' ? 'benutzer.email Desc' : 'benutzer.email' }" />
-                                    <f:ajax render="@form" />
-                                </button>
-                            </th>
-
-
-                            <th
-                                scope="col"
-                                role="columnheader">
-                                <button
-                                    class="button-link"
-                                    style="width: 100%; text-align: left;"
-                                    jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">
-                                    <h:outputText value="#{msgs.institution}" />
-                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.userSort== 'institution.shortName Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.userSort== 'institution.shortName' ?'fa-sort-asc':'fa-sort'}"></span>
-                                    <f:setPropertyActionListener
-                                        target="#{AdministrationForm.administrationPlugin.userSort}"
-                                        value="#{AdministrationForm.administrationPlugin.userSort== 'institution.shortName Desc' ? 'institution.shortName' : 'institution.shortName Desc' }" />
-                                    <f:ajax render="@form" />
-                                </button>
-                            </th>
-
-
-
-                            <!-- additional fields -->
-                            <c:forEach
-                                items="#{AdministrationForm.administrationPlugin.configuredUserFields}"
-                                var="cif">
-                                <ui:fragment rendered="#{cif.displayInTable}">
-
-                                    <th
-                                        scope="col"
-                                        role="columnheader">
-                                        <button
-                                            class="button-link"
-                                            style="width: 100%; text-align: left;"
-                                            jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">
-                                            <h:outputText value="#{cif.label}" />
-                                            <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.userSort==(cif.name).concat(' Desc') ?'fa-sort-desc':AdministrationForm.administrationPlugin.userSort== cif.name ?'fa-sort-asc':'fa-sort'}"></span>
-                                            <f:setPropertyActionListener
-                                                target="#{AdministrationForm.administrationPlugin.userSort}"
-                                                value="#{AdministrationForm.administrationPlugin.userSort== cif.name.concat(' Desc') ? cif.name : cif.name.concat(' Desc') }" />
-                                            <f:ajax render="@form" />
-                                        </button>
-                                    </th>
+                <x:dataTable
+                    styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                    var="item"
+                    value="#{AdministrationForm.administrationPlugin.userPaginator.list}">
+                    <x:column>
+                        <f:facet name="header">
+                            <button
+                                class="button-link"
+                                style="width: 100%; text-align: left;"
+                                jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">
+                                <h:outputText value="#{msgs.benutzer}" />
+                                <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.userSort== 'benutzer.Nachname Desc, benutzer.Vorname Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.userSort== 'benutzer.Nachname, benutzer.Vorname' ?'fa-sort-asc':'fa-sort'}"></span>
+                                <f:setPropertyActionListener
+                                    target="#{AdministrationForm.administrationPlugin.userSort}"
+                                    value="#{AdministrationForm.administrationPlugin.userSort== 'benutzer.Nachname, benutzer.Vorname' ? 'benutzer.Nachname Desc, benutzer.Vorname Desc' : 'benutzer.Nachname, benutzer.Vorname' }" />
+                                <f:ajax render="@form" />
+                            </button>
+                        </f:facet>
+                        <h:outputText
+                            value="#{item.user.nachname}, #{item.user.vorname}"
+                            styleClass="userID_#{item.user.vorname}_#{item.user.nachname} #{not item.active?'font-light':''}"
+                            title="#{item.user.login}" />
+                    </x:column>
 
 
 
 
-                                </ui:fragment>
-                            </c:forEach>
+                    <x:column>
+                        <f:facet name="header">
+                            <button
+                                class="button-link"
+                                style="width: 100%; text-align: left;"
+                                jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">
+                                <h:outputText value="#{msgs.login}" />
+                                <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.userSort== 'benutzer.login Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.userSort== 'benutzer.login' ?'fa-sort-asc':'fa-sort'}"></span>
+                                <f:setPropertyActionListener
+                                    target="#{AdministrationForm.administrationPlugin.userSort}"
+                                    value="#{AdministrationForm.administrationPlugin.userSort== 'benutzer.login' ? 'benutzer.login Desc' : 'benutzer.login' }" />
+                                <f:ajax render="@form" />
+                            </button>
+                        </f:facet>
+                        <h:outputText
+                            value="#{item.user.login}"
+                            styleClass="#{not item.active?'font-light':''}" />
+                    </x:column>
 
-                            <intranda:columnheader
-                                value="#{msgs.auswahl}"
-                                sortable="false" />
-                        </tr>
-                    </thead>
-                    <!-- ### Content rows ### -->
-                    <ui:repeat
-                        var="item"
-                        value="#{AdministrationForm.administrationPlugin.userPaginator.list}"
-                        varStatus="status">
-                        <tr role="row">
-                            <td>
-                                <h:outputText
-                                    value="#{item.nachname}, #{item.vorname}"
-                                    styleClass="userID_#{item.vorname}_#{item.nachname} #{not item.active?'font-light':''}"
-                                    title="#{item.login}" />
-                            </td>
-                            <td>
-                                <h:outputText
-                                    value="#{item.login}"
-                                    styleClass="#{not item.active?'font-light':''}" />
-                            </td>
-                            <td>
-                                <h:outputText
-                                    value="#{item.email}"
-                                    styleClass="#{not item.active?'font-light':''}" />
-                            </td>
-                            <td>
-                                <h:outputText
-                                    value="#{item.institution.shortName}"
-                                    styleClass="#{not item.active?'font-light':''}" />
-                            </td>
 
-                            <!-- additional fields -->
-                            <c:forEach
-                                items="#{AdministrationForm.administrationPlugin.configuredUserFields}"
-                                var="cif">
-                                <ui:fragment rendered="#{cif.displayInTable}">
-                                    <td>
-                                        <h:outputText value="#{item.additionalData[cif.name]}" />
-                                    </td>
-                                </ui:fragment>
-                            </c:forEach>
+                    <x:column>
+                        <f:facet name="header">
+                            <button
+                                class="button-link"
+                                style="width: 100%; text-align: left;"
+                                jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">
+                                <h:outputText value="#{msgs.email}" />
+                                <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.userSort== 'benutzer.email Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.userSort== 'benutzer.email' ?'fa-sort-asc':'fa-sort'}"></span>
+                                <f:setPropertyActionListener
+                                    target="#{AdministrationForm.administrationPlugin.userSort}"
+                                    value="#{AdministrationForm.administrationPlugin.userSort== 'benutzer.email' ? 'benutzer.email Desc' : 'benutzer.email' }" />
+                                <f:ajax render="@form" />
+                            </button>
+                        </f:facet>
+                        <h:outputText
+                            value="#{item.user.email}"
+                            styleClass="#{not item.active?'font-light':''}" />
+                    </x:column>
 
-                            <td>
-                                <div class="no-linebreak">
-                                    <!-- Bearbeiten-Schaltknopf -->
-                                    <button
-                                        jsf:id="edit"
-                                        class="btn margin-right-5"
-                                        jsf:rel="tooltip"
-                                        title="#{msgs.benutzerBearbeiten}">
-                                        <i class="fa fa-pencil"></i>
-                                        <f:passThroughAttribute
-                                            name="data-toggle"
-                                            value="tooltip" />
-                                        <f:passThroughAttribute
-                                            name="aria-label"
-                                            value="#{msgs.benutzerBearbeiten}" />
-                                        <f:setPropertyActionListener
-                                            target="#{AdministrationForm.administrationPlugin.user}"
-                                            value="#{item}" />
-                                        <f:setPropertyActionListener
-                                            value="edit"
-                                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </ui:repeat>
-                </table>
+
+                    <x:column>
+                        <f:facet name="header">
+                            <button
+                                class="button-link"
+                                style="width: 100%; text-align: left;"
+                                jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">
+                                <h:outputText value="#{msgs.institution_longName}" />
+                                <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.userSort== 'institution.longName Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.userSort== 'institution.longName' ?'fa-sort-asc':'fa-sort'}"></span>
+                                <f:setPropertyActionListener
+                                    target="#{AdministrationForm.administrationPlugin.userSort}"
+                                    value="#{AdministrationForm.administrationPlugin.userSort== 'institution.longName' ? 'institution.longName Desc' : 'institution.longName' }" />
+                                <f:ajax render="@form" />
+                            </button>
+                        </f:facet>
+                        <h:outputText value="#{item.institution.longName}" />
+                    </x:column>
+
+                    <x:column>
+                        <f:facet name="header">
+                            <button
+                                class="button-link"
+                                style="width: 100%; text-align: left;"
+                                jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">
+                                <h:outputText value="#{msgs.plugin_administration_deliveryManagement_lastChangeDate}" />
+                                <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.userSort== 'lastDate Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.userSort== 'lastDate' ?'fa-sort-asc':'fa-sort'}"></span>
+                                <f:setPropertyActionListener
+                                    target="#{AdministrationForm.administrationPlugin.userSort}"
+                                    value="#{AdministrationForm.administrationPlugin.userSort== 'lastDate' ? 'lastDate Desc' : 'lastDate' }" />
+                                <f:ajax render="@form" />
+                            </button>
+                        </f:facet>
+                        <h:outputText value="#{item.lastUploadDate}" />
+                    </x:column>
+                    <x:column>
+                        <f:facet name="header">
+                            <button
+                                class="button-link"
+                                style="width: 100%; text-align: left;"
+                                jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">
+                                <h:outputText value="#{msgs.plugin_administration_deliveryManagement_numberOfUploads}" />
+                                <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.userSort== 'items Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.userSort== 'items' ?'fa-sort-asc':'fa-sort'}"></span>
+                                <f:setPropertyActionListener
+                                    target="#{AdministrationForm.administrationPlugin.userSort}"
+                                    value="#{AdministrationForm.administrationPlugin.userSort== 'items' ? 'items Desc' : 'items' }" />
+                                <f:ajax render="@form" />
+                            </button>
+                        </f:facet>
+                        <h:outputText value="#{item.numberOfUploads}" />
+                    </x:column>
+
+                    <x:column width="150px;">
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.auswahl}" />
+                        </f:facet>
+                        <button
+                            jsf:id="edit"
+                            class="btn margin-right-5"
+                            jsf:rel="tooltip"
+                            title="#{msgs.benutzerBearbeiten}">
+                            <span class="fa fa-pencil" />
+                            <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
+                            <f:passThroughAttribute
+                                name="aria-label"
+                                value="#{msgs.benutzerBearbeiten}" />
+                            <f:setPropertyActionListener
+                                target="#{AdministrationForm.administrationPlugin.user}"
+                                value="#{item.user}" />
+                            <f:setPropertyActionListener
+                                value="edit"
+                                target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                        </button>
+                        <button
+                            jsf:id="export"
+                            class="btn margin-right-5"
+                            jsf:rel="tooltip"
+                            aria-label="#{msgs.plugin_administration_deliveryManagement_downloadInstitutionData}"
+                            title="#{msgs.plugin_administration_deliveryManagement_downloadInstitutionData}"
+                            jsf:action="#{AdministrationForm.administrationPlugin.exportInstitutionCoreData}">
+                            <span class="fa fa-download" />
+                            <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
+                            <f:setPropertyActionListener
+                                target="#{AdministrationForm.administrationPlugin.institution}"
+                                value="#{item.institution}" />
+                        </button>
+
+                        <button
+                            jsf:disabled="#{item.numberOfUploads == 0}"
+                            class="btn margin-right-5"
+                            jsf:rel="tooltip"
+                            aria-label="#{msgs.plugin_administration_deliveryManagement_displayImports}"
+                            jsf:title="#{msgs.plugin_administration_deliveryManagement_displayImports}"
+                            jsf:action="#{AdministrationForm.administrationPlugin.generateInstitutionProcessTitleList}">
+                            <span class="fa fa-files-o" />
+                            <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
+                            <f:setPropertyActionListener
+                                target="#{AdministrationForm.administrationPlugin.institution}"
+                                value="#{item.institution}" />
+                            <f:setPropertyActionListener
+                                value="imports"
+                                target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                            <f:ajax render="@all" />
+                        </button>
+                    </x:column>
+                </x:dataTable>
+
+
 
                 <div class="dataTables_info">
                     <button
@@ -252,19 +259,36 @@
                         class="btn btn-primary font-size-s"
                         jsf:action="#{AdministrationForm.administrationPlugin.createNewUser}"
                         jsf:immediate="true">
-                        <i class="fa fa-plus margin-right-5"></i>
+                        <span class="fa fa-plus margin-right-5" />
                         <h:outputText value="#{msgs.neuenBenutzerAnlegen}" />
                         <f:setPropertyActionListener
                             value="edit"
                             target="#{AdministrationForm.administrationPlugin.editionMode}" />
                     </button>
-                <div class="dataTables_paginate">
-                    <intranda:tablePaginator2
-                        id="user"
-                        name="users"
-                        paginator="#{AdministrationForm.administrationPlugin.userPaginator}" />
+                    <div class="dataTables_paginate">
+                        <intranda:tablePaginator2
+                            id="user"
+                            name="users"
+                            paginator="#{AdministrationForm.administrationPlugin.userPaginator}" />
+                    </div>
                 </div>
-                </div>
+
+                <p:fileUpload
+                    listener="#{AdministrationForm.administrationPlugin.handleFileUpload}"
+                    id="upload"
+                    name="uploadName"
+                    auto="true"
+                    style=""
+                    mode="advanced"
+                    multiple="false"
+                    dragDropSupport="true"
+                    label="#{msgs.plugin_administration_deliveryManagement_uploadInstitutionData}"
+                    allowTypes="/(\.|\/)(xml)$/"
+                    update="@form">
+                    <f:passThroughAttribute
+                        name="aria-label"
+                        value="#{msgs.plugin_administration_deliveryManagement_uploadFile}" />
+                </p:fileUpload>
             </h:panelGroup>
 
             <h:panelGroup
@@ -299,44 +323,12 @@
                         name="standort"
                         fieldStyle="form-control" />
 
-
-                        <div class="form-group">
-                            <div class="col-sm-3 control-label notFocusable control-label">
-                                <h:outputLabel for="institution" value="#{msgs.institution}" />
-                                <i class="fa fa-asterisk font-asterisk font-asterisk-absolute" title="#{msgs.requiredField}" data-toggle="tooltip"/>
-
-                            <!-- open institution -->
-                            <button
-                                class="btn margin-right-5 pull-right btn--in-label"
-                                jsf:rel="tooltip"
-                                aria-label="#{msgs.plugin_administration_deliveryManagement_openInsititution}"
-                                jsf:title="#{msgs.plugin_administration_deliveryManagement_openInsititution}"
-                                jsf:action="#{AdministrationForm.administrationPlugin.openInstitution}">
-                                <i class="fa fa-search"></i>
-                                <f:passThroughAttribute
-                                    name="data-toggle"
-                                    value="tooltip" />
-                            </button>
-
-                            </div>
-                            <div class="col-sm-9">
-                                <h:selectOneMenu id="institution" styleClass="form-control"
-                                    value="#{AdministrationForm.administrationPlugin.currentInstitutionID}"  readonly="false">
-                                    <f:selectItem itemValue="null" itemLabel="#{msgs.bitteAuswaehlen}" />
-                                    <f:selectItems value="#{BenutzerverwaltungForm.institutionsAsSelectList}" />
-                                </h:selectOneMenu>
-                                <h:message for="institution" showDetail="true" styleClass="help-inline font-danger"/>
-                                <intranda:formHelp content="#{msgs.helpUserInstitution}" />
-                            </div>
-                        </div>
-
-
                     <div class="form-group">
                         <div class="col-sm-3 control-label">
                             <h:outputLabel
                                 for="loginAs"
                                 value="#{msgs.login}">
-                                <i
+                                <span
                                     class="fa fa-asterisk pull-right font-asterisk"
                                     title="#{msgs.requiredField}"
                                     data-toggle="tooltip" />
@@ -379,7 +371,7 @@
                             <h:outputLabel
                                 for="ldapGruppe"
                                 value="#{msgs.user_edit_loginType}">
-                                <i
+                                <span
                                     class="fa fa-asterisk pull-right font-asterisk"
                                     title="#{msgs.requiredField}"
                                     data-toggle="tooltip" />
@@ -492,7 +484,11 @@
                                             styleClass="form-control"
                                             value="#{item.subValue}">
 
-                                            <f:selectItems value="#{item.selectItemList}" itemLabel="#{msgs[val]}" itemValue="#{val}" var="val" />
+                                            <f:selectItems
+                                                value="#{item.selectItemList}"
+                                                itemLabel="#{msgs[val]}"
+                                                itemValue="#{val}"
+                                                var="val" />
                                         </h:selectOneRadio>
                                     </h:panelGroup>
                                     <intranda:formHelp content="#{item.helpMessage}" />
@@ -501,8 +497,217 @@
                             </div>
                         </ui:fragment>
                     </ui:repeat>
+                    <div class="box-title">
+                        <h2>
+                            <h:outputText value="#{msgs.plugin_rest_usercreation_new_institution}" />
+                        </h2>
+                    </div>
+                    <intranda:formInputTextAjax
+                        label="#{msgs.institution_shortName}"
+                        field="#{AdministrationForm.administrationPlugin.institution.shortName}"
+                        help="#{msgs.institution_help_shortName}"
+                        name="shortName"
+                        fieldStyle="form-control"
+                        execute="@this"
+                        render="@form" />
+                    <intranda:formInputTextAjax
+                        name="longTitle"
+                        label="#{msgs.institution_longName}"
+                        field="#{AdministrationForm.administrationPlugin.institution.longName}"
+                        help="#{msgs.institution_help_longName}"
+                        fieldStyle="form-control"
+                        execute="@this"
+                        render="@form" />
 
 
+                    <!-- additional data -->
+                    <c:forEach
+                        items="#{AdministrationForm.administrationPlugin.configuredInstitutionFields}"
+                        var="entry">
+
+                        <ui:fragment rendered="#{entry.key!='page3a' or AdministrationForm.administrationPlugin.displaySecondContact}">
+                            <div
+                                class="box-title"
+                                jsf:rendered="#{entry.key!='page2'}">
+                                <h2>
+                                    <h:outputText
+                                        rendered="#{entry.key=='page2'}"
+                                        value="#{msgs.plugin_rest_usercreation_new_institution}" />
+                                    <h:outputText
+                                        rendered="#{entry.key=='page3'}"
+                                        value="#{msgs.plugin_rest_usercreation_new_contact}" />
+                                    <h:outputText
+                                        rendered="#{entry.key=='page3a'}"
+                                        value="#{msgs.plugin_rest_usercreation_new_contact}" />
+
+                                    <h:outputText
+                                        rendered="#{entry.key=='page4'}"
+                                        value="#{msgs.plugin_rest_usercreation_new_additionalData}" />
+                                </h2>
+                                <button
+                                    jsf:rendered="#{!AdministrationForm.administrationPlugin.displaySecondContact and entry.key=='page3'}"
+                                    jsf:id="createNewContact"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.createNewContact}"
+                                    style="margin-bottom: 20px;"
+                                    class="btn btn-link ms-auto pull-right">
+
+                                    <ui:include src="/uii/includes/icon-plus.xhtml" />
+                                    <span>
+                                        <h:outputText value="#{msgs.plugin_rest_usercreation_new_createNewContact}" />
+                                    </span>
+                                </button>
+
+                                <button
+                                    jsf:rendered="#{entry.key=='page3a'}"
+                                    jsf:id="disableContact"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.disableContact}"
+                                    style="float: right"
+                                    class="btn btn-link ms-auto pull-right">
+
+                                    <span>
+                                        <h:outputText value="#{msgs.plugin_rest_usercreation_new_disableContact}" />
+                                    </span>
+                                </button>
+                            </div>
+                            <ui:repeat
+                                var="item"
+                                value="#{entry.value}"
+                                varStatus="status">
+
+                                <div class="form-group">
+                                    <div
+                                        class="col-sm-3 control-label"
+                                        tabindex="-1">
+                                        <h:outputLabel
+                                            for="#{status.index}field"
+                                            value="#{msgs[item.label]}">
+                                        </h:outputLabel>
+                                        <h:panelGroup rendered="#{item.required}">
+                                            <span
+                                                class="fa fa-asterisk pull-right font-asterisk"
+                                                data-bs-original-title="#{msgs.requiredField}"
+                                                data-toggle="tooltip" />
+                                        </h:panelGroup>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <x:inputText
+                                            rendered="#{item.fieldType=='input'}"
+                                            pt:aria-label="#{msgs[item.label]}"
+                                            styleClass="form-control"
+                                            value="#{item.value}"
+                                            validator="#{item.validateField}"
+                                            onfocus="focusField(this);">
+                                            <f:ajax
+                                                event="blur"
+                                                render="@form"
+                                                execute="@this focusField" />
+                                            <f:passThroughAttribute
+                                                name="placeholder"
+                                                value="#{msgs[item.placeholderText]}" />
+                                        </x:inputText>
+
+                                        <x:inputTextarea
+                                            rendered="#{item.fieldType=='textarea'}"
+                                            pt:aria-label="#{msgs[item.label]}"
+                                            styleClass="form-control"
+                                            value="#{item.value}"
+                                            validator="#{item.validateField}"
+                                            onfocus="focusField(this);">
+                                            <f:ajax
+                                                event="blur"
+                                                render="@form"
+                                                execute="@this focusField" />
+                                            <f:passThroughAttribute
+                                                name="placeholder"
+                                                value="#{msgs[item.placeholderText]}" />
+                                        </x:inputTextarea>
+
+                                        <h:selectOneMenu
+                                            rendered="#{item.fieldType=='dropdown'}"
+                                            pt:aria-label="#{msgs[item.label]}"
+                                            styleClass="form-control"
+                                            value="#{item.value}"
+                                            validator="#{item.validateField}"
+                                            onfocus="focusField(this);">
+                                            <f:selectItems
+                                                value="#{item.selectItemList}"
+                                                var="var"
+                                                itemLabel="#{msgs[var]}"
+                                                itemValue="#{var}" />
+                                        </h:selectOneMenu>
+
+                                        <ui:fragment rendered="#{item.fieldType=='combo'}">
+                                            <div
+                                                class="form-group"
+                                                style="">
+                                                <div
+                                                    class="col-sm-3 control-label"
+                                                    tabindex="-1">
+                                                    <h:outputLabel
+                                                        for="id"
+                                                        value="#{msgs[item.label]}" />
+                                                </div>
+                                                <div
+                                                    class="col-sm-9"
+                                                    style="">
+                                                    <h:panelGroup id="combo">
+                                                        <h:selectBooleanCheckbox
+                                                            id="combo1"
+                                                            styleClass="form-control"
+                                                            value="#{item.booleanValue}"
+                                                            validator="#{item.validateField}"
+                                                            onfocus="focusField(this);">
+                                                            <f:ajax
+                                                                render="@form"
+                                                                execute="@this focusField" />
+                                                        </h:selectBooleanCheckbox>
+                                                        <h:selectOneRadio
+                                                            rendered="#{item.booleanValue}"
+                                                            id="combo2"
+                                                            styleClass="form-control"
+                                                            value="#{item.subValue}"
+                                                            validator="#{item.validateField}"
+                                                            onfocus="focusField(this);">
+                                                            <f:ajax
+                                                                render="@form"
+                                                                execute="@this focusField" />
+                                                            <f:selectItems
+                                                                value="#{item.selectItemList}"
+                                                                itemLabel="#{msgs[val]}"
+                                                                itemValue="#{val}"
+                                                                var="val" />
+                                                        </h:selectOneRadio>
+                                                    </h:panelGroup>
+                                                    <intranda:formHelp content="#{item.helpMessage}" />
+                                                </div>
+                                            </div>
+
+                                        </ui:fragment>
+
+                                        <h:panelGroup
+                                            layout="block"
+                                            rendered="#{!item.fieldValid}"
+                                            styleClass="font-danger validation-message">
+                                            <h:outputText value="#{item.validationError}" />
+                                        </h:panelGroup>
+                                        <h:outputText
+                                            styleClass="help-block font-light"
+                                            rendered="#{NavigationForm.showHelp}"
+                                            value="#{item.helpMessage}" />
+
+
+
+
+                                        <h:message
+                                            for="#{status.index}field"
+                                            showDetail="true"
+                                            styleClass="help-inline font-danger" />
+                                        <intranda:formHelp content="#{item.helpMessage}" />
+                                    </div>
+                                </div>
+                            </ui:repeat>
+                        </ui:fragment>
+                    </c:forEach>
                 </div>
 
 
@@ -513,7 +718,7 @@
                         jsf:id="absenden"
                         type="submit"
                         jsf:action="#{AdministrationForm.administrationPlugin.saveUser}">
-                        <i class="fa fa-save margin-right-5"></i>
+                        <span class="fa fa-save margin-right-5" />
                         <h:outputText value="#{msgs.speichern}" />
                         <f:setPropertyActionListener
                             value=""
@@ -543,7 +748,7 @@
                             class="btn btn-danger"
                             data-toggle="modal"
                             data-target="#deleteModal">
-                            <i class="fa fa-trash-o margin-right-5" />
+                            <span class="fa fa-trash-o margin-right-5" />
                             <h:outputText value="#{msgs.loeschen}" />
                         </button>
                         <div
@@ -575,7 +780,7 @@
                                             jsf:id="confirmDelete"
                                             class="btn btn-danger"
                                             jsf:action="#{AdministrationForm.administrationPlugin.deleteUser}">
-                                            <i class="fa fa-trash-o margin-right-5" />
+                                            <span class="fa fa-trash-o margin-right-5" />
                                             <f:setPropertyActionListener
                                                 value=""
                                                 target="#{AdministrationForm.administrationPlugin.editionMode}" />
@@ -588,6 +793,325 @@
                     </ui:fragment>
                 </div>
 
+            </h:panelGroup>
+
+
+            <h:panelGroup
+                layout="block"
+                styleClass="dataTables_wrapper edit-mode"
+                rendered="#{AdministrationForm.administrationPlugin.editionMode=='imports'}">
+
+
+                <div class="dataTables_length">
+                    <h:outputText value="#{AdministrationForm.administrationPlugin.institution.longName} / #{msgs.treffer}: #{AdministrationForm.administrationPlugin.institutionProcessPaginator.totalResults}" />
+                </div>
+
+                <div class="dataTables_filter">
+                    <div class="input-group input-group">
+                        <span class="input-group-addon">
+                            <span class="fa fa-search" />
+                        </span>
+                        <h:inputText
+                            id="processsearchfield"
+                            styleClass="form-control searchfield"
+                            value="#{AdministrationForm.administrationPlugin.processSearchField}">
+                        </h:inputText>
+                        <div class="input-group-btn">
+                            <button
+                                jsf:id="processsearchButton"
+                                jsf:forceId="true"
+                                class="btn"
+                                style="text-align: center; line-height: 100%; padding: 0px 10px"
+                                jsf:action="#{AdministrationForm.administrationPlugin.generateInstitutionProcessTitleList}">#{msgs.search}</button>
+                        </div>
+                    </div>
+                    <x:commandButton
+                        type="submit"
+                        id="processsearchButton2"
+                        forceId="true"
+                        style="display:none"
+                        action="#{AdministrationForm.administrationPlugin.generateInstitutionProcessTitleList}" />
+                </div>
+
+
+                <table
+                    role="grid"
+                    id="processTable"
+                    class="table table-hover table-nomargin dataTable table-bordered responsive">
+                    <!-- ### Columnheader row ### -->
+                    <thead>
+                        <tr role="row">
+
+
+                            <!-- Embedded Metadata -->
+                            <intranda:columnheader
+                                addClass="tableColumnOverflow maxWidth300"
+                                value="#{msgs.metadata}"
+                                sortable="false" />
+
+                            <th
+                                scope="col"
+                                role="columnheader"
+                                class="tableColumnOverflow maxWidth300"
+                                aria-sort="#{AdministrationForm.administrationPlugin.sortField== 'titelDesc' ? 'descending' : AdministrationForm.administrationPlugin.sortField== 'titelAsc' ? 'ascending' :'none'}">
+                                <button
+                                    class="button-link"
+                                    style="width: 100%; text-align: left;"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.generateInstitutionProcessTitleList}"
+                                    aria-label="#{msgs.defaultSortField} #{msgs.prozessTitel} #{AdministrationForm.administrationPlugin.sortField== 'titelDesc' ? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung== 'titelAsc' ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
+                                    <h:outputText value="#{msgs.prozessTitel}" />
+                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.sortField== 'titelDesc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.sortField== 'titelAsc' ?'fa-sort-asc':'fa-sort'}"></span>
+                                    <f:setPropertyActionListener
+                                        target="#{AdministrationForm.administrationPlugin.sortField}"
+                                        value="#{AdministrationForm.administrationPlugin.sortField== 'titelAsc' ? 'titelDesc' : 'titelAsc' }" />
+                                    <f:ajax render="@form" />
+                                </button>
+                            </th>
+
+
+                            <th
+                                scope="col"
+                                role="columnheader"
+                                class="tableColumnOverflow maxwidth200"
+                                aria-sort="#{AdministrationForm.administrationPlugin.sortField== 'creationDateDesc' ? 'descending' : AdministrationForm.administrationPlugin.sortField== 'creationDateAsc' ? 'ascending' :'none'}">
+                                <button
+                                    class="button-link"
+                                    style="width: 100%; text-align: left;"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.generateInstitutionProcessTitleList}"
+                                    aria-label="#{msgs.defaultSortField} #{msgs.prozessTitel} #{AdministrationForm.administrationPlugin.sortField== 'creationDateDesc' ? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung== 'creationDateAsc' ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
+                                    <h:outputText value="#{msgs.vorgangsdatum}" />
+                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.sortField== 'creationDateDesc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.sortField== 'creationDateAsc' ?'fa-sort-asc':'fa-sort'}"></span>
+                                    <f:setPropertyActionListener
+                                        target="#{AdministrationForm.administrationPlugin.sortField}"
+                                        value="#{AdministrationForm.administrationPlugin.sortField== 'creationDateAsc' ? 'creationDateDesc' : 'creationDateAsc' }" />
+                                    <f:ajax render="@form" />
+                                </button>
+                            </th>
+
+
+
+
+
+
+                            <!-- Buttons -->
+                            <intranda:columnheader
+                                addClass="width200"
+                                value="#{msgs.auswahl}"
+                                sortable="false" />
+                        </tr>
+                    </thead>
+                    <ui:repeat
+                        var="zdbItem"
+                        value="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.list}"
+                        varStatus="status">
+                        <tr role="row">
+
+                            <!-- Embedded Metadata -->
+                            <td>
+                                <table>
+                                    <ui:repeat
+                                        var="metadata"
+                                        value="#{AdministrationForm.administrationPlugin.metadataDisplayList}"
+                                        varStatus="metadatastatus">
+                                        <ui:fragment rendered="#{zdbItem.getMetadataValue(metadata) != ''}">
+                                            <tr>
+                                                <td style="border: none !important; padding: 2px; vertical-align: top;">
+                                                    <h:outputText value="#{msgs['process_grid_'.concat(metadata)]}:" />
+                                                </td>
+                                                <td style="border: none !important; padding: 2px; white-space: normal;">
+                                                    <h:outputText value="#{zdbItem.getMetadataValue(metadata)}" />
+                                                </td>
+                                            </tr>
+                                        </ui:fragment>
+                                    </ui:repeat>
+                                </table>
+                            </td>
+
+
+                            <td>
+                                <h:outputText value="#{zdbItem.titel}" />
+                            </td>
+
+                            <!-- Vorgangsdatum -->
+                            <td>
+                                <h:outputText value="#{zdbItem.erstellungsdatumAsString}">
+                                </h:outputText>
+                            </td>
+
+                            <!-- Buttons -->
+                            <td class="width200">
+
+
+                                <!-- Metadaten-Schaltknopf - Allow writing -->
+                                <h:commandLink
+                                    action="#{AdministrationForm.administrationPlugin.openProcess(false)}"
+                                    id="action15"
+                                    rel="tooltip"
+                                    title="#{msgs.metadatenBearbeiten}"
+                                    pt:aria-label="#{msgs.metadatenBearbeiten}">
+                                    <span class="btn fa fa-book " />
+
+                                    <f:setPropertyActionListener
+                                        value="editProcess"
+                                        target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                                    <f:setPropertyActionListener
+                                        value="#{zdbItem}"
+                                        target="#{AdministrationForm.administrationPlugin.process}" />
+
+                                </h:commandLink>
+
+
+
+                            </td>
+                        </tr>
+                    </ui:repeat>
+                </table>
+
+                <div
+                    class="dataTables_info"
+                    style="float: left;"></div>
+                <div class="dataTables_paginate">
+
+                    <ui:fragment id="zdb_paginator">
+                        <!-- paginator -->
+                        <h:panelGroup rendered="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.totalResults > LoginForm.myBenutzer.tabellengroesse}">
+
+                            <div class="pull-right">
+
+                                <button
+                                    class="btn font-size-s margin-sides-10"
+                                    aria-label="#{msgs.firstPage}"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.cmdMoveFirst}"
+                                    jsf:id="navfirst">
+                                    <span class="fa fa-angle-double-left" />
+                                    <f:ajax render="@form" />
+                                </button>
+                                <button
+                                    class="btn btn-primary font-size-s navigator-previous"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.cmdMovePrevious}"
+                                    jsf:id="navprev">
+                                    <span class="fa fa-angle-left" />
+                                    <h:outputText value=" #{msgs.pagePrevious}" />
+                                    <f:ajax render="@form" />
+                                </button>
+
+                                <div class="margin-sides-10">
+                                    <!-- aktuelle Seite anzeigen -->
+                                    <x:outputText
+                                        id="item_txtMoveTo1"
+                                        forceId="true"
+                                        value="#{msgs.seite} #{AdministrationForm.administrationPlugin.institutionProcessPaginator.pageNumberCurrent} #{msgs.von} #{AdministrationForm.administrationPlugin.institutionProcessPaginator.pageNumberLast}"
+                                        onclick="document.getElementById('item_txtMoveTo2').style.display='inline';
+                   document.getElementById('item_txtMoveTo1').style.display='none';
+                   document.getElementById('item_txtMoveTo2').focus();
+                   document.getElementById('item_txtMoveTo2').select();" />
+
+                                    <!-- Seite direkt anspringen -->
+                                    <x:inputText
+                                        id="item_txtMoveTo2"
+                                        forceId="true"
+                                        value="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.txtMoveTo}"
+                                        style="display:none;width:30px"
+                                        required="true"
+                                        onblur="document.getElementById('item_txtMoveTo2').style.display='none';document.getElementById('item_txtMoveTo1').style.display='inline';"
+                                        onkeypress="return submitEnter('item_cmdMoveTo',event)" />
+                                    <x:commandButton
+                                        action="#{NavigationForm.Reload}"
+                                        id="item_cmdMoveTo"
+                                        forceId="true"
+                                        value="go"
+                                        style="display:none">
+                                    </x:commandButton>
+                                </div>
+
+                                <button
+                                    class="btn btn-primary font-size-s navigator-next"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.cmdMoveNext}"
+                                    jsf:id="navnext">
+                                    <h:outputText value="#{msgs.pageNext} " />
+                                    <span class="fa fa-angle-right" />
+                                    <f:ajax render="@form" />
+                                </button>
+                                <button
+                                    class="btn font-size-s margin-sides-10"
+                                    aria-label="#{msgs.lastPage}"
+                                    jsf:action="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.cmdMoveLast}"
+                                    jsf:id="navlast">
+                                    <span class="fa fa-angle-double-right" />
+                                    <f:ajax render="@form" />
+                                </button>
+                            </div>
+                        </h:panelGroup>
+                    </ui:fragment>
+                </div>
+
+
+
+                <div class="form-actions">
+                    <button
+                        class="btn margin-sides-10 font-size-s pull-right"
+                        jsf:id="cancelImports"
+                        type="submit"
+                        jsf:immediate="true">
+                        <h:outputText value="#{msgs.abbrechen}" />
+                        <f:setPropertyActionListener
+                            value=""
+                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                        <f:ajax render="@all" />
+                    </button>
+                </div>
+            </h:panelGroup>
+
+
+            <h:panelGroup
+                layout="block"
+                styleClass="dataTables_wrapper edit-mode"
+                rendered="#{AdministrationForm.administrationPlugin.editionMode=='editProcess'}">
+
+                <ui:repeat
+                    var="meta"
+                    value="#{AdministrationForm.administrationPlugin.metadataList}"
+                    varStatus="status">
+
+
+                    <intranda:formInputText
+                        id="id_#{status.index}"
+                        name="meta"
+                        label="#{meta.type.getLanguage(SpracheForm.locale.language)}"
+                        field="#{meta.value}"
+                        help="#{msgs.helpProcessTitle}"
+                        fieldStyle="form-control"
+                        required="false" />
+                </ui:repeat>
+
+
+                <div class="form-actions">
+
+                    <!-- Save -->
+                    <button
+                        class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+                        jsf:id="saveProcessEdition"
+                        type="submit"
+                        jsf:action="#{AdministrationForm.administrationPlugin.saveZdbTitleData}">
+                        <span class="fa fa-save margin-right-5" />
+                        <h:outputText value="#{msgs.speichern}" />
+                        <f:setPropertyActionListener
+                            value=""
+                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                    </button>
+
+                    <!-- Cancel -->
+                    <button
+                        class="btn margin-sides-10 font-size-s pull-right"
+                        jsf:id="cancelProcessEdition"
+                        type="submit"
+                        jsf:immediate="true">
+                        <h:outputText value="#{msgs.abbrechen}" />
+                        <f:setPropertyActionListener
+                            value=""
+                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                    </button>
+                </div>
             </h:panelGroup>
         </h:form>
     </composite:implementation>

@@ -35,9 +35,7 @@ import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.DatabasePaginator;
 import org.goobi.managedbeans.ProcessBean;
-import org.goobi.persistence.ExtendedInstitution;
-import org.goobi.persistence.ExtendedInstitutionPaginator;
-import org.goobi.persistence.ExtendendInstitutionManager;
+import org.goobi.persistence.ExtendedUserManager;
 import org.goobi.persistence.UserPaginator;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
@@ -83,7 +81,6 @@ import ugh.exceptions.WriteException;
 public class DeliveryManagementAdministrationPlugin implements IAdministrationPlugin {
 
     private static final long serialVersionUID = -3392517381597202123L;
-    private static final String INSTITUTION_MODE = "plugin_administration_deliveryManagement_displayMode_institution";
     private static final String USER_MODE = "plugin_administration_deliveryManagement_displayMode_user";
     private static final String PRIVACY_MODE = "plugin_administration_deliveryManagement_displayMode_privacyPolicy";
     private static final String ZDB_DATA_MODE = "plugin_administration_deliveryManagement_displayMode_zdbTitleData";
@@ -96,7 +93,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private String title = "intranda_administration_deliveryManagement";
 
     @Getter
-    private String displayMode = INSTITUTION_MODE;
+    private String displayMode = USER_MODE;
 
     @Getter
     @Setter
@@ -106,7 +103,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private List<String> modes;
 
     @Getter
-    private ExtendedInstitution institution;
+    private Institution institution;
 
     @Getter
     private transient Map<String, List<ConfiguredField>> configuredInstitutionFields = null;
@@ -120,9 +117,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     @Getter
     @Setter
     private String institutionSort;
-
-    @Getter
-    private ExtendedInstitutionPaginator institutionPaginator;
 
     @Getter
     private User user;
@@ -197,11 +191,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     @Getter
     private boolean displaySecondContact = false;
 
-
     public DeliveryManagementAdministrationPlugin() {
 
         modes = new ArrayList<>();
-        modes.add(INSTITUTION_MODE);
         modes.add(USER_MODE);
         modes.add(PRIVACY_MODE);
         modes.add(ZDB_DATA_MODE);
@@ -225,7 +217,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private void loadConfiguration() {
 
         modes = new ArrayList<>();
-        modes.add(INSTITUTION_MODE);
         modes.add(USER_MODE);
         Path config = Paths.get(new Helper().getGoobiConfigDirectory(), "plugin_" + title + ".xml");
         if (!StorageProvider.getInstance().isWritable(config)) {
@@ -275,15 +266,13 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
         metadataDisplayList = Arrays.asList(conf.getStringArray("/metadata"));
 
-        filterInstitution(); // temporary fix to load the data for the first page
+        filterUser(); // temporary fix to load the data for the first page
     }
 
     public void setDisplayMode(String displayMode) {
         if (this.displayMode == null || !this.displayMode.equals(displayMode)) {
             this.displayMode = displayMode;
-            if (displayMode.equals(INSTITUTION_MODE)) {
-                filterInstitution();
-            }
+
             if (displayMode.equals(USER_MODE)) {
                 filterUser();
             }
@@ -294,7 +283,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         }
     }
 
-    public void setInstitution(ExtendedInstitution institution) {
+    public void setInstitution(Institution institution) {
         if (this.institution == null || !this.institution.equals(institution)) {
             this.institution = institution;
             for (Entry<String, List<ConfiguredField>> fields : configuredInstitutionFields.entrySet()) {
@@ -314,70 +303,8 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         }
     }
 
-    public void saveInstitution() {
-        for (Entry<String, List<ConfiguredField>> fields : configuredInstitutionFields.entrySet()) {
-            for (ConfiguredField field : fields.getValue()) {
-                if (field.getFieldType().equals(COMBO_FIELD_NAME) && field.getBooleanValue()) {
-                    institution.getAdditionalData().put(field.getName(), field.getSubValue());
-                } else {
-                    institution.getAdditionalData().put(field.getName(), field.getValue());
-                }
-            }
-        }
-
-        ExtendendInstitutionManager.saveInstitution(institution);
-        filterInstitution();
-    }
-
-    public void deleteInstitution() {
-        ExtendendInstitutionManager.deleteInstitution(institution);
-        filterInstitution();
-    }
-
-    public void filterInstitution() {
-        ExtendendInstitutionManager manager = new ExtendendInstitutionManager();
-        institutionPaginator = new ExtendedInstitutionPaginator(getInsitutionSqlSortString(), institutionSearchFilter, manager);
-    }
-
-    private String getInsitutionSqlSortString() {
-        String sort = "";
-        if (StringUtils.isNotBlank(institutionSort)) {
-            switch (institutionSort) {
-                case "benutzer.Nachname, benutzer.Vorname":
-                case "benutzer.Nachname Desc, benutzer.Vorname Desc":
-                case "benutzer.login":
-                case "benutzer.login Desc":
-                case "benutzer.email":
-                case "benutzer.email Desc":
-                case "institution.shortName":
-                case "institution.shortName Desc":
-                case "institution.longName":
-                case "institution.longName Desc":
-                case "lastDate":
-                case "lastDate Desc":
-                    sort = institutionSort;
-                    break;
-                case "items":
-                    sort = "CAST(items as SIGNED INTEGER)";
-                    break;
-                case "items Desc":
-                    sort = "CAST(items as SIGNED INTEGER) Desc";
-                    break;
-                default:
-                    // free configured field
-                    if (institutionSort.endsWith("Desc")) {
-                        sort = "ExtractValue(institution.additional_data, '/root/" + institutionSort.replace(" Desc", "") + "') desc";
-                    } else {
-                        sort = "ExtractValue(institution.additional_data, '/root/" + institutionSort + "')";
-                    }
-                    break;
-            }
-        }
-        return sort;
-    }
-
     public void filterUser() {
-        UserManager m = new UserManager();
+        ExtendedUserManager m = new ExtendedUserManager();
         StringBuilder sqlQuery = new StringBuilder();
         sqlQuery.append("userstatus!='deleted'");
         if (StringUtils.isNotBlank(userSearchFilter)) {
@@ -422,7 +349,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     }
 
     private String getUserSqlSortString() {
-        String sort = "";
+        String sort = "benutzer.BenutzerID desc";
         if (StringUtils.isNotBlank(userSort)) {
             switch (userSort) {
                 case "benutzer.Nachname, benutzer.Vorname":
@@ -431,9 +358,17 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 case "benutzer.login Desc":
                 case "benutzer.email":
                 case "benutzer.email Desc":
-                case "institution.shortName":
-                case "institution.shortName Desc":
+                case "institution.longName":
+                case "institution.longName Desc":
+                case "lastDate":
+                case "lastDate Desc":
                     sort = userSort;
+                    break;
+                case "items":
+                    sort = "CAST(items as SIGNED INTEGER)";
+                    break;
+                case "items Desc":
+                    sort = "CAST(items as SIGNED INTEGER) Desc";
                     break;
                 default:
                     // free configured field
@@ -446,10 +381,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             }
         }
         return sort;
-    }
-
-    public void createNewInstitution() {
-        setInstitution(new ExtendedInstitution(new Institution()));
     }
 
     public void setUserIsActive(boolean active) {
@@ -479,8 +410,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                     field.setValue(user.getAdditionalData().get(field.getName()));
                 }
             }
-            ExtendedInstitution inst = new ExtendedInstitution(user.getInstitution());
-            setInstitution(inst);
+            setInstitution(user.getInstitution());
         }
     }
 
@@ -492,8 +422,19 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 user.getAdditionalData().put(field.getName(), field.getValue());
             }
         }
+
+        for (Entry<String, List<ConfiguredField>> fields : configuredInstitutionFields.entrySet()) {
+            for (ConfiguredField field : fields.getValue()) {
+                if (field.getFieldType().equals(COMBO_FIELD_NAME) && field.getBooleanValue()) {
+                    institution.getAdditionalData().put(field.getName(), field.getSubValue());
+                } else {
+                    institution.getAdditionalData().put(field.getName(), field.getValue());
+                }
+            }
+        }
         try {
             UserManager.saveUser(user);
+            InstitutionManager.saveInstitution(institution);
         } catch (DAOException e) {
             log.error(e);
         }
@@ -509,6 +450,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     public void deleteUser() {
         try {
             UserManager.deleteUser(user);
+            if (!ExtendedUserManager.isInstitutionHasUserAssigned(institution)) {
+                InstitutionManager.deleteInstitution(institution);
+            }
         } catch (DAOException e) {
             log.error(e);
         }
@@ -516,7 +460,10 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     }
 
     public void createNewUser() {
-        setUser(new User());
+        User u = new User();
+        Institution inst = new Institution();
+        u.setInstitution(inst);
+        setUser(u);
     }
 
     public Integer getAuthenticationType() {
@@ -534,21 +481,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             } catch (DAOException e) {
                 Helper.setFehlerMeldung("Error on writing to database", e);
             }
-        }
-    }
-
-    public Integer getCurrentInstitutionID() {
-        if (user.getInstitution() != null) {
-            return user.getInstitution().getId();
-        } else {
-            return Integer.valueOf(0);
-        }
-    }
-
-    public void setCurrentInstitutionID(Integer id) {
-        if (id != null && id.intValue() != 0) {
-            Institution i = ExtendendInstitutionManager.getInstitutionById(id);
-            user.setInstitution(i);
         }
     }
 
@@ -950,27 +882,13 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             Path importFile = copyFile(upload.getFileName(), upload.getInputStream());
             importInstitutionCoreData(importFile);
             editionMode = "";
-            filterInstitution();
+            filterUser();
             // delete file after import
             StorageProvider.getInstance().deleteFile(importFile);
         } catch (IOException e) {
             log.error("Error while uploading files", e);
         }
     }
-
-    public void openInstitution() {
-        // save current user
-        saveUser();
-        // get institution from user
-        ExtendedInstitution inst = new ExtendedInstitution(user.getInstitution());
-        // load institution data
-        setInstitution(inst);
-        // switch to institution view
-        displayMode = INSTITUTION_MODE;
-        // open edit mode
-        editionMode = "edit";
-    }
-
 
     public void disableContact() {
         // delete content from second contract page
