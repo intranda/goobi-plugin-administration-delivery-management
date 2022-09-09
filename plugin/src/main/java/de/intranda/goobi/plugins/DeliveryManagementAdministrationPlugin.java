@@ -32,6 +32,7 @@ import org.goobi.beans.Ldap;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
+import org.goobi.beans.User.UserStatus;
 import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.DatabasePaginator;
 import org.goobi.managedbeans.ProcessBean;
@@ -84,6 +85,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private static final String USER_MODE = "plugin_administration_deliveryManagement_displayMode_user";
     private static final String PRIVACY_MODE = "plugin_administration_deliveryManagement_displayMode_privacyPolicy";
     private static final String ZDB_DATA_MODE = "plugin_administration_deliveryManagement_displayMode_zdbTitleData";
+
+    @Getter
+    private String[] possibleUserStatus = {UserStatus.REJECTED.getName(), UserStatus.REGISTERED.getName(), UserStatus.ACTIVE.getName() };
 
     @Getter
     @Setter
@@ -141,6 +145,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     // is set to true, when the account was disabled and gets activated
     private boolean activateAccount = false;
+    private boolean rejectedAccount = false;
 
     @Getter
     @Setter
@@ -391,12 +396,31 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             // account gets deactivated
             activateAccount = false;
         }
+
+        // TODO rejected
         user.setActive(active);
     }
 
     public boolean isUserIsActive() {
         return user.isActive();
     }
+
+    public void setUserStatus(String status) {
+        activateAccount = false;
+        rejectedAccount = false;
+        UserStatus us = UserStatus.getStatusByName(status);
+        if (!user.getStatus().equals(UserStatus.ACTIVE) && us.equals(UserStatus.ACTIVE)) {
+            activateAccount = true;
+        } else   if (!user.getStatus().equals(UserStatus.REJECTED) && us.equals(UserStatus.REJECTED)) {
+            rejectedAccount = true;
+        }
+        user.setStatus(us);
+    }
+
+    public String getUserStatus() {
+        return user.getStatus().getName();
+    }
+
 
     public void setUser(User user) {
         if (this.user == null || !this.user.equals(user)) {
@@ -443,6 +467,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             String messageSubject = SendMail.getInstance().getConfig().getUserActivationMailSubject();
             String messageBody = SendMail.getInstance().getConfig().getUserActivationMailBody().replace("{login}", user.getLogin());
             SendMail.getInstance().sendMailToUser(messageSubject, messageBody, user.getEmail());
+        }else if (rejectedAccount && StringUtils.isNotBlank(user.getEmail())) {
+            // TODO send mail when account gets rejected
+
         }
         filterUser();
     }
@@ -461,6 +488,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     public void createNewUser() {
         User u = new User();
+        u.setStatus(UserStatus.REGISTERED);
         Institution inst = new Institution();
         u.setInstitution(inst);
         setUser(u);

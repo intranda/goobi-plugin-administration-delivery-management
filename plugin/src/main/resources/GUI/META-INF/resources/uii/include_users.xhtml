@@ -266,24 +266,24 @@
                             value="edit"
                             target="#{AdministrationForm.administrationPlugin.editionMode}" />
                     </button>
-                    
+
                     <p:fileUpload
-                    listener="#{AdministrationForm.administrationPlugin.handleFileUpload}"
-                    id="upload"
-                    name="uploadName"
-                    auto="true"
-                    style=""
-                    mode="advanced"
-                    multiple="false"
-                    dragDropSupport="true"
-                    label="#{msgs.plugin_administration_deliveryManagement_uploadInstitutionData}"
-                    allowTypes="/(\.|\/)(xml)$/"
-                    update="@form">
-                    <f:passThroughAttribute
-                        name="aria-label"
-                        value="#{msgs.plugin_administration_deliveryManagement_uploadFile}" />
-                </p:fileUpload>
-                    
+                        listener="#{AdministrationForm.administrationPlugin.handleFileUpload}"
+                        id="upload"
+                        name="uploadName"
+                        auto="true"
+                        style=""
+                        mode="advanced"
+                        multiple="false"
+                        dragDropSupport="true"
+                        label="#{msgs.plugin_administration_deliveryManagement_uploadInstitutionData}"
+                        allowTypes="/(\.|\/)(xml)$/"
+                        update="@form">
+                        <f:passThroughAttribute
+                            name="aria-label"
+                            value="#{msgs.plugin_administration_deliveryManagement_uploadFile}" />
+                    </p:fileUpload>
+
                     <div class="dataTables_paginate">
                         <intranda:tablePaginator2
                             id="user"
@@ -292,7 +292,7 @@
                     </div>
                 </div>
 
-                
+
             </h:panelGroup>
 
             <h:panelGroup
@@ -400,14 +400,35 @@
                         </div>
                     </div>
 
-
-                    <intranda:formInputCheckBox
-                        classLeft="col-sm-3 control-label notFocusable"
-                        id="isActive"
-                        label="#{msgs.istAktiv}"
-                        field="#{AdministrationForm.administrationPlugin.userIsActive}"
-                        help="#{msgs.helpIstAktiv}"
-                        name="istAktiv" />
+                    <div class="form-group">
+                        <div class="col-sm-3 control-label">
+                            <h:outputLabel
+                                for="status"
+                                value="#{msgs.plugin_administration_deliveryManagement_accountStatus}">
+                            </h:outputLabel>
+                        </div>
+                        <div class="col-sm-9">
+                            <h:selectOneRadio
+                                id="status"
+                                styleClass="form-control"
+                                value="#{AdministrationForm.administrationPlugin.userStatus}"
+                                onfocus="focusField(this);">
+                                <f:ajax
+                                    render="@form"
+                                    execute="@this focusField" />
+                                <f:selectItems
+                                    value="#{AdministrationForm.administrationPlugin.possibleUserStatus}"
+                                    itemLabel="#{msgs[val]}"
+                                    itemValue="#{val}"
+                                    var="val" />
+                            </h:selectOneRadio>
+                            <h:message
+                                for="status"
+                                showDetail="true"
+                                styleClass="help-inline font-danger" />
+                            <intranda:formHelp content="#{msgs.helpIstAktiv}" />
+                        </div>
+                    </div>
 
                     <intranda:formInputDropDown
                         classLeft="col-sm-3 control-label notFocusable"
@@ -641,51 +662,34 @@
                                         </h:selectOneMenu>
 
                                         <ui:fragment rendered="#{item.fieldType=='combo'}">
-                                            <div
-                                                class="form-group"
-                                                style="">
-                                                <div
-                                                    class="col-sm-3 control-label"
-                                                    tabindex="-1">
-                                                    <h:outputLabel
-                                                        for="id"
-                                                        value="#{msgs[item.label]}" />
-                                                </div>
-                                                <div
-                                                    class="col-sm-9"
-                                                    style="">
-                                                    <h:panelGroup id="combo">
-                                                        <h:selectBooleanCheckbox
-                                                            id="combo1"
-                                                            styleClass="form-control"
-                                                            value="#{item.booleanValue}"
-                                                            validator="#{item.validateField}"
-                                                            onfocus="focusField(this);">
-                                                            <f:ajax
-                                                                render="@form"
-                                                                execute="@this focusField" />
-                                                        </h:selectBooleanCheckbox>
-                                                        <h:selectOneRadio
-                                                            rendered="#{item.booleanValue}"
-                                                            id="combo2"
-                                                            styleClass="form-control"
-                                                            value="#{item.subValue}"
-                                                            validator="#{item.validateField}"
-                                                            onfocus="focusField(this);">
-                                                            <f:ajax
-                                                                render="@form"
-                                                                execute="@this focusField" />
-                                                            <f:selectItems
-                                                                value="#{item.selectItemList}"
-                                                                itemLabel="#{msgs[val]}"
-                                                                itemValue="#{val}"
-                                                                var="val" />
-                                                        </h:selectOneRadio>
-                                                    </h:panelGroup>
-                                                    <intranda:formHelp content="#{item.helpMessage}" />
-                                                </div>
-                                            </div>
-
+                                            <h:panelGroup id="combo">
+                                                <h:selectBooleanCheckbox
+                                                    id="combo1"
+                                                    styleClass="form-control"
+                                                    value="#{item.booleanValue}"
+                                                    validator="#{item.validateField}"
+                                                    onfocus="focusField(this);">
+                                                    <f:ajax
+                                                        render="@form"
+                                                        execute="@this focusField" />
+                                                </h:selectBooleanCheckbox>
+                                                <h:selectOneRadio
+                                                    rendered="#{item.booleanValue}"
+                                                    id="combo2"
+                                                    styleClass="form-control"
+                                                    value="#{item.subValue}"
+                                                    validator="#{item.validateField}"
+                                                    onfocus="focusField(this);">
+                                                    <f:ajax
+                                                        render="@form"
+                                                        execute="@this focusField" />
+                                                    <f:selectItems
+                                                        value="#{item.selectItemList}"
+                                                        itemLabel="#{msgs[val]}"
+                                                        itemValue="#{val}"
+                                                        var="val" />
+                                                </h:selectOneRadio>
+                                            </h:panelGroup>
                                         </ui:fragment>
 
                                         <h:panelGroup
