@@ -257,6 +257,7 @@
                     <button
                         jsf:id="newUser"
                         class="btn btn-primary font-size-s"
+                        style="float: left; margin-right: 10px;"
                         jsf:action="#{AdministrationForm.administrationPlugin.createNewUser}"
                         jsf:immediate="true">
                         <span class="fa fa-plus margin-right-5" />
@@ -265,15 +266,8 @@
                             value="edit"
                             target="#{AdministrationForm.administrationPlugin.editionMode}" />
                     </button>
-                    <div class="dataTables_paginate">
-                        <intranda:tablePaginator2
-                            id="user"
-                            name="users"
-                            paginator="#{AdministrationForm.administrationPlugin.userPaginator}" />
-                    </div>
-                </div>
-
-                <p:fileUpload
+                    
+                    <p:fileUpload
                     listener="#{AdministrationForm.administrationPlugin.handleFileUpload}"
                     id="upload"
                     name="uploadName"
@@ -289,6 +283,16 @@
                         name="aria-label"
                         value="#{msgs.plugin_administration_deliveryManagement_uploadFile}" />
                 </p:fileUpload>
+                    
+                    <div class="dataTables_paginate">
+                        <intranda:tablePaginator2
+                            id="user"
+                            name="users"
+                            paginator="#{AdministrationForm.administrationPlugin.userPaginator}" />
+                    </div>
+                </div>
+
+                
             </h:panelGroup>
 
             <h:panelGroup
