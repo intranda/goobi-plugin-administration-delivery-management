@@ -101,6 +101,46 @@ Click here to login: &lt;a href="{url}"&gt;login.&lt;/a&gt;
 	</registration>
 
 
+	<userCreation>
+		<subject>Emailverifizierung für ihr Benutzerkonto</subject>
+		<body>
+Sehr geehrte(r) {firstname} {lastname},&lt;br /&gt;
+&lt;br /&gt;
+Ihr Benutzerkonto für die Ablieferung von E-Pflicht-Publikationen bei der Zentral- und Landesbibliothek Berlin wurde erfolgreich angelegt.&lt;br /&gt;
+&lt;br /&gt;			
+Bitte bewahren Sie die Daten dieser e-mail gut auf und schützen Sie diese vor dem Zugriff Dritter.&lt;br /&gt;
+&lt;br /&gt;			
+Ihr Benutzername ist: {login}&lt;br /&gt;
+Ihr Passwort: {password}&lt;br /&gt;
+&lt;br /&gt;			
+Sie können Ihr Kennwort in den Nutzereinstellungen jederzeit ändern.&lt;br /&gt;
+&lt;br /&gt;
+Um die e-mail-Adresse zu bestätigen und die Registrierung abzuschließen, klicken Sie bitte &lt;a href="{url}"&gt;hier.&lt;/a&gt;.&lt;br /&gt;
+&lt;br /&gt;
+Mit freundlichen Grüßen,&lt;br /&gt;
+Team E-Pflicht&lt;br /&gt;
+&lt;br /&gt;
+------&lt;br /&gt;
+Referat 4C Landesbibliothek Digital&lt;br /&gt;
+Abt. 4 Landesbibliothek der Zentral- und Landesbibliothek Berlin&lt;br /&gt;
+E-Pflicht: https://digital.zlb.de/e-pflicht&lt;br /&gt;
+		</body>
+	</userCreation>
+
+	<userActivation>
+		<subject>Activation successful</subject>
+		<body>
+Your Goobi account was activated.&lt;br /&gt;
+		</body>
+	</userActivation>
+
+<userRejection>
+		<subject>Activation denied</subject>
+		<body>
+Your Goobi account was activated.&lt;br /&gt;
+		</body>
+</userRejection>
+
 	<!-- metadata to display in process list -->
 	<metadata>TitleDocMain</metadata>
 	<metadata>TitleDocSub1</metadata>

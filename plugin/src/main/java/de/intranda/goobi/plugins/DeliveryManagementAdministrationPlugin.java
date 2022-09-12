@@ -489,7 +489,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     public void deleteUser() {
         try {
             UserManager.deleteUser(user);
-            if (!ExtendedUserManager.isInstitutionHasUserAssigned(institution)) {
+            if (!UserStatus.REGISTERED.equals(user.getStatus()) && !ExtendedUserManager.isInstitutionHasUserAssigned(institution)) {
                 InstitutionManager.deleteInstitution(institution);
             }
         } catch (DAOException e) {
