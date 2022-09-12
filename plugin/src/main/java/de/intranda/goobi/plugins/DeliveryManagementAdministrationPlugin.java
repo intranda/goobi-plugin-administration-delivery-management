@@ -87,7 +87,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private static final String ZDB_DATA_MODE = "plugin_administration_deliveryManagement_displayMode_zdbTitleData";
 
     @Getter
-    private String[] possibleUserStatus = {UserStatus.REJECTED.getName(), UserStatus.REGISTERED.getName(), UserStatus.ACTIVE.getName() };
+    private String[] possibleUserStatus = { UserStatus.REJECTED.getName(), UserStatus.REGISTERED.getName(), UserStatus.ACTIVE.getName() };
 
     @Getter
     @Setter
@@ -196,6 +196,11 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     @Getter
     private boolean displaySecondContact = false;
 
+    private String userActivationMailSubject;
+    private String userActivationMailBody;
+    private String userRejectionMailSubject;
+    private String userRejectionMailBody;
+
     public DeliveryManagementAdministrationPlugin() {
 
         modes = new ArrayList<>();
@@ -270,6 +275,11 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         }
 
         metadataDisplayList = Arrays.asList(conf.getStringArray("/metadata"));
+
+        userActivationMailSubject = conf.getString("/userActivation/subject");
+        userActivationMailBody = conf.getString("/userActivation/body");
+        userRejectionMailSubject = conf.getString("/userRejection/subject");
+        userRejectionMailBody = conf.getString("/userRejection/body");
 
         filterUser(); // temporary fix to load the data for the first page
     }
@@ -396,8 +406,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             // account gets deactivated
             activateAccount = false;
         }
-
-        // TODO rejected
         user.setActive(active);
     }
 
@@ -411,7 +419,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         UserStatus us = UserStatus.getStatusByName(status);
         if (!user.getStatus().equals(UserStatus.ACTIVE) && us.equals(UserStatus.ACTIVE)) {
             activateAccount = true;
-        } else   if (!user.getStatus().equals(UserStatus.REJECTED) && us.equals(UserStatus.REJECTED)) {
+        } else if (!user.getStatus().equals(UserStatus.REJECTED) && us.equals(UserStatus.REJECTED)) {
             rejectedAccount = true;
         }
         user.setStatus(us);
@@ -420,7 +428,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     public String getUserStatus() {
         return user.getStatus().getName();
     }
-
 
     public void setUser(User user) {
         if (this.user == null || !this.user.equals(user)) {
@@ -464,12 +471,17 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         }
         if (activateAccount && StringUtils.isNotBlank(user.getEmail())) {
             // send mail when account gets activated
-            String messageSubject = SendMail.getInstance().getConfig().getUserActivationMailSubject();
-            String messageBody = SendMail.getInstance().getConfig().getUserActivationMailBody().replace("{login}", user.getLogin());
+            String messageSubject = userActivationMailSubject;
+            String messageBody = userActivationMailBody.replace("{login}", user.getLogin())
+                    .replace("{firstname}", user.getVorname())
+                    .replace("{lastname}", user.getNachname());
             SendMail.getInstance().sendMailToUser(messageSubject, messageBody, user.getEmail());
-        }else if (rejectedAccount && StringUtils.isNotBlank(user.getEmail())) {
-            // TODO send mail when account gets rejected
-
+        } else if (rejectedAccount && StringUtils.isNotBlank(user.getEmail())) {
+            String messageSubject = userRejectionMailSubject;
+            String messageBody = userRejectionMailBody.replace("{login}", user.getLogin())
+                    .replace("{firstname}", user.getVorname())
+                    .replace("{lastname}", user.getNachname());
+            SendMail.getInstance().sendMailToUser(messageSubject, messageBody, user.getEmail());
         }
         filterUser();
     }

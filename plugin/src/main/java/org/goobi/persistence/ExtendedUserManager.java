@@ -217,7 +217,7 @@ public class ExtendedUserManager implements IManager {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            int numberOfUser = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler);
+            int numberOfUser = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler, institution.getId());
             return numberOfUser != 0;
 
         } catch (SQLException e) {
