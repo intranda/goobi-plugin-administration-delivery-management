@@ -413,9 +413,7 @@
                                 styleClass="form-control"
                                 value="#{AdministrationForm.administrationPlugin.userStatus}"
                                 onfocus="focusField(this);">
-                                <f:ajax
-                                    render="@form"
-                                    execute="@this focusField" />
+                              
                                 <f:selectItems
                                     value="#{AdministrationForm.administrationPlugin.possibleUserStatus}"
                                     itemLabel="#{msgs[val]}"
@@ -728,9 +726,6 @@
                         jsf:action="#{AdministrationForm.administrationPlugin.saveUser}">
                         <span class="fa fa-save margin-right-5" />
                         <h:outputText value="#{msgs.speichern}" />
-                        <f:setPropertyActionListener
-                            value=""
-                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
                         <f:ajax
                             render="@all"
                             execute="@form" />

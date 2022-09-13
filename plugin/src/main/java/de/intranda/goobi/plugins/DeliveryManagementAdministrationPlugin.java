@@ -447,6 +447,19 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     public void saveUser() {
         for (ConfiguredField field : configuredUserFields) {
+            if (!field.isFieldValid()) {
+                return;
+            }
+        }
+        for (Entry<String, List<ConfiguredField>> fields : configuredInstitutionFields.entrySet()) {
+            for (ConfiguredField field : fields.getValue()) {
+                if (!field.isFieldValid()) {
+                    return;
+                }
+            }
+        }
+
+        for (ConfiguredField field : configuredUserFields) {
             if (field.getFieldType().equals(COMBO_FIELD_NAME) && field.getBooleanValue()) {
                 user.getAdditionalData().put(field.getName(), field.getSubValue());
             } else {
@@ -483,6 +496,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                     .replace("{lastname}", user.getNachname());
             SendMail.getInstance().sendMailToUser(messageSubject, messageBody, user.getEmail());
         }
+        editionMode="";
         filterUser();
     }
 

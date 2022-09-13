@@ -21,7 +21,7 @@
 
 		<!-- institution data -->
 
-		<field type="institution" fieldType="input" label="Straße" name="street" position="page2" required="true" validation="" validationErrorDescription="Das Feld ist ein Pflichtfeld." helpMessage="Bitte geben Sie die Straße Ihrer Institution, alternativ Ihre Straße an." placeholderText="Straße" />
+		<field type="institution" fieldType="input" label="Straße" name="street" position="page2" required="true" validation="" validationErrorDescription="Das Feld ist ein Pflichtfeld." helpMessage="" placeholderText="Straße" />
 		<field type="institution" fieldType="input" label="Hausnummer" name="number" position="page2" required="true" validation="[A-Za-z0-9]+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern und Buchstaben enthalten." helpMessage="Tragen Sie bitte auch die zugehörige Hausnummer ein." placeholderText="plugin_rest_usercreation_new_account_institutionNamePlaceholder" />
 		<field type="institution" fieldType="input" label="Postleitzahl" name="zipcode" position="page2" required="true" validation="\d{5}" validationErrorDescription="Das Feld ist ein Pflichtfeld und muss eine fünfstellige Postleitzahl enthalten." helpMessage="Geben Sie bitte die Postleitzahl ein." />
 		<field type="institution" fieldType="input" label="Ort" name="city" position="page2" required="true" validation="" validationErrorDescription="" helpMessage="Das Feld ist ein Pflichtfeld." />
@@ -137,7 +137,7 @@ Your Goobi account was activated.&lt;br /&gt;
 <userRejection>
 		<subject>Activation denied</subject>
 		<body>
-Your Goobi account was activated.&lt;br /&gt;
+Your Goobi account was rejected.&lt;br /&gt;
 		</body>
 </userRejection>
 
