@@ -105,7 +105,7 @@
 
 /* SEARCH BTN INSIDE FORM LABELS */
 .btn--in-label:hover {
-  
+
   background-color: #1e74c5;
   color: #fff;
 }
@@ -113,4 +113,57 @@
 .font-asterisk-absolute {
   position: absolute;
   margin-left: 3px;
+}
+
+
+/* ****************************************
+ * INCLUDE_USERS
+ * ************************************* */
+
+.deliveryManagement .users .box-title {
+  padding-right: 10px;
+}
+
+.deliveryManagement .box-title h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Messages `Stammdaten importieren` */
+.deliveryManagement .ui-fileupload-content.ui-widget-content.ui-corner-bottom {
+  border: 0;
+}
+
+.deliveryManagement .ui-messages-error.ui-corner-all {
+  margin: 0;
+  transform: translateY(-4px);
+}
+
+/* Account status options */
+.accountStatus__options__table {
+  height: unset;
+  padding-left: unset;
+}
+
+.accountStatus__options__table tr {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+
+/* Create new contact button */
+.users .users__title-btn {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: #fff;
+  background-color: #368ee0;
+  margin: 0 !important;
+  margin-right: 10px;
+}
+
+.users .users__title-btn:hover {
+  text-decoration: none;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0 0);
 }
