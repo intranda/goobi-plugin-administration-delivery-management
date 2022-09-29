@@ -334,11 +334,14 @@
                             <h:outputLabel
                                 for="loginAs"
                                 value="#{msgs.login}">
-                                <span
-                                    class="fa fa-asterisk pull-right font-asterisk"
-                                    title="#{msgs.requiredField}"
-                                    data-toggle="tooltip" />
                             </h:outputLabel>
+                            <h:panelGroup rendered="#{item.required}">
+                            <span
+                                class="fa fa-asterisk pull-right font-asterisk"
+                                data-bs-original-title="#{msgs.requiredField}"
+                                data-toggle="tooltip" />
+                            </h:panelGroup>
+
                         </div>
                         <div class="col-sm-9">
                             <x:inputText
@@ -377,11 +380,13 @@
                             <h:outputLabel
                                 for="ldapGruppe"
                                 value="#{msgs.user_edit_loginType}">
-                                <span
-                                    class="fa fa-asterisk pull-right font-asterisk"
-                                    title="#{msgs.requiredField}"
-                                    data-toggle="tooltip" />
                             </h:outputLabel>
+                            <h:panelGroup rendered="#{item.required}">
+                            <span
+                                class="fa fa-asterisk pull-right font-asterisk"
+                                data-bs-original-title="#{msgs.requiredField}"
+                                data-toggle="tooltip" />
+                            </h:panelGroup>
                         </div>
                         <div class="col-sm-9">
                             <h:selectOneMenu
@@ -412,10 +417,10 @@
                         <div class="col-sm-9">
                             <h:selectOneRadio
                                 id="status"
-                                styleClass="form-control"
+                                styleClass="form-control accountStatus__options__table"
                                 value="#{AdministrationForm.administrationPlugin.userStatus}"
                                 onfocus="focusField(this);">
-                              
+
                                 <f:selectItems
                                     value="#{AdministrationForm.administrationPlugin.possibleUserStatus}"
                                     itemLabel="#{msgs[val]}"
@@ -574,7 +579,7 @@
                                     jsf:id="createNewContact"
                                     jsf:action="#{AdministrationForm.administrationPlugin.createNewContact}"
                                     style="margin-bottom: 20px;"
-                                    class="btn btn-link ms-auto pull-right">
+                                    class="btn btn-link ms-auto pull-right users__title-btn">
 
                                     <ui:include src="/uii/includes/icon-plus.xhtml" />
                                     <span>
@@ -587,7 +592,7 @@
                                     jsf:id="disableContact"
                                     jsf:action="#{AdministrationForm.administrationPlugin.disableContact}"
                                     style="float: right"
-                                    class="btn btn-link ms-auto pull-right">
+                                    class="btn btn-link ms-auto pull-right users__title-btn">
 
                                     <span>
                                         <h:outputText value="#{msgs.plugin_rest_usercreation_new_disableContact}" />
