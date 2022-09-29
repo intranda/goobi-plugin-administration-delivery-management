@@ -32,13 +32,15 @@
         <main class="#{AdministrationForm.administrationPlugin.editionMode=='edit' ? 'editMode' : ''}">
             <h:panelGroup>
                 <div class="row deliveryManagement">
-                    <div class="col-sm-12">
+                    <h:panelGroup
+                        layout="block"
+                        styleClass="#{AdministrationForm.administrationPlugin.editionMode=='edit' ? 'col-sm-6' : 'col-sm-12'}">
                         <div class="box box-color box-bordered lightgrey">
                             <div
                                 class="box-title"
                                 jsf:id="box-title">
                                 <h2>
-                                    <span class="fa fa-plug"/>
+                                    <span class="fa fa-plug" />
                                     <h:outputText value="#{msgs[AdministrationForm.administrationPlugin.title]}" />
                                     <h:outputText
                                         value=": #{msgs[AdministrationForm.administrationPlugin.displayMode]}"
@@ -109,7 +111,29 @@
 
                             </div>
                         </div>
-                    </div>
+                    </h:panelGroup>
+                    <h:panelGroup
+                        layout="block"
+                        styleClass="#{NavigationForm.uiStatus['journalBig']?'col-12 col-md-12':'col-6 col-md-6'}"
+                        rendered="#{AdministrationForm.administrationPlugin.editionMode=='edit'}">
+                        <!-- Box for process log -->
+                        <x:aliasBeansScope>
+                            <x:aliasBean
+                                alias="#{showBigButton}"
+                                value="true" />
+                            <x:aliasBean
+                                alias="#{showFolderSelection}"
+                                value="false" />
+                            <x:aliasBean
+                                alias="#{bean}"
+                                value="#{AdministrationForm.administrationPlugin.user}" />
+                            <f:subview id="sublog">
+                                <ui:include src="/uii/includes/journal.xhtml" />
+                            </f:subview>
+                        </x:aliasBeansScope>
+                        <!-- // Box for process log -->
+
+                    </h:panelGroup>
                 </div>
             </h:panelGroup>
         </main>
