@@ -16,16 +16,6 @@
 
     <composite:implementation>
     
-    	<style>
-    		.dataTables_wrapper .dataTables_info span {
-    			font-weight: normal;
-			}
-			
-			.mce-content-body {
-			    font-size: 13px;
-			}
-    	</style>
-    
         <h:form styleClass="form-horizontal form-bordered">
             <h:panelGroup
                 layout="block"
@@ -985,32 +975,26 @@
 
                             <!-- Embedded Metadata -->
                             <td>
-                                <div class="box thin-margin lightgrey box-bordered box-small">
-                                	<div class="box-title">
-										<h3>
-											#{msgs.plugin_administration_deliveryManagement_details}
-										</h3>
-									</div>
-                                	<div class="box-content nopadding">
-                                        <table class="table table-hover table-bordered">
+                            
+                               
+                                        <table class="table table-borderless">
 		                                    <ui:repeat
 		                                        var="metadata"
 		                                        value="#{AdministrationForm.administrationPlugin.metadataDisplayList}"
 		                                        varStatus="metadatastatus">
 		                                        <ui:fragment rendered="#{zdbItem.getMetadataValue(metadata) != ''}">
 		                                            <tr>
-		                                                <td class="tableColumnWidth100">
+		                                                <td style="width:100px;" class="tableColumnWidth100 smallertablecell">
 		                                                    <h:outputText value="#{msgs['process_grid_'.concat(metadata)]}:" />
 		                                                </td>
-		                                                <td>
+		                                                <td style="width:200px;" class="tableColumnWidthLong smallertablecell">
 		                                                    <h:outputText value="#{zdbItem.getMetadataValue(metadata)}" />
 		                                                </td>
 		                                            </tr>
 		                                        </ui:fragment>
 		                                    </ui:repeat>
 		                                </table>
-	                                </div>
-                                </div>
+	                              
                             </td>
 
 

@@ -167,3 +167,19 @@
   text-decoration: none;
   background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0 0);
 }
+
+
+
+
+
+.dataTables_wrapper .dataTables_info span {
+ 	font-weight: normal;
+}
+
+.mce-content-body {
+    font-size: 13px !important;
+}
+
+.smallertablecell{
+	padding: 4px !important;
+}

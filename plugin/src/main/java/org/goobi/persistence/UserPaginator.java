@@ -17,8 +17,7 @@ public class UserPaginator extends DatabasePaginator {
 
     public UserPaginator(String order, String filter, IManager manager) {
         super(order, filter, manager, null);
-        institution = null;
-        pageSize = 10;
+        institution = null;        
         try {
             totalResults = manager.getHitSize(order, filter, null);
             load();
