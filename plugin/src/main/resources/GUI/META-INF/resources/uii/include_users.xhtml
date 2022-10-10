@@ -15,6 +15,13 @@
     </composite:interface>
 
     <composite:implementation>
+    
+    	<style>
+    		.dataTables_wrapper .dataTables_info span {
+    			font-weight: normal;
+			}
+    	</style>
+    
         <h:form
             styleClass="form-horizontal form-bordered"
             enctype="multipart/form-data">
@@ -58,17 +65,17 @@
                         style="display:none"
                         action="#{AdministrationForm.administrationPlugin.filterUser}" />
                 </div>
-                <!-- checkbox to show inactive users only -->
+                <!-- checkbox to show all users -->
                 <div class="dataTables_filter">
                     <button
                         jsf:id="excludeActiveUsers"
                         class="btn searchfieldbuttongroup hidden-xs"
                         jsf:action="#{AdministrationForm.administrationPlugin.filterUser}"
                         jsf:immediate="true">
-                        <span class="fa #{AdministrationForm.administrationPlugin.showOnlyInactiveUser?'fa-check-square-o':'fa-square-o'} margin-right-5" />
+                        <span class="fa #{AdministrationForm.administrationPlugin.showOnlyInactiveUser?'fa-square-o':'fa-check-square-o'} margin-right-5" />
                         <h:outputText
                             styleClass="font-size-s"
-                            value="#{msgs.plugin_administration_deliveryManagement_showOnlyInactiveUser}" />
+                            value="#{msgs.plugin_administration_deliveryManagement_showAllUsers}" />
                         <f:setPropertyActionListener
                             target="#{AdministrationForm.administrationPlugin.showOnlyInactiveUser}"
                             value="#{not AdministrationForm.administrationPlugin.showOnlyInactiveUser}" />
@@ -79,13 +86,15 @@
                     styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
                     var="item"
                     value="#{AdministrationForm.administrationPlugin.userPaginator.list}">
+                    
+                    <!-- NAME -->
                     <x:column>
                         <f:facet name="header">
                             <button
                                 class="button-link"
                                 style="width: 100%; text-align: left;"
                                 jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">
-                                <h:outputText value="#{msgs.benutzer}" />
+                                <h:outputText value="#{msgs.plugin_administration_deliveryManagement_name}" />
                                 <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.userSort== 'benutzer.Nachname Desc, benutzer.Vorname Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.userSort== 'benutzer.Nachname, benutzer.Vorname' ?'fa-sort-asc':'fa-sort'}"></span>
                                 <f:setPropertyActionListener
                                     target="#{AdministrationForm.administrationPlugin.userSort}"
@@ -95,13 +104,11 @@
                         </f:facet>
                         <h:outputText
                             value="#{item.user.nachname}, #{item.user.vorname}"
-                            styleClass="userID_#{item.user.vorname}_#{item.user.nachname} #{not item.active?'font-light':''}"
+                            styleClass="userID_#{item.user.vorname}_#{item.user.nachname}"
                             title="#{item.user.login}" />
                     </x:column>
 
-
-
-
+					<!-- LOGIN -->
                     <x:column>
                         <f:facet name="header">
                             <button
@@ -117,11 +124,10 @@
                             </button>
                         </f:facet>
                         <h:outputText
-                            value="#{item.user.login}"
-                            styleClass="#{not item.active?'font-light':''}" />
+                            value="#{item.user.login}"/>
                     </x:column>
 
-
+					<!-- EMAIL -->
                     <x:column>
                         <f:facet name="header">
                             <button
@@ -137,18 +143,17 @@
                             </button>
                         </f:facet>
                         <h:outputText
-                            value="#{item.user.email}"
-                            styleClass="#{not item.active?'font-light':''}" />
+                            value="#{item.user.email}" />
                     </x:column>
 
-
+					<!-- INSTITUTION -->
                     <x:column>
                         <f:facet name="header">
                             <button
                                 class="button-link"
                                 style="width: 100%; text-align: left;"
                                 jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">
-                                <h:outputText value="#{msgs.institution_longName}" />
+                                <h:outputText value="#{msgs.plugin_administration_deliveryManagement_intitution}" />
                                 <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.userSort== 'institution.longName Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.userSort== 'institution.longName' ?'fa-sort-asc':'fa-sort'}"></span>
                                 <f:setPropertyActionListener
                                     target="#{AdministrationForm.administrationPlugin.userSort}"
@@ -156,9 +161,10 @@
                                 <f:ajax render="@form" />
                             </button>
                         </f:facet>
-                        <h:outputText value="#{item.institution.longName}" />
+                        <h:outputText value="#{item.institution.longName}"/>
                     </x:column>
 
+					<!-- LAST CHANGE -->
                     <x:column>
                         <f:facet name="header">
                             <button
@@ -173,8 +179,11 @@
                                 <f:ajax render="@form" />
                             </button>
                         </f:facet>
-                        <h:outputText value="#{item.lastUploadDate}" />
+                        <h:outputText value="#{item.lastUploadDate == null ? ' - ' : item.lastUploadDate}" 
+                        	styleClass="#{not item.active?'font-light':''}"/>
                     </x:column>
+                    
+                    <!-- NUMBER OF UPLOADS -->
                     <x:column>
                         <f:facet name="header">
                             <button
@@ -189,13 +198,51 @@
                                 <f:ajax render="@form" />
                             </button>
                         </f:facet>
-                        <h:outputText value="#{item.numberOfUploads}" />
+                        <h:outputText value="#{item.numberOfUploads gt 0 ? item.numberOfUploads : '-'}" 
+                        	styleClass="#{not item.active?'font-light':''}"/>
                     </x:column>
 
+					<!-- ACCOUNT STATUS -->
+                    <x:column>
+                        <f:facet name="header">
+                            <button
+                                class="button-link"
+                                style="width: 100%; text-align: left;"
+                                jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">
+                                <h:outputText value="#{msgs.plugin_administration_deliveryManagement_status}" />
+                                <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.userSort== 'status Desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.userSort== 'status' ?'fa-sort-asc':'fa-sort'}"></span>
+                                <f:setPropertyActionListener
+                                    target="#{AdministrationForm.administrationPlugin.userSort}"
+                                    value="#{AdministrationForm.administrationPlugin.userSort== 'status' ? 'status Desc' : 'status' }" />
+                                <f:ajax render="@form" />
+                            </button>
+                        </f:facet>
+                        
+                        <h:panelGroup  rendered="#{item.user.status eq 'REGISTERED'}"  class="badge badge-intranda-orange">
+							<i class="fa fa-key"></i> #{msgs.plugin_administration_deliveryManagement_displayMode_user_status_registered}
+						</h:panelGroup>
+						<h:panelGroup  rendered="#{item.user.status eq 'ACTIVE'}"  class="badge badge-intranda-green">
+							<i class="fa fa-unlock"></i> #{msgs.plugin_administration_deliveryManagement_displayMode_user_status_active}
+						</h:panelGroup>
+						<h:panelGroup  rendered="#{item.user.status eq 'INACTIVE'}"  class="badge badge-intranda-grey">
+							<i class="fa fa-lock"></i> #{msgs.plugin_administration_deliveryManagement_displayMode_user_status_inactive}
+						</h:panelGroup>
+						<h:panelGroup  rendered="#{item.user.status eq 'REJECTED'}"  class="badge badge-intranda-red">
+							<i class="fa fa-lock"></i> ##{msgs.plugin_administration_deliveryManagement_displayMode_user_status_rejected}
+						</h:panelGroup>
+						<h:panelGroup  rendered="#{item.user.status eq 'DELETED'}"  class="badge badge-intranda-red">
+							<i class="fa fa-lock"></i> #{msgs.plugin_administration_deliveryManagement_displayMode_user_status_deleted}
+						</h:panelGroup>
+						        
+                    </x:column>
+                    
+					<!-- ACTION -->
                     <x:column width="150px;">
                         <f:facet name="header">
                             <h:outputText value="#{msgs.auswahl}" />
                         </f:facet>
+                        
+                        <!-- EDIT -->
                         <button
                             jsf:id="edit"
                             class="btn margin-right-5"
@@ -215,6 +262,8 @@
                                 value="edit"
                                 target="#{AdministrationForm.administrationPlugin.editionMode}" />
                         </button>
+                        
+                        <!-- DOWNLOAD INSTITUTION DATA -->
                         <button
                             jsf:id="export"
                             class="btn margin-right-5"
@@ -231,6 +280,7 @@
                                 value="#{item.institution}" />
                         </button>
 
+						<!-- DISPLAY IMPORTS -->
                         <button
                             jsf:disabled="#{item.numberOfUploads == 0}"
                             class="btn margin-right-5"
@@ -254,8 +304,10 @@
                 </x:dataTable>
 
 
-
+				<!-- BUTTON ROW -->
                 <div class="dataTables_info">
+                    
+                    <!-- NEW -->
                     <button
                         jsf:id="newUser"
                         class="btn btn-primary font-size-s"
@@ -269,12 +321,13 @@
                             target="#{AdministrationForm.administrationPlugin.editionMode}" />
                     </button>
 
+					<!-- UPLOAD -->
                     <p:fileUpload
                         listener="#{AdministrationForm.administrationPlugin.handleFileUpload}"
                         id="upload"
                         name="uploadName"
                         auto="true"
-                        style=""
+                        style="font-weight:normal"
                         mode="advanced"
                         multiple="false"
                         dragDropSupport="true"
@@ -286,22 +339,24 @@
                             value="#{msgs.plugin_administration_deliveryManagement_uploadFile}" />
                     </p:fileUpload>
 
+					<!-- PAGINATOR -->
                     <div class="dataTables_paginate">
-                        <intranda:tablePaginator2
-                            id="user"
-                            name="users"
-                            paginator="#{AdministrationForm.administrationPlugin.userPaginator}" />
+                      	<intranda:tablePaginator id="users"
+							paginator="#{AdministrationForm.administrationPlugin.userPaginator}" />
                     </div>
                 </div>
 
-
             </h:panelGroup>
 
+
+			<!-- EDIT MODE -->
             <h:panelGroup
                 layout="block"
                 styleClass="dataTables_wrapper edit-mode col-md-12"
                 rendered="#{AdministrationForm.administrationPlugin.editionMode=='edit'}">
                 <div class="tab-content">
+                    
+                    <!-- LASTNAME -->
                     <intranda:formInputText
                         classLeft="col-sm-3 control-label notFocusable"
                         id="lastname"
@@ -311,6 +366,7 @@
                         name="nachname"
                         fieldStyle="form-control" />
 
+					<!-- FIRST NAME -->
                     <intranda:formInputText
                         classLeft="col-sm-3 control-label notFocusable"
                         id="firstname"
@@ -320,6 +376,7 @@
                         name="vorname"
                         fieldStyle="form-control" />
 
+					<!-- PLACE -->
                     <intranda:formInputText
                         classLeft="col-sm-3 control-label notFocusable"
                         id="location"
@@ -329,6 +386,7 @@
                         name="standort"
                         fieldStyle="form-control" />
 
+					<!-- LOGIN -->
                     <div class="form-group">
                         <div class="col-sm-3 control-label">
                             <h:outputLabel
@@ -362,7 +420,7 @@
                         </div>
                     </div>
 
-                    <!-- email -->
+                    <!-- EMAIL -->
                     <intranda:formInputText
                         classLeft="col-sm-3 control-label notFocusable"
                         id="email"
@@ -374,7 +432,7 @@
                         fieldStyle="form-control" />
 
 
-                    <!-- authentication type -->
+                    <!-- AUTH -->
                     <div class="form-group">
                         <div class="col-sm-3 control-label">
                             <h:outputLabel
@@ -407,6 +465,7 @@
                         </div>
                     </div>
 
+					<!-- ACCOUNT STATUS -->
                     <div class="form-group">
                         <div class="col-sm-3 control-label">
                             <h:outputLabel
@@ -435,6 +494,7 @@
                         </div>
                     </div>
 
+					<!-- DASHBOARD -->
                     <intranda:formInputDropDown
                         classLeft="col-sm-3 control-label notFocusable"
                         id="dashboard"
@@ -446,7 +506,7 @@
                         fieldStyle="form-control" />
 
 
-                    <!-- additional data -->
+                    <!-- ADDITIONAL DATA -->
                     <ui:repeat
                         var="item"
                         varStatus="status"
@@ -482,7 +542,7 @@
                                 itemLabel="#{msgs[var]}" />
                         </ui:fragment>
 
-
+						
                         <ui:fragment rendered="#{item.fieldType=='combo'}">
                             <div
                                 class="form-group"
