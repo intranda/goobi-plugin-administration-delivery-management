@@ -20,11 +20,13 @@
     		.dataTables_wrapper .dataTables_info span {
     			font-weight: normal;
 			}
+			
+			.mce-content-body {
+			    font-size: 13px;
+			}
     	</style>
     
-        <h:form
-            styleClass="form-horizontal form-bordered"
-            enctype="multipart/form-data">
+        <h:form styleClass="form-horizontal form-bordered">
             <h:panelGroup
                 layout="block"
                 styleClass="dataTables_wrapper col-md-12"
@@ -179,8 +181,9 @@
                                 <f:ajax render="@form" />
                             </button>
                         </f:facet>
-                        <h:outputText value="#{item.lastUploadDate == null ? ' - ' : item.lastUploadDate}" 
-                        	styleClass="#{not item.active?'font-light':''}"/>
+                        <h:outputText value="#{item.lastUploadDate == null ? ' - ' : item.lastUploadDate}">
+                        	<f:convertDateTime type="both" dateStyle="short" timeStyle="medium"/>	
+                        </h:outputText>
                     </x:column>
                     
                     <!-- NUMBER OF UPLOADS -->
@@ -198,8 +201,7 @@
                                 <f:ajax render="@form" />
                             </button>
                         </f:facet>
-                        <h:outputText value="#{item.numberOfUploads gt 0 ? item.numberOfUploads : '-'}" 
-                        	styleClass="#{not item.active?'font-light':''}"/>
+                        <h:outputText value="#{item.numberOfUploads gt 0 ? item.numberOfUploads : '-'}" />
                     </x:column>
 
 					<!-- ACCOUNT STATUS -->
@@ -282,13 +284,13 @@
 
 						<!-- DISPLAY IMPORTS -->
                         <button
-                            jsf:disabled="#{item.numberOfUploads == 0}"
+                            jsf:rendered="#{item.numberOfUploads gt 0}"
                             class="btn margin-right-5"
                             jsf:rel="tooltip"
                             aria-label="#{msgs.plugin_administration_deliveryManagement_displayImports}"
                             jsf:title="#{msgs.plugin_administration_deliveryManagement_displayImports}"
                             jsf:action="#{AdministrationForm.administrationPlugin.generateInstitutionProcessTitleList}">
-                            <span class="fa fa-files-o" />
+                            <span class="fa fa-list" />
                             <f:passThroughAttribute
                                 name="data-toggle"
                                 value="tooltip" />
@@ -394,10 +396,10 @@
                                 value="#{msgs.login}">
                             </h:outputLabel>
                             <h:panelGroup rendered="#{item.required}">
-                            <span
-                                class="fa fa-asterisk pull-right font-asterisk"
-                                data-bs-original-title="#{msgs.requiredField}"
-                                data-toggle="tooltip" />
+                                <span
+                                    class="fa fa-asterisk pull-right font-asterisk"
+                                    data-bs-original-title="#{msgs.requiredField}"
+                                    data-toggle="tooltip" />
                             </h:panelGroup>
 
                         </div>
@@ -440,10 +442,10 @@
                                 value="#{msgs.user_edit_loginType}">
                             </h:outputLabel>
                             <h:panelGroup rendered="#{item.required}">
-                            <span
-                                class="fa fa-asterisk pull-right font-asterisk"
-                                data-bs-original-title="#{msgs.requiredField}"
-                                data-toggle="tooltip" />
+                                <span
+                                    class="fa fa-asterisk pull-right font-asterisk"
+                                    data-bs-original-title="#{msgs.requiredField}"
+                                    data-toggle="tooltip" />
                             </h:panelGroup>
                         </div>
                         <div class="col-sm-9">
@@ -866,9 +868,14 @@
             </h:panelGroup>
 
 
-            <h:panelGroup
-                layout="block"
-                styleClass="dataTables_wrapper edit-mode"
+
+
+
+
+			<!-- LIST OF IMPORTS MODE -->
+           	<h:panelGroup
+           		layout="block"
+                styleClass="dataTables_wrapper col-md-12 edit-mode"
                 rendered="#{AdministrationForm.administrationPlugin.editionMode=='imports'}">
 
 
@@ -978,23 +985,32 @@
 
                             <!-- Embedded Metadata -->
                             <td>
-                                <table>
-                                    <ui:repeat
-                                        var="metadata"
-                                        value="#{AdministrationForm.administrationPlugin.metadataDisplayList}"
-                                        varStatus="metadatastatus">
-                                        <ui:fragment rendered="#{zdbItem.getMetadataValue(metadata) != ''}">
-                                            <tr>
-                                                <td style="border: none !important; padding: 2px; vertical-align: top;">
-                                                    <h:outputText value="#{msgs['process_grid_'.concat(metadata)]}:" />
-                                                </td>
-                                                <td style="border: none !important; padding: 2px; white-space: normal;">
-                                                    <h:outputText value="#{zdbItem.getMetadataValue(metadata)}" />
-                                                </td>
-                                            </tr>
-                                        </ui:fragment>
-                                    </ui:repeat>
-                                </table>
+                                <div class="box thin-margin lightgrey box-bordered box-small">
+                                	<div class="box-title">
+										<h3>
+											#{msgs.plugin_administration_deliveryManagement_details}
+										</h3>
+									</div>
+                                	<div class="box-content nopadding">
+                                        <table class="table table-hover table-bordered">
+		                                    <ui:repeat
+		                                        var="metadata"
+		                                        value="#{AdministrationForm.administrationPlugin.metadataDisplayList}"
+		                                        varStatus="metadatastatus">
+		                                        <ui:fragment rendered="#{zdbItem.getMetadataValue(metadata) != ''}">
+		                                            <tr>
+		                                                <td class="tableColumnWidth100">
+		                                                    <h:outputText value="#{msgs['process_grid_'.concat(metadata)]}:" />
+		                                                </td>
+		                                                <td>
+		                                                    <h:outputText value="#{zdbItem.getMetadataValue(metadata)}" />
+		                                                </td>
+		                                            </tr>
+		                                        </ui:fragment>
+		                                    </ui:repeat>
+		                                </table>
+	                                </div>
+                                </div>
                             </td>
 
 
@@ -1020,7 +1036,9 @@
                                     title="#{msgs.metadatenBearbeiten}"
                                     pt:aria-label="#{msgs.metadatenBearbeiten}">
                                     <span class="btn fa fa-book " />
-
+									<f:passThroughAttribute
+		                                name="data-toggle"
+		                                value="tooltip" />
                                     <f:setPropertyActionListener
                                         value="editProcess"
                                         target="#{AdministrationForm.administrationPlugin.editionMode}" />
@@ -1037,98 +1055,97 @@
                     </ui:repeat>
                 </table>
 
-                <div
-                    class="dataTables_info"
-                    style="float: left;"></div>
-                <div class="dataTables_paginate">
 
-                    <ui:fragment id="zdb_paginator">
-                        <!-- paginator -->
-                        <h:panelGroup rendered="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.totalResults > LoginForm.myBenutzer.tabellengroesse}">
-
-                            <div class="pull-right">
-
-                                <button
-                                    class="btn font-size-s margin-sides-10"
-                                    aria-label="#{msgs.firstPage}"
-                                    jsf:action="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.cmdMoveFirst}"
-                                    jsf:id="navfirst">
-                                    <span class="fa fa-angle-double-left" />
-                                    <f:ajax render="@form" />
-                                </button>
-                                <button
-                                    class="btn btn-primary font-size-s navigator-previous"
-                                    jsf:action="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.cmdMovePrevious}"
-                                    jsf:id="navprev">
-                                    <span class="fa fa-angle-left" />
-                                    <h:outputText value=" #{msgs.pagePrevious}" />
-                                    <f:ajax render="@form" />
-                                </button>
-
-                                <div class="margin-sides-10">
-                                    <!-- aktuelle Seite anzeigen -->
-                                    <x:outputText
-                                        id="item_txtMoveTo1"
-                                        forceId="true"
-                                        value="#{msgs.seite} #{AdministrationForm.administrationPlugin.institutionProcessPaginator.pageNumberCurrent} #{msgs.von} #{AdministrationForm.administrationPlugin.institutionProcessPaginator.pageNumberLast}"
-                                        onclick="document.getElementById('item_txtMoveTo2').style.display='inline';
-                   document.getElementById('item_txtMoveTo1').style.display='none';
-                   document.getElementById('item_txtMoveTo2').focus();
-                   document.getElementById('item_txtMoveTo2').select();" />
-
-                                    <!-- Seite direkt anspringen -->
-                                    <x:inputText
-                                        id="item_txtMoveTo2"
-                                        forceId="true"
-                                        value="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.txtMoveTo}"
-                                        style="display:none;width:30px"
-                                        required="true"
-                                        onblur="document.getElementById('item_txtMoveTo2').style.display='none';document.getElementById('item_txtMoveTo1').style.display='inline';"
-                                        onkeypress="return submitEnter('item_cmdMoveTo',event)" />
-                                    <x:commandButton
-                                        action="#{NavigationForm.Reload}"
-                                        id="item_cmdMoveTo"
-                                        forceId="true"
-                                        value="go"
-                                        style="display:none">
-                                    </x:commandButton>
-                                </div>
-
-                                <button
-                                    class="btn btn-primary font-size-s navigator-next"
-                                    jsf:action="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.cmdMoveNext}"
-                                    jsf:id="navnext">
-                                    <h:outputText value="#{msgs.pageNext} " />
-                                    <span class="fa fa-angle-right" />
-                                    <f:ajax render="@form" />
-                                </button>
-                                <button
-                                    class="btn font-size-s margin-sides-10"
-                                    aria-label="#{msgs.lastPage}"
-                                    jsf:action="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.cmdMoveLast}"
-                                    jsf:id="navlast">
-                                    <span class="fa fa-angle-double-right" />
-                                    <f:ajax render="@form" />
-                                </button>
-                            </div>
-                        </h:panelGroup>
-                    </ui:fragment>
-                </div>
-
-
-
-                <div class="form-actions">
-                    <button
-                        class="btn margin-sides-10 font-size-s pull-right"
+				<!-- BUTTON ROW -->
+                <div class="dataTables_info">
+               	  	<button
+                        class="btn margin-sides-10 font-size-s"
                         jsf:id="cancelImports"
                         type="submit"
                         jsf:immediate="true">
-                        <h:outputText value="#{msgs.abbrechen}" />
+                        <h:outputText value="#{msgs.plugin_administration_deliveryManagement_backToList}" />
                         <f:setPropertyActionListener
                             value=""
                             target="#{AdministrationForm.administrationPlugin.editionMode}" />
                         <f:ajax render="@all" />
                     </button>
+                
+                	<div class="dataTables_paginate">
+
+	                    <ui:fragment id="zdb_paginator">
+	                        <!-- paginator -->
+	                        <h:panelGroup rendered="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.totalResults > LoginForm.myBenutzer.tabellengroesse}">
+	
+	                            <div class="pull-right">
+	
+	                                <button
+	                                    class="btn font-size-s margin-sides-10"
+	                                    aria-label="#{msgs.firstPage}"
+	                                    jsf:action="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.cmdMoveFirst}"
+	                                    jsf:id="navfirst">
+	                                    <span class="fa fa-angle-double-left" />
+	                                    <f:ajax render="@form" />
+	                                </button>
+	                                <button
+	                                    class="btn btn-primary font-size-s navigator-previous"
+	                                    jsf:action="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.cmdMovePrevious}"
+	                                    jsf:id="navprev">
+	                                    <span class="fa fa-angle-left" />
+	                                    <h:outputText value=" #{msgs.pagePrevious}" />
+	                                    <f:ajax render="@form" />
+	                                </button>
+	
+	                                <div class="margin-sides-10">
+	                                    <!-- aktuelle Seite anzeigen -->
+	                                    <x:outputText
+	                                        id="item_txtMoveTo1"
+	                                        forceId="true"
+	                                        value="#{msgs.seite} #{AdministrationForm.administrationPlugin.institutionProcessPaginator.pageNumberCurrent} #{msgs.von} #{AdministrationForm.administrationPlugin.institutionProcessPaginator.pageNumberLast}"
+	                                        onclick="document.getElementById('item_txtMoveTo2').style.display='inline';
+	                   document.getElementById('item_txtMoveTo1').style.display='none';
+	                   document.getElementById('item_txtMoveTo2').focus();
+	                   document.getElementById('item_txtMoveTo2').select();" />
+	
+	                                    <!-- Seite direkt anspringen -->
+	                                    <x:inputText
+	                                        id="item_txtMoveTo2"
+	                                        forceId="true"
+	                                        value="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.txtMoveTo}"
+	                                        style="display:none;width:30px"
+	                                        required="true"
+	                                        onblur="document.getElementById('item_txtMoveTo2').style.display='none';document.getElementById('item_txtMoveTo1').style.display='inline';"
+	                                        onkeypress="return submitEnter('item_cmdMoveTo',event)" />
+	                                    <x:commandButton
+	                                        action="#{NavigationForm.Reload}"
+	                                        id="item_cmdMoveTo"
+	                                        forceId="true"
+	                                        value="go"
+	                                        style="display:none">
+	                                    </x:commandButton>
+	                                </div>
+	
+	                                <button
+	                                    class="btn btn-primary font-size-s navigator-next"
+	                                    jsf:action="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.cmdMoveNext}"
+	                                    jsf:id="navnext">
+	                                    <h:outputText value="#{msgs.pageNext} " />
+	                                    <span class="fa fa-angle-right" />
+	                                    <f:ajax render="@form" />
+	                                </button>
+	                                <button
+	                                    class="btn font-size-s margin-sides-10"
+	                                    aria-label="#{msgs.lastPage}"
+	                                    jsf:action="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.cmdMoveLast}"
+	                                    jsf:id="navlast">
+	                                    <span class="fa fa-angle-double-right" />
+	                                    <f:ajax render="@form" />
+	                                </button>
+	                            </div>
+	                        </h:panelGroup>
+	                    </ui:fragment>
+	                </div>
+
+	                
                 </div>
             </h:panelGroup>
 
