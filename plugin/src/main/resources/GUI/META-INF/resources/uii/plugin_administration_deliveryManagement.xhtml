@@ -116,21 +116,25 @@
                         layout="block"
                         styleClass="#{NavigationForm.uiStatus['journalBig']?'col-12 col-md-12':'col-6 col-md-6'}"
                         rendered="#{AdministrationForm.administrationPlugin.editionMode=='edit'}">
-                        <!-- Box for process log -->
-                        <x:aliasBeansScope>
-                            <x:aliasBean
-                                alias="#{showBigButton}"
-                                value="true" />
-                            <x:aliasBean
-                                alias="#{showFolderSelection}"
-                                value="false" />
-                            <x:aliasBean
-                                alias="#{bean}"
-                                value="#{AdministrationForm.administrationPlugin.user}" />
-                            <f:subview id="sublog">
-                                <ui:include src="/uii/includes/journal.xhtml" />
-                            </f:subview>
-                        </x:aliasBeansScope>
+                        <h:form
+                            styleClass="form-horizontal form-bordered"
+                            enctype="multipart/form-data">
+                            <!-- Box for process log -->
+                            <x:aliasBeansScope>
+                                <x:aliasBean
+                                    alias="#{showBigButton}"
+                                    value="true" />
+                                <x:aliasBean
+                                    alias="#{showFolderSelection}"
+                                    value="false" />
+                                <x:aliasBean
+                                    alias="#{bean}"
+                                    value="#{AdministrationForm.administrationPlugin.institution}" />
+                                <f:subview id="sublog">
+                                    <ui:include src="/uii/includes/journal.xhtml" />
+                                </f:subview>
+                            </x:aliasBeansScope>
+                        </h:form>
                         <!-- // Box for process log -->
 
                     </h:panelGroup>

@@ -15,9 +15,7 @@
     </composite:interface>
 
     <composite:implementation>
-        <h:form
-            styleClass="form-horizontal form-bordered"
-            enctype="multipart/form-data">
+        <h:form styleClass="form-horizontal form-bordered">
             <h:panelGroup
                 layout="block"
                 styleClass="dataTables_wrapper col-md-12"
@@ -297,6 +295,7 @@
 
             </h:panelGroup>
 
+
             <h:panelGroup
                 layout="block"
                 styleClass="dataTables_wrapper edit-mode col-md-12"
@@ -336,10 +335,10 @@
                                 value="#{msgs.login}">
                             </h:outputLabel>
                             <h:panelGroup rendered="#{item.required}">
-                            <span
-                                class="fa fa-asterisk pull-right font-asterisk"
-                                data-bs-original-title="#{msgs.requiredField}"
-                                data-toggle="tooltip" />
+                                <span
+                                    class="fa fa-asterisk pull-right font-asterisk"
+                                    data-bs-original-title="#{msgs.requiredField}"
+                                    data-toggle="tooltip" />
                             </h:panelGroup>
 
                         </div>
@@ -382,10 +381,10 @@
                                 value="#{msgs.user_edit_loginType}">
                             </h:outputLabel>
                             <h:panelGroup rendered="#{item.required}">
-                            <span
-                                class="fa fa-asterisk pull-right font-asterisk"
-                                data-bs-original-title="#{msgs.requiredField}"
-                                data-toggle="tooltip" />
+                                <span
+                                    class="fa fa-asterisk pull-right font-asterisk"
+                                    data-bs-original-title="#{msgs.requiredField}"
+                                    data-toggle="tooltip" />
                             </h:panelGroup>
                         </div>
                         <div class="col-sm-9">

@@ -18,6 +18,7 @@ import org.goobi.beans.User;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.IManager;
 import de.sub.goobi.persistence.managers.InstitutionManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.MySQLHelper;
 import de.sub.goobi.persistence.managers.UserManager;
 import lombok.extern.log4j.Log4j2;
@@ -181,6 +182,8 @@ public class ExtendedUserManager implements IManager {
         r.setAllowAllAuthentications(rs.getBoolean("institution.allowAllAuthentications"));
         r.setAllowAllPlugins(rs.getBoolean("institution.allowAllPlugins"));
         r.setAdditionalData(MySQLHelper.convertStringToMap(rs.getString("institution.additional_data")));
+
+        r.setJournal(JournalManager.getLogEntriesForInstitution(r.getId()));
 
         user.setInstitution(r);
 
