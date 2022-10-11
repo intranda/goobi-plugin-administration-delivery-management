@@ -23,6 +23,12 @@
 
         <script src="template/js/plugins/tinymce/tinymce.min.js"></script>
 
+		<style>
+			.mce-content-body {
+			    font-size: 13px !important;
+			}
+		
+		</style>
 
         <h:inputHidden
             id="focusField"
@@ -198,7 +204,7 @@
                                         menubar: 'edit format tools',
                                         toolbar: false,
                                         toolbar: 'undo redo | bold italic underline | code ',
-                                        content_css: 'css/content.css',
+                                        content_css: 'uii/css/plugin_administration_deliveryManagement_tinymce.css',
                                         init_instance_callback: function( editor ) {
                                             var readOnlyAttr = $( "#" + editor.id.replace( ":", "\\:" ) ).attr( "readonly" );
                                             if ( readOnlyAttr === "readonly" ) {
