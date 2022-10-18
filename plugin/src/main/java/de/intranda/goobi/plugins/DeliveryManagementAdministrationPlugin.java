@@ -385,6 +385,13 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 case "items Desc":
                     sort = "CAST(items as SIGNED INTEGER) Desc";
                     break;
+
+                case "status":
+                    sort = "userstatus";
+                    break;
+                case "status Desc":
+                    sort = "userstatus desc";
+                    break;
                 default:
                     // free configured field
                     if (userSort.endsWith("Desc")) {
