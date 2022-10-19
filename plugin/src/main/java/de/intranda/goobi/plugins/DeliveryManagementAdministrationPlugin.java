@@ -165,7 +165,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     @Getter
     @Setter
-    private String sortField;
+    private String sortField = "prozesse.titel";
     @Getter
     @Setter
     private Process process;
@@ -577,7 +577,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         }
 
         ProcessManager m = new ProcessManager();
-        processPaginator = new DatabasePaginator("prozesse.titel", sb.toString(), m, "process_all");
+        processPaginator = new DatabasePaginator(sortField, sb.toString(), m, "process_all");
     }
 
     public void generateInstitutionProcessTitleList() {

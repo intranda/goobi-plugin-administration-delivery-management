@@ -91,17 +91,17 @@
                                 scope="col"
                                 role="columnheader"
                                 class="tableColumnOverflow maxWidth300"
-                                aria-sort="#{AdministrationForm.administrationPlugin.sortField== 'titelDesc' ? 'descending' : AdministrationForm.administrationPlugin.sortField== 'titelAsc' ? 'ascending' :'none'}">
+                                aria-sort="#{AdministrationForm.administrationPlugin.sortField== 'prozesse.titel desc' ? 'descending' : AdministrationForm.administrationPlugin.sortField== 'prozesse.titel' ? 'ascending' :'none'}">
                                 <button
                                     class="button-link"
                                     style="width: 100%; text-align: left;"
-                                    jsf:action="#{AdministrationForm.administrationPlugin.getExistingDataForInstitution}"
-                                    aria-label="#{msgs.defaultSortField} #{msgs.prozessTitel} #{AdministrationForm.administrationPlugin.sortField== 'titelDesc' ? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung== 'titelAsc' ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
+                                    jsf:action="#{AdministrationForm.administrationPlugin.generateZdbTitleList}"
+                                    aria-label="#{msgs.defaultSortField} #{msgs.prozessTitel} #{AdministrationForm.administrationPlugin.sortField== 'prozesse.titel desc' ? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung== 'prozesse.titel' ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
                                     <h:outputText value="#{msgs.prozessTitel}" />
-                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.sortField== 'titelDesc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.sortField== 'titelAsc' ?'fa-sort-asc':'fa-sort'}"></span>
+                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.sortField== 'prozesse.titel desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.sortField== 'prozesse.titel' ?'fa-sort-asc':'fa-sort'}"></span>
                                     <f:setPropertyActionListener
                                         target="#{AdministrationForm.administrationPlugin.sortField}"
-                                        value="#{AdministrationForm.administrationPlugin.sortField== 'titelAsc' ? 'titelDesc' : 'titelAsc' }" />
+                                        value="#{AdministrationForm.administrationPlugin.sortField== 'prozesse.titel' ? 'prozesse.titel desc' : 'prozesse.titel' }" />
                                     <f:ajax render="@form" />
                                 </button>
                             </th>
@@ -111,17 +111,17 @@
                                 scope="col"
                                 role="columnheader"
                                 class="tableColumnOverflow maxwidth200"
-                                aria-sort="#{AdministrationForm.administrationPlugin.sortField== 'creationDateDesc' ? 'descending' : AdministrationForm.administrationPlugin.sortField== 'creationDateAsc' ? 'ascending' :'none'}">
+                                aria-sort="#{AdministrationForm.administrationPlugin.sortField== 'prozesse.erstellungsdatum desc' ? 'descending' : AdministrationForm.administrationPlugin.sortField== 'prozesse.erstellungsdatum' ? 'ascending' :'none'}">
                                 <button
                                     class="button-link"
                                     style="width: 100%; text-align: left;"
-                                    jsf:action="#{AdministrationForm.administrationPlugin.getExistingDataForInstitution}"
-                                    aria-label="#{msgs.defaultSortField} #{msgs.prozessTitel} #{AdministrationForm.administrationPlugin.sortField== 'creationDateDesc' ? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung== 'creationDateAsc' ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
+                                    jsf:action="#{AdministrationForm.administrationPlugin.generateZdbTitleList}"
+                                    aria-label="#{msgs.defaultSortField} #{msgs.prozessTitel} #{AdministrationForm.administrationPlugin.sortField== 'prozesse.erstellungsdatum desc' ? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung== 'prozesse.erstellungsdatum' ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
                                     <h:outputText value="#{msgs.vorgangsdatum}" />
-                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.sortField== 'creationDateDesc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.sortField== 'creationDateAsc' ?'fa-sort-asc':'fa-sort'}"></span>
+                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.sortField== 'prozesse.erstellungsdatum desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.sortField== 'prozesse.erstellungsdatum' ?'fa-sort-asc':'fa-sort'}"></span>
                                     <f:setPropertyActionListener
                                         target="#{AdministrationForm.administrationPlugin.sortField}"
-                                        value="#{AdministrationForm.administrationPlugin.sortField== 'creationDateAsc' ? 'creationDateDesc' : 'creationDateAsc' }" />
+                                        value="#{AdministrationForm.administrationPlugin.sortField== 'prozesse.erstellungsdatum' ? 'prozesse.erstellungsdatum desc' : 'prozesse.erstellungsdatum' }" />
                                     <f:ajax render="@form" />
                                 </button>
                             </th>
