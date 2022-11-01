@@ -459,9 +459,11 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             }
         }
         for (Entry<String, List<ConfiguredField>> fields : configuredInstitutionFields.entrySet()) {
-            for (ConfiguredField field : fields.getValue()) {
-                if (!field.isFieldValid()) {
-                    return;
+            if (!"page3a".equals(fields.getKey()) || displaySecondContact) {
+                for (ConfiguredField field : fields.getValue()) {
+                    if (!field.isFieldValid()) {
+                        return;
+                    }
                 }
             }
         }
@@ -503,7 +505,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                     .replace("{lastname}", user.getNachname());
             SendMail.getInstance().sendMailToUser(messageSubject, messageBody, user.getEmail());
         }
-        editionMode="";
+        editionMode = "";
         filterUser();
     }
 
