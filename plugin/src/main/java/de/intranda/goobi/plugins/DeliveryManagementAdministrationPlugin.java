@@ -160,7 +160,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private DatabasePaginator institutionProcessPaginator;
 
     private static final String ZDB_METADATA_TYPE = "CatalogIDPeriodicalDB"; // get this from dashboard config?
-
+    private static final String ADIS_METADATA_TYPE = "CatalogIDDigital_DS"; // get this from dashboard config?
     private static final String COMBO_FIELD_NAME = "combo";
 
     @Getter
@@ -607,14 +607,20 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             logical = digitalDocument.getLogicalDocStruct();
             List<Metadata> mdl = logical.getAllMetadata();
             boolean identifierAvailable = false;
-
+            boolean adisIdAvailable = false;
             for (Metadata md : mdl) {
                 metadataList.add(md);
                 if (md.getType().getName().equals(ZDB_METADATA_TYPE)) {
                     identifierAvailable = true;
+                } else if (md.getType().getName().equals(ADIS_METADATA_TYPE)) {
+                    adisIdAvailable = true;
                 }
             }
 
+            if (!adisIdAvailable && includeZdbID) {
+                Metadata md = new Metadata(prefs.getMetadataTypeByName(ADIS_METADATA_TYPE));
+                metadataList.add(md);
+            }
             if (!identifierAvailable && includeZdbID) {
                 Metadata md = new Metadata(prefs.getMetadataTypeByName(ZDB_METADATA_TYPE));
                 metadataList.add(md);
