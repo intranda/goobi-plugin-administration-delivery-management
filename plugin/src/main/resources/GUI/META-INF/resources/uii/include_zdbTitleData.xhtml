@@ -127,7 +127,9 @@
                             </th>
 
 
-
+                            <intranda:columnheader
+                                value="#{msgs.plugin_administration_deliveryManagement_status}"
+                                sortable="false" />
 
 
 
@@ -153,10 +155,14 @@
                                         varStatus="metadatastatus">
                                         <ui:fragment rendered="#{zdbItem.getMetadataValue(metadata) != ''}">
                                             <tr>
-                                                <td style="width:100px;" class="tableColumnWidth100 smallertablecell">
+                                                <td
+                                                    style="width: 100px;"
+                                                    class="tableColumnWidth100 smallertablecell">
                                                     <h:outputText value="#{msgs['process_grid_'.concat(metadata)]}:" />
                                                 </td>
-                                                <td style="width:200px;" class="tableColumnWidthLong smallertablecell">
+                                                <td
+                                                    style="width: 200px;"
+                                                    class="tableColumnWidthLong smallertablecell">
                                                     <h:outputText value="#{zdbItem.getMetadataValue(metadata)}" />
                                                 </td>
                                             </tr>
@@ -175,6 +181,20 @@
                                 <h:outputText value="#{zdbItem.erstellungsdatumAsString}">
                                 </h:outputText>
                             </td>
+
+                            <td>
+                                <h:panelGroup
+                                    rendered="#{zdbItem.getMetadataValue('CatalogIDPeriodicalDB') != ''}"
+                                    class="badge badge-intranda-green">
+                                    <i class="fa fa-unlock"></i> #{msgs.plugin_administration_deliveryManagement_displayMode_zdb_status_available}
+						      </h:panelGroup>
+                                <h:panelGroup
+                                    rendered="#{zdbItem.getMetadataValue('CatalogIDPeriodicalDB') == ''}"
+                                    class="badge badge-intranda-red">
+                                    <i class="fa fa-lock"></i> #{msgs.plugin_administration_deliveryManagement_displayMode_zdb_status_missing}
+                                </h:panelGroup>
+                            </td>
+
 
                             <!-- Buttons -->
                             <td class="width200">
@@ -207,85 +227,85 @@
 
                 <div
                     class="dataTables_info"
-                    style="float: left;width: 100%;">
-	                <div class="dataTables_paginate">
-	
-	                    <ui:fragment id="zdb_paginator">
-	                        <!-- paginator -->
-	                        <h:panelGroup rendered="#{AdministrationForm.administrationPlugin.processPaginator.totalResults > LoginForm.myBenutzer.tabellengroesse}">
-	
-	                            <div class="pull-right">
-	
-	                                <button
-	                                    class="btn font-size-s margin-sides-10"
-	                                    aria-label="#{msgs.firstPage}"
-	                                    jsf:action="#{AdministrationForm.administrationPlugin.processPaginator.cmdMoveFirst}"
-	                                    jsf:id="navfirst">
-	                                    <i class="fa fa-angle-double-left"></i>
-	                                    <f:ajax render="@form" />
-	                                </button>
-	                                <button
-	                                    class="btn btn-primary font-size-s navigator-previous"
-	                                    jsf:action="#{AdministrationForm.administrationPlugin.processPaginator.cmdMovePrevious}"
-	                                    jsf:id="navprev">
-	                                    <i class="fa fa-angle-left"></i>
-	                                    <h:outputText value=" #{msgs.pagePrevious}" />
-	                                    <f:ajax render="@form" />
-	                                </button>
-	
-	                                <div class="margin-sides-10">
-	                                    <!-- aktuelle Seite anzeigen -->
-	                                    <x:outputText
-	                                        id="zdb_txtMoveTo1"
-	                                        forceId="true"
-	                                        value="#{msgs.seite} #{AdministrationForm.administrationPlugin.processPaginator.pageNumberCurrent} #{msgs.von} #{AdministrationForm.administrationPlugin.processPaginator.pageNumberLast}"
-	                                        onclick="document.getElementById('zdb_txtMoveTo2').style.display='inline';
+                    style="float: left; width: 100%;">
+                    <div class="dataTables_paginate">
+
+                        <ui:fragment id="zdb_paginator">
+                            <!-- paginator -->
+                            <h:panelGroup rendered="#{AdministrationForm.administrationPlugin.processPaginator.totalResults > LoginForm.myBenutzer.tabellengroesse}">
+
+                                <div class="pull-right">
+
+                                    <button
+                                        class="btn font-size-s margin-sides-10"
+                                        aria-label="#{msgs.firstPage}"
+                                        jsf:action="#{AdministrationForm.administrationPlugin.processPaginator.cmdMoveFirst}"
+                                        jsf:id="navfirst">
+                                        <i class="fa fa-angle-double-left"></i>
+                                        <f:ajax render="@form" />
+                                    </button>
+                                    <button
+                                        class="btn btn-primary font-size-s navigator-previous"
+                                        jsf:action="#{AdministrationForm.administrationPlugin.processPaginator.cmdMovePrevious}"
+                                        jsf:id="navprev">
+                                        <i class="fa fa-angle-left"></i>
+                                        <h:outputText value=" #{msgs.pagePrevious}" />
+                                        <f:ajax render="@form" />
+                                    </button>
+
+                                    <div class="margin-sides-10">
+                                        <!-- aktuelle Seite anzeigen -->
+                                        <x:outputText
+                                            id="zdb_txtMoveTo1"
+                                            forceId="true"
+                                            value="#{msgs.seite} #{AdministrationForm.administrationPlugin.processPaginator.pageNumberCurrent} #{msgs.von} #{AdministrationForm.administrationPlugin.processPaginator.pageNumberLast}"
+                                            onclick="document.getElementById('zdb_txtMoveTo2').style.display='inline';
 	                   document.getElementById('zdb_txtMoveTo1').style.display='none';
 	                   document.getElementById('zdb_txtMoveTo2').focus();
 	                   document.getElementById('zdb_txtMoveTo2').select();" />
-	
-	                                    <!-- Seite direkt anspringen -->
-	                                    <x:inputText
-	                                        id="zdb_txtMoveTo2"
-	                                        forceId="true"
-	                                        value="#{AdministrationForm.administrationPlugin.processPaginator.txtMoveTo}"
-	                                        style="display:none;width:30px"
-	                                        required="true"
-	                                        onblur="document.getElementById('zdb_txtMoveTo2').style.display='none';document.getElementById('zdb_txtMoveTo1').style.display='inline';"
-	                                        onkeypress="return submitEnter('zdb_cmdMoveTo',event)" />
-	                                    <x:commandButton
-	                                        action="#{NavigationForm.Reload}"
-	                                        id="zdb_cmdMoveTo"
-	                                        forceId="true"
-	                                        value="go"
-	                                        style="display:none">
-	                                    </x:commandButton>
-	                                </div>
-	
-	                                <button
-	                                    class="btn btn-primary font-size-s navigator-next"
-	                                    jsf:action="#{AdministrationForm.administrationPlugin.processPaginator.cmdMoveNext}"
-	                                    jsf:id="navnext">
-	                                    <h:outputText value="#{msgs.pageNext} " />
-	                                    <i class="fa fa-angle-right"></i>
-	                                    <f:ajax render="@form" />
-	                                </button>
-	                                <button
-	                                    class="btn font-size-s margin-sides-10"
-	                                    aria-label="#{msgs.lastPage}"
-	                                    jsf:action="#{AdministrationForm.administrationPlugin.processPaginator.cmdMoveLast}"
-	                                    jsf:id="navlast">
-	                                    <i class="fa fa-angle-double-right"></i>
-	                                    <f:ajax render="@form" />
-	                                </button>
-	                            </div>
-	                        </h:panelGroup>
-	
-	                        <!-- /paginator -->
-	
-	                    </ui:fragment>
-	                </div>
-				</div>
+
+                                        <!-- Seite direkt anspringen -->
+                                        <x:inputText
+                                            id="zdb_txtMoveTo2"
+                                            forceId="true"
+                                            value="#{AdministrationForm.administrationPlugin.processPaginator.txtMoveTo}"
+                                            style="display:none;width:30px"
+                                            required="true"
+                                            onblur="document.getElementById('zdb_txtMoveTo2').style.display='none';document.getElementById('zdb_txtMoveTo1').style.display='inline';"
+                                            onkeypress="return submitEnter('zdb_cmdMoveTo',event)" />
+                                        <x:commandButton
+                                            action="#{NavigationForm.Reload}"
+                                            id="zdb_cmdMoveTo"
+                                            forceId="true"
+                                            value="go"
+                                            style="display:none">
+                                        </x:commandButton>
+                                    </div>
+
+                                    <button
+                                        class="btn btn-primary font-size-s navigator-next"
+                                        jsf:action="#{AdministrationForm.administrationPlugin.processPaginator.cmdMoveNext}"
+                                        jsf:id="navnext">
+                                        <h:outputText value="#{msgs.pageNext} " />
+                                        <i class="fa fa-angle-right"></i>
+                                        <f:ajax render="@form" />
+                                    </button>
+                                    <button
+                                        class="btn font-size-s margin-sides-10"
+                                        aria-label="#{msgs.lastPage}"
+                                        jsf:action="#{AdministrationForm.administrationPlugin.processPaginator.cmdMoveLast}"
+                                        jsf:id="navlast">
+                                        <i class="fa fa-angle-double-right"></i>
+                                        <f:ajax render="@form" />
+                                    </button>
+                                </div>
+                            </h:panelGroup>
+
+                            <!-- /paginator -->
+
+                        </ui:fragment>
+                    </div>
+                </div>
             </div>
 
         </h:form>
