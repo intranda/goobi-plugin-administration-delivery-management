@@ -681,7 +681,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
             List<User> allUser = UserManager.getAllUsers();
             for (User usr : allUser) {
-                if (usr.getInstitution().getId().equals(institution.getId())) {
+                if (usr.getInstitution() != null && usr.getInstitution().getId().equals(institution.getId())) {
                     Element u = new Element("user");
                     root.addContent(u);
 
