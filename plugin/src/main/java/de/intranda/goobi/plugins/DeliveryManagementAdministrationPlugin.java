@@ -595,7 +595,27 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         }
 
         ProcessManager m = new ProcessManager();
-        institutionProcessPaginator = new DatabasePaginator("prozesse.titel", sb.toString(), m, "process_all");
+        institutionProcessPaginator = new DatabasePaginator(getProcessSqlSortString(), sb.toString(), m, "process_all");
+    }
+
+    private String getProcessSqlSortString() {
+        String sort = "prozesse.titel";
+        if (StringUtils.isNotBlank(sortField)) {
+            switch (sortField) {
+                case "titelDesc":
+                    sort = "prozesse.titel desc";
+                    break;
+                case "creationDateDesc":
+                    sort = "prozesse.erstellungsdatum desc";
+                    break;
+                case "creationDateAsc":
+                    sort = "prozesse.erstellungsdatum";
+                    break;
+                default:
+                    sort = "prozesse.titel";
+            }
+        }
+        return sort;
     }
 
     public void openProcess(boolean includeZdbID) {
