@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -257,8 +258,11 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                     hc.getBoolean("@required"), hc.getString("@placeholderText", ""));
 
             if (field.getFieldType().equals("dropdown") || field.getFieldType().equals(COMBO_FIELD_NAME)) {
-                List<String> valueList = Arrays.asList(hc.getStringArray("/value"));
-                field.setSelectItemList(valueList);
+                List<HierarchicalConfiguration> valueList = hc.configurationsAt("/selectfield");
+                for (HierarchicalConfiguration v : valueList) {
+                    SelectItem si = new SelectItem(v.getString("@value"), v.getString("@label"));
+                    field.getSelectItemList().add(si);
+                }
             }
 
             if ("institution".equals(field.getType())) { //NOSONAR

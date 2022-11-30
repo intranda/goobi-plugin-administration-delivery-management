@@ -22,12 +22,12 @@
 		<!-- institution data -->
 
 		<field type="institution" fieldType="input" label="Straße" name="street" position="page2" required="true" validation="" validationErrorDescription="Das Feld ist ein Pflichtfeld." helpMessage="" placeholderText="Straße" />
-		<field type="institution" fieldType="input" label="Hausnummer" name="number" position="page2" required="true" validation="[A-Za-z0-9]+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern und Buchstaben enthalten." helpMessage="Tragen Sie bitte auch die zugehörige Hausnummer ein." placeholderText="plugin_rest_usercreation_new_account_institutionNamePlaceholder" />
-		<field type="institution" fieldType="input" label="Postleitzahl" name="zipcode" position="page2" required="true" validation="\d{5}" validationErrorDescription="Das Feld ist ein Pflichtfeld und muss eine fünfstellige Postleitzahl enthalten." helpMessage="Geben Sie bitte die Postleitzahl ein." />
+		<field type="institution" fieldType="input" label="Hausnummer" name="number" position="page2" required="true" validation="[A-Za-z0-9]+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern und Buchstaben enthalten." helpMessage="Tragen Sie bitte auch die zugehörige Hausnummer ein." placeholderText="plugin_rest_usercreation_new_account_placeholder_streetNumber" />
+		<field type="institution" fieldType="input" label="Postleitzahl" name="zipcode" position="page2" required="true" validation="\d{5}" validationErrorDescription="Das Feld ist ein Pflichtfeld und muss eine fünfstellige Postleitzahl enthalten." helpMessage="Geben Sie bitte die Postleitzahl ein." placeholderText="z.B. 10997" />
 		<field type="institution" fieldType="input" label="Ort" name="city" position="page2" required="true" validation="" validationErrorDescription="" helpMessage="Das Feld ist ein Pflichtfeld." />
 
-		<field type="institution" fieldType="input" label="Vorwahl" name="areacode" position="page2" required="true" validation="\d+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern enthalten." helpMessage="Tragen Sie die Vorwahl ein, unter der Ihre Institution, alternativ Sie für uns erreichbar sind." />
-		<field type="institution" fieldType="input" label="Rufnummer" name="phonenumber" position="page2" required="true" validation="\d+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern enthalten." helpMessage="Tragen Sie die Rufnummer ein, unter der Ihre Institution, alternativ Sie für uns erreichbar sind." />
+		<field type="institution" fieldType="input" label="Vorwahl" name="areacode" position="page2" required="false" validation="\d+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern enthalten." helpMessage="Tragen Sie die Vorwahl ein, unter der Ihre Institution, alternativ Sie für uns erreichbar sind." />
+		<field type="institution" fieldType="input" label="Rufnummer" name="phonenumber" position="page2" required="false" validation="\d+" validationErrorDescription="Das Feld ist ein Pflichtfeld und darf nur Ziffern enthalten." helpMessage="Tragen Sie die Rufnummer ein, unter der Ihre Institution, alternativ Sie für uns erreichbar sind." />
 		<field type="institution" fieldType="input" label="E-Mail-Adresse" name="email" position="page2" required="true" validation="[a-zA-Z0-9.!#$%&amp;’*+/=?^_`{\|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+" validationErrorDescription="Keine gültige email Adresse angegeben." helpMessage="Bitte geben Sie hier die E-Mail-Adresse der Institution (z.B. eine E-Mail-Funktionsadresse), alternativ Ihre E-Mail-Adresse an." />
 		<field type="institution" fieldType="input" label="Webseite (URL)" name="website" position="page2" required="false" validation="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&amp;//=]*)" validationErrorDescription="Der Wert entspricht keiner gültigen URL. Bitte im Schema 'https://www.abc.de' angeben." helpMessage="Sie können die Website Ihrer Institution, alternativ Ihre Website angeben." />
 
@@ -54,28 +54,26 @@
 		<!-- permissions -->
 
 		<field type="institution" displayInTable="false" fieldType="combo" label="&lt;span class='label__heading'&gt;Zugriffsberechtigung:&lt;/span&gt; &lt;span class='label__body'&gt;Ich möchte eine Zugriffsberechtigung als Standard-Einstellung für alle zukünftig abgelieferten Publikationen vergeben.&lt;/span&gt;" name="institution-accesscondition" position="page4" required="false" validation="" validationErrorDescription="Bitte auswählen" helpMessage="Informationen zu den Zugriffsberechtigungen und Nutzungslizenzen finden Sie hier: [hier Link zu einer Webseite mit Erläuterungen zu gesetzlichen Rahmenbedingungen und Empfehlungen der ZLB]" alternativeLabel="Zugriffs- und Nutzungsberechtigung">
-			<value>Freier Zugang</value>
-			<value>Beschränkt</value>
-			<value>gesperrt</value>
-			<value>gesperrt, Zugriff nur nach Antrag</value>
-			<value>teil-beschränkt</value>
+			<selectfield value="Freier Zugang" label="Freier Zugang (empfohlen)"/>
+			<selectfield value="Eingeschränkter Zugang" label="Eingeschränkter Zugang"/>
+			<selectfield value="Eingeschränkter Zugang mit Nutzungsbeschränkungen" label="Eingeschränkter Zugang mit Nutzungsbeschränkungen (gesetzliche Mindestanforderung)"/>
 		</field>
 
 		<field type="institution" displayInTable="false" fieldType="combo" label="&lt;span class='label__heading'&gt;Nutzungsberechtigung:&lt;/span&gt; &lt;span class='label__body'&gt;Ich möchte eine Nutzungsberechtigung als Standard-Einstellung für alle zukünftig abgelieferten Publikationen vergeben.&lt;/span&gt;" name="institution-copyright" position="page4" required="false" validation="" validationErrorDescription="Bitte auswählen" helpMessage="Informationen zu den Zugriffsberechtigungen und Nutzungslizenzen finden Sie hier: [hier Link zu einer Webseite mit Erläuterungen zu gesetzlichen Rahmenbedingungen und Empfehlungen der ZLB]" alternativeLabel="Zugriffs- und Nutzungsberechtigung">
-			<value>Rechte vorbehalten</value>
-			<value>CC0</value>
-			<value>CC BY</value>
-			<value>CC BY-SA</value>
-			<value>CC BY-ND</value>
-			<value>CC BY-NC</value>
-			<value>CC BY-NC-SA</value>
-			<value>CC BY-NC-ND</value>
+			<selectfield value="Rights reserved" label="Rechte vorbehalten" />
+            <selectfield value="CC0" label="CC0" />
+            <selectfield value="CC BY" label="CC BY" />
+            <selectfield value="CC BY-SA" label="CC BY-SA" />
+            <selectfield value="CC BY-ND" label="CC BY-ND" />
+            <selectfield value="CC BY-NC" label="CC BY-NC" />
+            <selectfield value="CC BY-NC-SA" label="CC BY-NC-SA" />
+            <selectfield value="CC BY-NC-ND" label="CC BY-NC-ND" />
 		</field>
 
 		<field type="institution" displayInTable="false" fieldType="combo" label="&lt;span class='label__heading'&gt;Automatische Erinnerung per E-Mail:&lt;/span&gt; &lt;span class='label__body'&gt;Ich möchte per E-Mail eine automatische Erinnerung an die Ablieferungspflicht erhalten.&lt;/span&gt;" name="institution-reminder" position="page4" required="false" validation="" validationErrorDescription="Bitte auswählen" helpMessage="Wir erinnern Sie an die Ablieferung; stellen Sie ein, wie oft Sie eine Erinnerung erhalten wollen." alternativeLabel="Automatische Erinnerung per E-Mail">
-			<value>monatlich</value>
-			<value>quartalsweise</value>
-			<value>jährlich</value>
+			<selectfield value="monatlich" label="monatlich" />
+			<selectfield value="quartalsweise" label="quartalsweise" />
+			<selectfield value="jährlich" label="jährlich" />
 		</field>
 	</fields>
 
@@ -95,7 +93,7 @@ Click here to login: &lt;a href="{url}"&gt;login.&lt;/a&gt;
 
 
 	<registration>
-		<recipient>robert@intranda.com</recipient>
+		<recipient>goetze@jpberlin.de</recipient>
 		<subject>Neuer Account wurde erstellt</subject>
 		<body>Es wurde ein neuer Account erstellt</body>
 	</registration>

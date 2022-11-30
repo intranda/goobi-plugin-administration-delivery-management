@@ -1,9 +1,11 @@
 package de.intranda.goobi.plugins;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -28,7 +30,7 @@ public class ConfiguredField {
 
     private String subValue;
 
-    private List<String> selectItemList;
+    private List<SelectItem> selectItemList = new ArrayList<>();
 
     private String helpMessage;
 
