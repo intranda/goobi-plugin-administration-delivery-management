@@ -257,7 +257,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                     hc.getString("@validation", null), hc.getString("@validationErrorDescription", null), hc.getString("@helpMessage", ""),
                     hc.getBoolean("@required"), hc.getString("@placeholderText", ""));
 
-            if (field.getFieldType().equals("dropdown") || field.getFieldType().equals(COMBO_FIELD_NAME)) {
+            if ("dropdown".equals(field.getFieldType()) || COMBO_FIELD_NAME.equals(field.getFieldType())) {
                 List<HierarchicalConfiguration> valueList = hc.configurationsAt("/selectfield");
                 for (HierarchicalConfiguration v : valueList) {
                     SelectItem si = new SelectItem(v.getString("@value"), v.getString("@label"));
@@ -292,11 +292,11 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         if (this.displayMode == null || !this.displayMode.equals(displayMode)) {
             this.displayMode = displayMode;
 
-            if (displayMode.equals(USER_MODE)) {
+            if (USER_MODE.equals(displayMode)) {
                 filterUser();
             }
 
-            if (displayMode.equals(ZDB_DATA_MODE)) {
+            if (ZDB_DATA_MODE.equals(displayMode)) {
                 generateZdbTitleList();
             }
         }
@@ -308,7 +308,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             for (Entry<String, List<ConfiguredField>> fields : configuredInstitutionFields.entrySet()) {
                 for (ConfiguredField field : fields.getValue()) {
                     String value = institution.getAdditionalData().get(field.getName());
-                    if (field.getFieldType().equals(COMBO_FIELD_NAME) && StringUtils.isNotBlank(value) && !"false".equals(value)) {
+                    if (COMBO_FIELD_NAME.equals(field.getFieldType()) && StringUtils.isNotBlank(value) && !"false".equals(value)) {
                         field.setBooleanValue(true);
                         field.setSubValue(value);
                     } else {
@@ -409,28 +409,13 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         return sort;
     }
 
-    public void setUserIsActive(boolean active) {
-        if (!user.isActive() && active) {
-            // account gets activated, send mail
-            activateAccount = true;
-        } else if (!active) {
-            // account gets deactivated
-            activateAccount = false;
-        }
-        user.setActive(active);
-    }
-
-    public boolean isUserIsActive() {
-        return user.isActive();
-    }
-
     public void setUserStatus(String status) {
         activateAccount = false;
         rejectedAccount = false;
         UserStatus us = UserStatus.getStatusByName(status);
-        if (!user.getStatus().equals(UserStatus.ACTIVE) && us.equals(UserStatus.ACTIVE)) {
+        if (!UserStatus.ACTIVE.equals(user.getStatus()) && UserStatus.ACTIVE.equals(us)) {
             activateAccount = true;
-        } else if (!user.getStatus().equals(UserStatus.REJECTED) && us.equals(UserStatus.REJECTED)) {
+        } else if (!UserStatus.REJECTED.equals(user.getStatus()) && UserStatus.REJECTED.equals(us)) {
             rejectedAccount = true;
         }
         user.setStatus(us);
@@ -445,7 +430,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             this.user = user;
             for (ConfiguredField field : configuredUserFields) {
                 String value = user.getAdditionalData().get(field.getName());
-                if (field.getFieldType().equals(COMBO_FIELD_NAME) && StringUtils.isNotBlank(value) && !"false".equals(value)) {
+                if (COMBO_FIELD_NAME.equals(field.getFieldType()) && StringUtils.isNotBlank(value) && !"false".equals(value)) {
                     field.setBooleanValue(true);
                     field.setSubValue(value);
                 } else {
@@ -473,7 +458,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         }
 
         for (ConfiguredField field : configuredUserFields) {
-            if (field.getFieldType().equals(COMBO_FIELD_NAME) && field.getBooleanValue()) {
+            if (COMBO_FIELD_NAME.equals(field.getFieldType()) && field.getBooleanValue()) {
                 user.getAdditionalData().put(field.getName(), field.getSubValue());
             } else {
                 user.getAdditionalData().put(field.getName(), field.getValue());
@@ -482,7 +467,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
         for (Entry<String, List<ConfiguredField>> fields : configuredInstitutionFields.entrySet()) {
             for (ConfiguredField field : fields.getValue()) {
-                if (field.getFieldType().equals(COMBO_FIELD_NAME) && field.getBooleanValue()) {
+                if (COMBO_FIELD_NAME.equals(field.getFieldType()) && field.getBooleanValue()) {
                     institution.getAdditionalData().put(field.getName(), field.getSubValue());
                 } else {
                     institution.getAdditionalData().put(field.getName(), field.getValue());
@@ -634,9 +619,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             boolean adisIdAvailable = false;
             for (Metadata md : mdl) {
                 metadataList.add(md);
-                if (md.getType().getName().equals(ZDB_METADATA_TYPE)) {
+                if (ZDB_METADATA_TYPE.equals(md.getType().getName())) {
                     identifierAvailable = true;
-                } else if (md.getType().getName().equals(ADIS_METADATA_TYPE)) {
+                } else if (ADIS_METADATA_TYPE.equals(md.getType().getName())) {
                     adisIdAvailable = true;
                 }
             }
@@ -932,9 +917,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     private void importInstitutionData(Institution inst, Element institutionElement) {
         for (Element element : institutionElement.getChildren()) {
-            if (element.getName().equals("institutionLongName")) {
+            if ("institutionLongName".equals(element.getName())) {
                 inst.setLongName(element.getText());
-            } else if (element.getName().equals("institutionShortName")) {
+            } else if ("institutionShortName".equals(element.getName())) {
                 inst.setShortName(element.getText());
             } else {
                 inst.getAdditionalData().put(element.getName(), element.getValue());
