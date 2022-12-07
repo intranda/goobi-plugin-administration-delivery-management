@@ -791,6 +791,10 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         // if inst not found, create new one, save
         if (currentInstitution == null) {
             currentInstitution = new Institution();
+            currentInstitution.setAllowAllAuthentications(true);
+            currentInstitution.setAllowAllDockets(true);
+            currentInstitution.setAllowAllPlugins(true);
+            currentInstitution.setAllowAllRulesets(true);
             importInstitutionData(currentInstitution, institutionElement);
         }
         // save institution data
