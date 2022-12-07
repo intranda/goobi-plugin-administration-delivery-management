@@ -825,6 +825,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 importUserData(currentUser, userElement);
             }
         }
+        Helper.setMeldung("dataSavedSuccessfully");
     }
 
     private void importUserData(User currentUser, Element userElement) {
