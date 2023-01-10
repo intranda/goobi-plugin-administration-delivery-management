@@ -161,7 +161,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private DatabasePaginator institutionProcessPaginator;
 
     private static final String ZDB_METADATA_TYPE = "CatalogIDPeriodicalDB"; // get this from dashboard config?
-    private static final String ADIS_METADATA_TYPE = "CatalogIDDigital_DS"; // get this from dashboard config?
+    private static final String ADIS_METADATA_TYPE = "CatalogIDDigital"; // get this from dashboard config?
     private static final String COMBO_FIELD_NAME = "combo";
 
     @Getter
