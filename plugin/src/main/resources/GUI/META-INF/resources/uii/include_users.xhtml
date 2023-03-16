@@ -310,20 +310,6 @@
                 <!-- BUTTON ROW -->
                 <div class="dataTables_info">
 
-                    <!-- NEW -->
-                    <button
-                        jsf:id="newUser"
-                        class="btn btn-primary font-size-s"
-                        style="float: left; margin-right: 10px;"
-                        jsf:action="#{AdministrationForm.administrationPlugin.createNewUser}"
-                        jsf:immediate="true">
-                        <span class="fa fa-plus margin-right-5" />
-                        <h:outputText value="#{msgs.neuenBenutzerAnlegen}" />
-                        <f:setPropertyActionListener
-                            value="edit"
-                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                    </button>
-
                     <!-- UPLOAD -->
                     <p:fileUpload
                         listener="#{AdministrationForm.administrationPlugin.handleFileUpload}"
