@@ -820,6 +820,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             // or create new one
             if (currentUser == null) {
                 currentUser = new User();
+                currentUser.setStatus(UserStatus.REGISTERED);
                 currentUser.setInstitution(currentInstitution);
                 try {
                     UserManager.saveUser(currentUser);
