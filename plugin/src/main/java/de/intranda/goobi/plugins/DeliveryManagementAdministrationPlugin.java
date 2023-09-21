@@ -774,60 +774,69 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             return;
         }
 
-        Element root = doc.getRootElement();
-        Element institutionElement = root.getChild("institution");
-        String longName = institutionElement.getChildText("institutionLongName");
-        List<Institution> existingInstitutions = InstitutionManager.getAllInstitutionsAsList();
-        Institution currentInstitution = null;
-        for (Institution inst : existingInstitutions) {
-            if (inst.getLongName().equals(longName)) {
-                // merge data
-                importInstitutionData(inst, institutionElement);
-                currentInstitution = inst;
-                break;
-            }
+        Element rootElement = doc.getRootElement();
+
+        List<Element> dataList = new ArrayList<>();
+        if (rootElement.getName().equals("data")) {
+            dataList.add(rootElement);
+        } else {
+            dataList.addAll(rootElement.getChildren("data"));
         }
-
-        // if inst not found, create new one, save
-        if (currentInstitution == null) {
-            currentInstitution = new Institution();
-            currentInstitution.setAllowAllAuthentications(true);
-            currentInstitution.setAllowAllDockets(true);
-            currentInstitution.setAllowAllPlugins(true);
-            currentInstitution.setAllowAllRulesets(true);
-            importInstitutionData(currentInstitution, institutionElement);
-        }
-        // save institution data
-        InstitutionManager.saveInstitution(currentInstitution);
-
-        List<User> existingUser = UserManager.getAllUsers();
-        List<Element> userList = root.getChildren("user");
-
-        for (Element userElement : userList) {
-            String login = userElement.getChildText("login");
-            User currentUser = null;
-
-            // check if user exists, merge
-            for (User u : existingUser) {
-                if (u.getLogin().equals(login)) {
+        for (Element data : dataList) {
+            Element institutionElement = data.getChild("institution");
+            String longName = institutionElement.getChildText("institutionLongName");
+            List<Institution> existingInstitutions = InstitutionManager.getAllInstitutionsAsList();
+            Institution currentInstitution = null;
+            for (Institution inst : existingInstitutions) {
+                if (inst.getLongName().equals(longName)) {
                     // merge data
-                    currentUser = u;
-                    currentUser.setInstitution(currentInstitution);
-                    importUserData(currentUser, userElement);
+                    importInstitutionData(inst, institutionElement);
+                    currentInstitution = inst;
                     break;
                 }
             }
-            // or create new one
-            if (currentUser == null) {
-                currentUser = new User();
-                currentUser.setStatus(UserStatus.REGISTERED);
-                currentUser.setInstitution(currentInstitution);
-                try {
-                    UserManager.saveUser(currentUser);
-                } catch (DAOException e) {
-                    log.error(e);
+
+            // if inst not found, create new one, save
+            if (currentInstitution == null) {
+                currentInstitution = new Institution();
+                currentInstitution.setAllowAllAuthentications(true);
+                currentInstitution.setAllowAllDockets(true);
+                currentInstitution.setAllowAllPlugins(true);
+                currentInstitution.setAllowAllRulesets(true);
+                importInstitutionData(currentInstitution, institutionElement);
+            }
+            // save institution data
+            InstitutionManager.saveInstitution(currentInstitution);
+
+            List<User> existingUser = UserManager.getAllUsers();
+            List<Element> userList = data.getChildren("user");
+
+            for (Element userElement : userList) {
+                String login = userElement.getChildText("login");
+                User currentUser = null;
+
+                // check if user exists, merge
+                for (User u : existingUser) {
+                    if (u.getLogin().equals(login)) {
+                        // merge data
+                        currentUser = u;
+                        currentUser.setInstitution(currentInstitution);
+                        importUserData(currentUser, userElement);
+                        break;
+                    }
                 }
-                importUserData(currentUser, userElement);
+                // or create new one
+                if (currentUser == null) {
+                    currentUser = new User();
+                    currentUser.setStatus(UserStatus.REGISTERED);
+                    currentUser.setInstitution(currentInstitution);
+                    try {
+                        UserManager.saveUser(currentUser);
+                    } catch (DAOException e) {
+                        log.error(e);
+                    }
+                    importUserData(currentUser, userElement);
+                }
             }
         }
         Helper.setMeldung("dataSavedSuccessfully");
