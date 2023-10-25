@@ -130,6 +130,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private transient List<ConfiguredField> configuredUserFields = null;
 
     @Getter
+    private transient List<ConfiguredField> configuredDnbFields = null;
+
+    @Getter
     @Setter
     private String userSearchFilter;
 
@@ -273,6 +276,10 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 }
                 fields.add(field);
                 configuredInstitutionFields.put(position, fields);
+                if ("dnb".equals(field.getType())) {
+                    configuredDnbFields.add(field);
+                }
+
             } else {
                 configuredUserFields.add(field);
             }
@@ -437,6 +444,17 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                     field.setValue(user.getAdditionalData().get(field.getName()));
                 }
             }
+
+            for (ConfiguredField field : configuredDnbFields) {
+                String value = user.getAdditionalData().get(field.getName());
+                if (COMBO_FIELD_NAME.equals(field.getFieldType()) && StringUtils.isNotBlank(value) && !"false".equals(value)) {
+                    field.setBooleanValue(true);
+                    field.setSubValue(value);
+                } else {
+                    field.setValue(user.getAdditionalData().get(field.getName()));
+                }
+            }
+
             setInstitution(user.getInstitution());
         }
     }
@@ -464,6 +482,8 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 user.getAdditionalData().put(field.getName(), field.getValue());
             }
         }
+
+        // TODO dnb fields
 
         for (Entry<String, List<ConfiguredField>> fields : configuredInstitutionFields.entrySet()) {
             for (ConfiguredField field : fields.getValue()) {
@@ -777,7 +797,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         Element rootElement = doc.getRootElement();
 
         List<Element> dataList = new ArrayList<>();
-        if (rootElement.getName().equals("data")) {
+        if ("data".equals(rootElement.getName())) {
             dataList.add(rootElement);
         } else {
             dataList.addAll(rootElement.getChildren("data"));
