@@ -438,7 +438,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         return user.getStatus().getName();
     }
 
-    public void setUser(User user) {
+    private void setUser(User user) {
         if (this.user == null || !this.user.equals(user)) {
             this.user = user;
             for (ConfiguredField field : configuredUserFields) {
@@ -457,8 +457,12 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                     field.setBooleanValue(true);
                     field.setSubValue(value);
                 } else {
-                    field.setValue(user.getAdditionalData().get(field.getName()));
+                    field.setValue(value);
                 }
+                if (StringUtils.isNotBlank(value) && currentUser != null) {
+                    currentUser.setDnbUser(true);
+                }
+
             }
 
             setInstitution(user.getInstitution());
@@ -469,7 +473,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         this.currentUser = currentUser;
         setUser(currentUser.getUser());
     }
-
 
     public void saveUser() {
         for (ConfiguredField field : configuredUserFields) {
@@ -495,7 +498,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             }
         }
 
-        // TODO dnb fields
+        // TODO store dnb fields, only if filled
 
         for (Entry<String, List<ConfiguredField>> fields : configuredInstitutionFields.entrySet()) {
             for (ConfiguredField field : fields.getValue()) {

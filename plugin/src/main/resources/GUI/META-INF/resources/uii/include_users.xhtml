@@ -612,12 +612,43 @@
                         varStatus="status"
                         value="#{AdministrationForm.administrationPlugin.configuredDnbFields}">
 
-                        <h:outputText value="#{msgs[item.label]}"></h:outputText>
+                                           <ui:fragment rendered="#{item.fieldType=='input'}">
+                            <intranda:formInputTextAjax
+                                name="#{status.index}field"
+                                label="#{msgs[item.label]}"
+                                field="#{item.value}"
+                                help="#{item.helpMessage}"
+                                fieldStyle="form-control"
+                                required="#{item.required}"
+                                execute="@this"
+                                render="@form" />
+                        </ui:fragment>
+                        <ui:fragment rendered="#{item.fieldType=='textarea'}">
+                            <intranda:formInputTextArea
+                                name="#{status.index}field"
+                                label="#{msgs[item.label]}"
+                                field="#{item.value}"
+                                help="#{item.helpMessage}"
+                                fieldStyle="form-control"
+                                required="#{item.required}" />
+                        </ui:fragment>
+                        <ui:fragment rendered="#{item.fieldType=='dropdown'}">
+                            <intranda:formInputDropDownAjax
+                                label="#{msgs[item.label]}"
+                                field="#{item.value}"
+                                help="#{item.helpMessage}"
+                                name="#{status.index}field"
+                                selectItems="#{item.selectItemList}"
+                                fieldStyle="form-control"
+                                required="#{item.required}"
+                                itemValue="#{var.value}"
+                                itemLabel="#{msgs[var.label]}"
+                                ajaxEvent="change"
+                                ajaxRender="@form" />
+                        </ui:fragment>
                         <br/>
 
                     </ui:repeat>
-
-
 
                     <div class="box-title">
                         <h2>

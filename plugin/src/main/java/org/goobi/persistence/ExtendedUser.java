@@ -27,21 +27,13 @@ public class ExtendedUser implements DatabaseObject {
     @Setter
     private int numberOfUploads;
 
-    @Getter
+    @Getter @Setter
     private boolean dnbUser;
 
     public ExtendedUser(User user) {
         super();
         this.user = user;
         this.institution = user.getInstitution();
-
-        if (!user.getAdditionalData().isEmpty()) {
-            for (String key : user.getAdditionalData().keySet()) {
-                if (key.startsWith("dnb-")) {
-                    dnbUser = true;
-                }
-            }
-        }
     }
 
     @Override
