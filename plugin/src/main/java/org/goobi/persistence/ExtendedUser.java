@@ -27,20 +27,29 @@ public class ExtendedUser implements DatabaseObject {
     @Setter
     private int numberOfUploads;
 
+    @Getter
+    private boolean dnbUser;
 
     public ExtendedUser(User user) {
         super();
         this.user = user;
         this.institution = user.getInstitution();
-    }
 
+        if (!user.getAdditionalData().isEmpty()) {
+            for (String key : user.getAdditionalData().keySet()) {
+                if (key.startsWith("dnb-")) {
+                    dnbUser = true;
+                }
+            }
+        }
+    }
 
     @Override
     public void lazyLoad() {
         // nothing
     }
 
-    public Map<String, String>getAdditionalData() {
+    public Map<String, String> getAdditionalData() {
         return institution.getAdditionalData();
     }
 
@@ -55,6 +64,7 @@ public class ExtendedUser implements DatabaseObject {
     public String getShortName() {
         return institution.getShortName();
     }
+
     public void setShortName(String value) {
         institution.setShortName(value);
     }

@@ -37,6 +37,7 @@ import org.goobi.beans.User.UserStatus;
 import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.DatabasePaginator;
 import org.goobi.managedbeans.ProcessBean;
+import org.goobi.persistence.ExtendedUser;
 import org.goobi.persistence.ExtendedUserManager;
 import org.goobi.persistence.UserPaginator;
 import org.goobi.production.enums.PluginType;
@@ -125,6 +126,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     @Getter
     private User user;
+
+    @Getter
+    private ExtendedUser currentUser;
 
     @Getter
     private transient List<ConfiguredField> configuredUserFields = null;
@@ -247,6 +251,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
         configuredInstitutionFields = new LinkedHashMap<>();
         configuredUserFields = new ArrayList<>();
+        configuredDnbFields = new ArrayList<>();
 
         privacyPolicyText = conf.getString("/privacyStatement", ""); //NOSONAR
 
@@ -279,7 +284,8 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 if ("dnb".equals(field.getType())) {
                     configuredDnbFields.add(field);
                 }
-
+            } else if ("dnb".equals(field.getType())) { //NOSONAR
+                configuredDnbFields.add(field);
             } else {
                 configuredUserFields.add(field);
             }
@@ -458,6 +464,12 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             setInstitution(user.getInstitution());
         }
     }
+
+    public void setCurrentUser(ExtendedUser currentUser) {
+        this.currentUser = currentUser;
+        setUser(currentUser.getUser());
+    }
+
 
     public void saveUser() {
         for (ConfiguredField field : configuredUserFields) {
