@@ -511,8 +511,6 @@
                         ajaxEvent="change"
                         ajaxRender="@form" />
 
-                    <!-- TODO add separate area for dnb data -->
-
 
                     <!-- ADDITIONAL DATA -->
                     <ui:repeat
@@ -612,7 +610,7 @@
                         varStatus="status"
                         value="#{AdministrationForm.administrationPlugin.configuredDnbFields}">
 
-                                           <ui:fragment rendered="#{item.fieldType=='input'}">
+                        <ui:fragment rendered="#{item.fieldType=='input'}">
                             <intranda:formInputTextAjax
                                 name="#{status.index}field"
                                 label="#{msgs[item.label]}"
@@ -646,9 +644,54 @@
                                 ajaxEvent="change"
                                 ajaxRender="@form" />
                         </ui:fragment>
-                        <br/>
-
                     </ui:repeat>
+
+
+                    <!-- TODO dnb status -->
+                    <!-- radio select to change status -->
+                    <h:panelGroup
+                        layout="block"
+                        styleClass="form-group"
+                        rendered="#{AdministrationForm.administrationPlugin.currentUser.dnbUser}">
+
+                        <div class="col-sm-3 control-label">
+                            <h:outputLabel
+                                for="dnbstatus"
+                                value="#{msgs.plugin_administration_deliveryManagement_dnbStatus}">
+                            </h:outputLabel>
+                        </div>
+                        <div class="col-sm-8">
+                            <h:selectOneRadio
+                                id="dnbstatus"
+                                styleClass="form-control accountStatus__options__table"
+                                value="#{AdministrationForm.administrationPlugin.dnbStatus}"
+                                onfocus="focusField(this);">
+
+                                <f:selectItems
+                                    value="#{AdministrationForm.administrationPlugin.possibleDnbStatus}"
+                                    itemLabel="#{msgs[val]}"
+                                    itemValue="#{val}"
+                                    var="val" />
+                            </h:selectOneRadio>
+
+                        </div>
+
+                        <div>
+                            <!-- button to send current status to dnb -->
+
+                            <button
+                                class="btn font-size-s margin-bottom-most"
+                                jsf:id="syncStatus"
+                                type="submit"
+                                jsf:action="#{AdministrationForm.administrationPlugin.syncUserStatus}">
+                                <span class="fa fa-refresh" />
+
+                            </button>
+
+                        </div>
+
+                    </h:panelGroup>
+
 
                     <div class="box-title">
                         <h2>

@@ -209,6 +209,18 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private String userRejectionMailSubject;
     private String userRejectionMailBody;
 
+
+    // TODO
+    @Getter
+    @Setter
+    private String dnbStatus;
+    @Getter
+    private String[] possibleDnbStatus = { "Neu", "In Bearbeitung", "Sammelgebiet", "nicht Sammelgebiet" };
+
+    public void syncUserStatus() {
+        System.out.println("sync");
+    }
+
     public DeliveryManagementAdministrationPlugin() {
 
         modes = new ArrayList<>();
