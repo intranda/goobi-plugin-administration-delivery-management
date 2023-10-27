@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,12 @@ import javax.faces.model.SelectItem;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
@@ -128,7 +135,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private User user;
 
     @Getter
-    private ExtendedUser currentUser;
+    private ExtendedUser extendedUser;
 
     @Getter
     private transient List<ConfiguredField> configuredUserFields = null;
@@ -209,17 +216,14 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private String userRejectionMailSubject;
     private String userRejectionMailBody;
 
+    private String dnbAPi;
+    private String iln;
+    @Getter
+    private String[] possibleDnbStatus;
 
-    // TODO
     @Getter
     @Setter
     private String dnbStatus;
-    @Getter
-    private String[] possibleDnbStatus = { "Neu", "In Bearbeitung", "Sammelgebiet", "nicht Sammelgebiet" };
-
-    public void syncUserStatus() {
-        System.out.println("sync");
-    }
 
     public DeliveryManagementAdministrationPlugin() {
 
@@ -311,6 +315,12 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         userRejectionMailBody = conf.getString("/userRejection/body");
 
         filterUser(); // temporary fix to load the data for the first page
+
+        // get data for dnb communication
+        dnbAPi = conf.getString("/dnb/apiUrl");
+        iln = conf.getString("/dnb/iln");
+        possibleDnbStatus = conf.getStringArray("/dnb/status");
+
     }
 
     public void setDisplayMode(String displayMode) {
@@ -346,6 +356,8 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             }
         }
     }
+
+    //   /institutionen/12345/abliefernde/141230080/status
 
     public void filterUser() {
         ExtendedUserManager m = new ExtendedUserManager();
@@ -471,19 +483,25 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 } else {
                     field.setValue(value);
                 }
-                if (StringUtils.isNotBlank(value) && currentUser != null) {
-                    currentUser.setDnbUser(true);
+                if (StringUtils.isNotBlank(value) && extendedUser != null) {
+                    extendedUser.setDnbUser(true);
                 }
 
+            }
+
+            // set dnb status
+            String status = user.getAdditionalData().get("dnb-status");
+            if (StringUtils.isNotBlank(status)) {
+                dnbStatus = status;
             }
 
             setInstitution(user.getInstitution());
         }
     }
 
-    public void setCurrentUser(ExtendedUser currentUser) {
-        this.currentUser = currentUser;
-        setUser(currentUser.getUser());
+    public void setExtendedUser(ExtendedUser extendedUser) {
+        this.extendedUser = extendedUser;
+        setUser(extendedUser.getUser());
     }
 
     public void saveUser() {
@@ -510,7 +528,18 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             }
         }
 
-        // TODO store dnb fields, only if filled
+        // store dnb fields, only if filled
+        for (ConfiguredField field : configuredDnbFields) {
+            if (COMBO_FIELD_NAME.equals(field.getFieldType()) && field.getBooleanValue() && StringUtils.isNotBlank(field.getSubValue())) {
+                user.getAdditionalData().put(field.getName(), field.getSubValue());
+            } else if (StringUtils.isNotBlank(field.getValue())) {
+                user.getAdditionalData().put(field.getName(), field.getValue());
+            }
+        }
+        // save dnb status
+        if (StringUtils.isNotBlank(dnbStatus)) {
+            user.getAdditionalData().put("dnb-status", dnbStatus);
+        }
 
         for (Entry<String, List<ConfiguredField>> fields : configuredInstitutionFields.entrySet()) {
             for (ConfiguredField field : fields.getValue()) {
@@ -1042,5 +1071,32 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     public void createNewContact() {
         // show fields for second contract in ui
         displaySecondContact = true;
+    }
+
+    public void syncUserStatus() {
+        String ido = null;
+        for (ConfiguredField field : configuredDnbFields) {
+            if ("ido".equals(field.getName())) {
+                ido = field.getValue();
+            }
+        }
+        if (StringUtils.isNotBlank(ido)) {
+            String url = dnbAPi.replace("{iln}", iln).replace("{ido}", ido);
+            Client client = ClientBuilder.newClient();
+            WebTarget target = client.target(url);
+            Map<String, String> data = new HashMap<>();
+            data.put("status", dnbStatus);
+
+            Response res = target.request(MediaType.APPLICATION_JSON_TYPE)
+                    .post(Entity.json(data));
+
+            if (res.getStatus() > 308) {
+                // TODO handle error
+            } else {
+                // save object
+                saveUser();
+            }
+        }
+
     }
 }

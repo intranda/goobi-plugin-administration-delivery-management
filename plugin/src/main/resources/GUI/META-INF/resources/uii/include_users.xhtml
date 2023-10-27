@@ -259,7 +259,7 @@
                                 name="aria-label"
                                 value="#{msgs.benutzerBearbeiten}" />
                             <f:setPropertyActionListener
-                                target="#{AdministrationForm.administrationPlugin.currentUser}"
+                                target="#{AdministrationForm.administrationPlugin.extendedUser}"
                                 value="#{item}" />
                             <f:setPropertyActionListener
                                 value="edit"
@@ -599,13 +599,13 @@
                     <h:panelGroup
                         layout="block"
                         styleClass="box-title"
-                        rendered="#{AdministrationForm.administrationPlugin.currentUser.dnbUser}">
+                        rendered="#{AdministrationForm.administrationPlugin.extendedUser.dnbUser}">
                         <h2>
                             <h:outputText value="#{msgs.plugin_rest_usercreation_dnb_data}" />
                         </h2>
                     </h:panelGroup>
                     <ui:repeat
-                        rendered="#{AdministrationForm.administrationPlugin.currentUser.dnbUser}"
+                        rendered="#{AdministrationForm.administrationPlugin.extendedUser.dnbUser}"
                         var="item"
                         varStatus="status"
                         value="#{AdministrationForm.administrationPlugin.configuredDnbFields}">
@@ -647,12 +647,12 @@
                     </ui:repeat>
 
 
-                    <!-- TODO dnb status -->
+                    <!-- dnb status -->
                     <!-- radio select to change status -->
                     <h:panelGroup
                         layout="block"
                         styleClass="form-group"
-                        rendered="#{AdministrationForm.administrationPlugin.currentUser.dnbUser}">
+                        rendered="#{AdministrationForm.administrationPlugin.extendedUser.dnbUser}">
 
                         <div class="col-sm-3 control-label">
                             <h:outputLabel
@@ -678,7 +678,6 @@
 
                         <div>
                             <!-- button to send current status to dnb -->
-
                             <button
                                 class="btn font-size-s margin-bottom-most"
                                 jsf:id="syncStatus"
