@@ -30,10 +30,7 @@
 		
 		</style>
 
-        <h:inputHidden
-            id="focusField"
-            value="#{AdministrationForm.administrationPlugin.focusField}" />
-
+      
         <main class="#{AdministrationForm.administrationPlugin.editionMode=='edit' ? 'editMode' : ''}">
             <h:panelGroup>
                 <div class="row deliveryManagement">
@@ -148,18 +145,7 @@
         </main>
         <script type="text/javascript">
                                     //<![CDATA[
-                                    function focusField( elem ) {
-                                        document.getElementById( "focusField" ).value = elem.id;
-                                    }
-
-                                    function updateFocus() {
-                                        var focus = $( '#focusField' ).val();
-                                        const inp = document.getElementById( focus );
-                                        if ( inp != null ) {
-                                            inp.focus();
-                                        }
-                                    }
-
+                                   
                                     jsf.ajax.addOnEvent( function( data ) {
                                         var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
                                         var source = data.source;
@@ -170,7 +156,7 @@
                                                 break;
                                             case "success": // This is called when ajax response is successfully processed.
                                                 // find element,set focus
-                                                updateFocus();
+                                               
                                                 break;
                                         }
                                     } );

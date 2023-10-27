@@ -356,7 +356,7 @@
                         name="nachname"
                         fieldStyle="form-control"
                         execute="@this"
-                        render="@form" />
+                        />
 
                     <!-- FIRST NAME -->
                     <intranda:formInputTextAjax
@@ -368,7 +368,7 @@
                         name="vorname"
                         fieldStyle="form-control"
                         execute="@this"
-                        render="@form" />
+                        />
 
                     <!-- PLACE -->
                     <intranda:formInputTextAjax
@@ -380,7 +380,7 @@
                         name="standort"
                         fieldStyle="form-control"
                         execute="@this"
-                        render="@form" />
+                        />
 
                     <!-- LOGIN -->
                     <div class="form-group">
@@ -408,7 +408,7 @@
                                 validatorMessage="#{msgs.loginWrongCharacter}">
                                 <f:validateRegex pattern="[a-z0-9\._-]+" />
                                 <f:ajax
-                                    render="@form"
+                                   
                                     execute="@this" />
                             </x:inputText>
                             <h:message
@@ -430,7 +430,7 @@
                         name="emailName"
                         fieldStyle="form-control"
                         execute="@this"
-                        render="@form" />
+                        />
 
 
                     <!-- AUTH -->
@@ -458,7 +458,7 @@
                                     itemLabel="#{var.itemLabel}"
                                     itemValue="#{var.itemValue}" />
                                 <f:ajax
-                                    render="@form"
+                                   
                                     execute="@this" />
                             </h:selectOneMenu>
                             <h:message
@@ -482,7 +482,7 @@
                                 id="status"
                                 styleClass="form-control accountStatus__options__table"
                                 value="#{AdministrationForm.administrationPlugin.userStatus}"
-                                onfocus="focusField(this);">
+                                >
 
                                 <f:selectItems
                                     value="#{AdministrationForm.administrationPlugin.possibleUserStatus}"
@@ -526,7 +526,7 @@
                                 fieldStyle="form-control"
                                 required="#{item.required}"
                                 execute="@this"
-                                render="@form" />
+                                />
                         </ui:fragment>
                         <ui:fragment rendered="#{item.fieldType=='textarea'}">
                             <intranda:formInputTextArea
@@ -619,7 +619,7 @@
                                 fieldStyle="form-control"
                                 required="#{item.required}"
                                 execute="@this"
-                                render="@form" />
+                                />
                         </ui:fragment>
                         <ui:fragment rendered="#{item.fieldType=='textarea'}">
                             <intranda:formInputTextArea
@@ -664,16 +664,19 @@
                             <h:selectOneRadio
                                 id="dnbstatus"
                                 styleClass="form-control accountStatus__options__table"
-                                value="#{AdministrationForm.administrationPlugin.dnbStatus}"
-                                onfocus="focusField(this);">
+                                value="#{AdministrationForm.administrationPlugin.dnbStatus}">
 
                                 <f:selectItems
                                     value="#{AdministrationForm.administrationPlugin.possibleDnbStatus}"
                                     itemLabel="#{msgs[val]}"
                                     itemValue="#{val}"
                                     var="val" />
+                                    <f:ajax execute="@this"/>
                             </h:selectOneRadio>
-
+     <h:message
+                                for="dnbstatus"
+                                showDetail="true"
+                                styleClass="help-inline font-danger" />
                         </div>
 
                         <div>
@@ -681,14 +684,13 @@
                             <button
                                 class="btn font-size-s margin-bottom-most"
                                 jsf:id="syncStatus"
-                                type="submit"
+                              
                                 jsf:action="#{AdministrationForm.administrationPlugin.syncUserStatus}">
                                 <span class="fa fa-refresh" />
-
+                                
+                                <f:ajax execute="@this" render="@this globalMessage"/>
                             </button>
-
                         </div>
-
                     </h:panelGroup>
 
 
@@ -704,7 +706,7 @@
                         name="shortName"
                         fieldStyle="form-control"
                         execute="@this"
-                        render="@form" />
+                        />
                     <intranda:formInputTextAjax
                         name="longTitle"
                         label="#{msgs.institution_longName}"
@@ -712,7 +714,7 @@
                         help="#{msgs.institution_help_longName}"
                         fieldStyle="form-control"
                         execute="@this"
-                        render="@form" />
+                        />
 
 
                     <!-- additional data -->
@@ -791,11 +793,11 @@
                                             styleClass="form-control"
                                             value="#{item.value}"
                                             validator="#{item.validateField}"
-                                            onfocus="focusField(this);">
+                                            >
                                             <f:ajax
                                                 event="blur"
-                                                render="@form"
-                                                execute="@this focusField" />
+                                               
+                                                execute="@this" />
                                             <f:passThroughAttribute
                                                 name="placeholder"
                                                 value="#{msgs[item.placeholderText]}" />
@@ -807,11 +809,11 @@
                                             styleClass="form-control"
                                             value="#{item.value}"
                                             validator="#{item.validateField}"
-                                            onfocus="focusField(this);">
+                                            >
                                             <f:ajax
                                                 event="blur"
-                                                render="@form"
-                                                execute="@this focusField" />
+                                               
+                                                execute="@this" />
                                             <f:passThroughAttribute
                                                 name="placeholder"
                                                 value="#{msgs[item.placeholderText]}" />
@@ -823,7 +825,7 @@
                                             styleClass="form-control"
                                             value="#{item.value}"
                                             validator="#{item.validateField}"
-                                            onfocus="focusField(this);">
+                                            >
                                             <f:selectItems
                                                 value="#{item.selectItemList}"
                                                 itemValue="#{var.value}"
@@ -838,10 +840,10 @@
                                                     styleClass="form-control"
                                                     value="#{item.booleanValue}"
                                                     validator="#{item.validateField}"
-                                                    onfocus="focusField(this);">
+                                                    >
                                                     <f:ajax
                                                         render="@form"
-                                                        execute="@this focusField" />
+                                                        execute="@this" />
                                                 </h:selectBooleanCheckbox>
                                                 <h:selectOneRadio
                                                     rendered="#{item.booleanValue}"
@@ -849,10 +851,10 @@
                                                     styleClass="form-control"
                                                     value="#{item.subValue}"
                                                     validator="#{item.validateField}"
-                                                    onfocus="focusField(this);">
+                                                    >
                                                     <f:ajax
                                                         render="@form"
-                                                        execute="@this focusField" />
+                                                        execute="@this" />
                                                     <f:selectItems
                                                         value="#{item.selectItemList}"
                                                         itemValue="#{var.value}"

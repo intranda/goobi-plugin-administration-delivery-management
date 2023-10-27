@@ -99,10 +99,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private String[] possibleUserStatus = { UserStatus.REJECTED.getName(), UserStatus.REGISTERED.getName(), UserStatus.ACTIVE.getName() };
 
     @Getter
-    @Setter
-    private String focusField;
-
-    @Getter
     private String title = "intranda_administration_deliveryManagement";
 
     @Getter
@@ -223,7 +219,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     @Getter
     @Setter
-    private String dnbStatus;
+    private String dnbStatus = "INBEARBEITUNG";
 
     public DeliveryManagementAdministrationPlugin() {
 
@@ -338,26 +334,40 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     }
 
     public void setInstitution(Institution institution) {
-        if (this.institution == null || !this.institution.equals(institution)) {
-            this.institution = institution;
-            for (Entry<String, List<ConfiguredField>> fields : configuredInstitutionFields.entrySet()) {
-                for (ConfiguredField field : fields.getValue()) {
-                    String value = institution.getAdditionalData().get(field.getName());
-                    if (COMBO_FIELD_NAME.equals(field.getFieldType()) && StringUtils.isNotBlank(value) && !"false".equals(value)) {
-                        field.setBooleanValue(true);
-                        field.setSubValue(value);
-                    } else {
-                        field.setValue(value);
-                    }
-                    if ("page3a".equals(fields.getKey()) && StringUtils.isNotBlank(value)) {
-                        displaySecondContact = true;
-                    }
+        this.institution = institution;
+        for (Entry<String, List<ConfiguredField>> fields : configuredInstitutionFields.entrySet()) {
+            for (ConfiguredField field : fields.getValue()) {
+                String value = institution.getAdditionalData().get(field.getName());
+                if (COMBO_FIELD_NAME.equals(field.getFieldType()) && StringUtils.isNotBlank(value) && !"false".equals(value)) {
+                    field.setBooleanValue(true);
+                    field.setSubValue(value);
+                } else {
+                    field.setValue(value);
+                }
+                if ("page3a".equals(fields.getKey()) && StringUtils.isNotBlank(value)) {
+                    displaySecondContact = true;
                 }
             }
         }
-    }
 
-    //   /institutionen/12345/abliefernde/141230080/status
+        for (ConfiguredField field : configuredDnbFields) {
+            String value = institution.getAdditionalData().get(field.getName());
+            if (COMBO_FIELD_NAME.equals(field.getFieldType()) && StringUtils.isNotBlank(value) && !"false".equals(value)) {
+                field.setBooleanValue(true);
+                field.setSubValue(value);
+            } else {
+                field.setValue(value);
+            }
+            if (StringUtils.isNotBlank(value) && extendedUser != null) {
+                extendedUser.setDnbUser(true);
+            }
+        }
+        // set dnb status
+        String status = user.getAdditionalData().get("dnb-status");
+        if (StringUtils.isNotBlank(status)) {
+            dnbStatus = status;
+        }
+    }
 
     public void filterUser() {
         ExtendedUserManager m = new ExtendedUserManager();
@@ -463,45 +473,23 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     }
 
     private void setUser(User user) {
-        if (this.user == null || !this.user.equals(user)) {
-            this.user = user;
-            for (ConfiguredField field : configuredUserFields) {
-                String value = user.getAdditionalData().get(field.getName());
-                if (COMBO_FIELD_NAME.equals(field.getFieldType()) && StringUtils.isNotBlank(value) && !"false".equals(value)) {
-                    field.setBooleanValue(true);
-                    field.setSubValue(value);
-                } else {
-                    field.setValue(user.getAdditionalData().get(field.getName()));
-                }
+
+        this.user = user;
+        for (ConfiguredField field : configuredUserFields) {
+            String value = user.getAdditionalData().get(field.getName());
+            if (COMBO_FIELD_NAME.equals(field.getFieldType()) && StringUtils.isNotBlank(value) && !"false".equals(value)) {
+                field.setBooleanValue(true);
+                field.setSubValue(value);
+            } else {
+                field.setValue(user.getAdditionalData().get(field.getName()));
             }
-
-            for (ConfiguredField field : configuredDnbFields) {
-                String value = user.getAdditionalData().get(field.getName());
-                if (COMBO_FIELD_NAME.equals(field.getFieldType()) && StringUtils.isNotBlank(value) && !"false".equals(value)) {
-                    field.setBooleanValue(true);
-                    field.setSubValue(value);
-                } else {
-                    field.setValue(value);
-                }
-                if (StringUtils.isNotBlank(value) && extendedUser != null) {
-                    extendedUser.setDnbUser(true);
-                }
-
-            }
-
-            // set dnb status
-            String status = user.getAdditionalData().get("dnb-status");
-            if (StringUtils.isNotBlank(status)) {
-                dnbStatus = status;
-            }
-
-            setInstitution(user.getInstitution());
         }
     }
 
     public void setExtendedUser(ExtendedUser extendedUser) {
         this.extendedUser = extendedUser;
         setUser(extendedUser.getUser());
+        setInstitution(extendedUser.getInstitution());
     }
 
     public void saveUser() {
@@ -531,14 +519,14 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         // store dnb fields, only if filled
         for (ConfiguredField field : configuredDnbFields) {
             if (COMBO_FIELD_NAME.equals(field.getFieldType()) && field.getBooleanValue() && StringUtils.isNotBlank(field.getSubValue())) {
-                user.getAdditionalData().put(field.getName(), field.getSubValue());
+                institution.getAdditionalData().put(field.getName(), field.getSubValue());
             } else if (StringUtils.isNotBlank(field.getValue())) {
-                user.getAdditionalData().put(field.getName(), field.getValue());
+                institution.getAdditionalData().put(field.getName(), field.getValue());
             }
         }
         // save dnb status
         if (StringUtils.isNotBlank(dnbStatus)) {
-            user.getAdditionalData().put("dnb-status", dnbStatus);
+            institution.getAdditionalData().put("dnb-status", dnbStatus);
         }
 
         for (Entry<String, List<ConfiguredField>> fields : configuredInstitutionFields.entrySet()) {
@@ -1092,11 +1080,16 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
             if (res.getStatus() > 308) {
                 // TODO handle error
+                Helper.setFehlerMeldung("Fehler beim DNB Status aktualisieren");
             } else {
                 // save object
                 saveUser();
+                Helper.setMeldung("Status aktualisiert");
             }
         }
 
+        else {
+            Helper.setFehlerMeldung("Keine IDO gefunden.");
+        }
     }
 }
