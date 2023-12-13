@@ -8,39 +8,34 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:c="http://java.sun.com/jstl/core"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
     <composite:interface>
     </composite:interface>
 
     <composite:implementation>
-
-
-
         <h:form styleClass="form-horizontal form-bordered">
             <h:inputTextarea
                 id="textareaHtml"
                 styleClass="form-control textarea-html"
                 value="#{AdministrationForm.administrationPlugin.privacyPolicyText}" />
 
-            <div class="form-actions">
+            <div class="box__actions">
                 <!-- Save -->
                 <button
-                    class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+                    class="btn btn-success submitOnEnter"
                     jsf:id="absenden"
                     type="submit"
                     jsf:action="#{AdministrationForm.administrationPlugin.savePrivacyPolicy}">
                     <i class="fa fa-save margin-right-5"></i>
-                    <h:outputText value="#{msgs.speichern}" />
+                    <span>
+                        <h:outputText value="#{msgs.speichern}" />
+                    </span>
                     <f:ajax
                         render="@form"
                         execute="@form" />
                 </button>
             </div>
-
         </h:form>
-
-
-
     </composite:implementation>
 </ui:composition>
