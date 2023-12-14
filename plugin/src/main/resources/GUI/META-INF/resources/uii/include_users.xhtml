@@ -253,7 +253,6 @@
                                                     target="#{AdministrationForm.administrationPlugin.editionMode}" />
                                                 <f:ajax render="@all" />
                                             </button>
-
                                             <!-- DOWNLOAD INSTITUTION DATA -->
                                             <button
                                                 jsf:id="export"
@@ -266,9 +265,9 @@
                                                 <f:passThroughAttribute
                                                     name="data-toggle"
                                                     value="tooltip" />
-                                                <f:setPropertyActionListener
-                                                    target="#{AdministrationForm.administrationPlugin.institution}"
-                                                    value="#{item.institution}" />
+                                                                             <f:setPropertyActionListener
+                                                    target="#{AdministrationForm.administrationPlugin.extendedUser}"
+                                                    value="#{item}" />
                                             </button>
 
                                             <!-- DISPLAY IMPORTS -->
@@ -283,9 +282,9 @@
                                                 <f:passThroughAttribute
                                                     name="data-toggle"
                                                     value="tooltip" />
-                                                <f:setPropertyActionListener
-                                                    target="#{AdministrationForm.administrationPlugin.institution}"
-                                                    value="#{item.institution}" />
+                                                                                      <f:setPropertyActionListener
+                                                    target="#{AdministrationForm.administrationPlugin.extendedUser}"
+                                                    value="#{item}" />
                                                 <f:setPropertyActionListener
                                                     value="imports"
                                                     target="#{AdministrationForm.administrationPlugin.editionMode}" />
