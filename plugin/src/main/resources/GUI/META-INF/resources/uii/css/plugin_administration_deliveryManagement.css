@@ -138,8 +138,12 @@
     border: 0;
   }
 
-  .ui-fileupload .ui-fileupload-buttonbar {
-    padding: 0;
+  .ui-fileupload
+  {
+    height: 27.5px;
+    .ui-fileupload-buttonbar {
+      padding: 0;
+    }
   }
 
   .ui-button {
