@@ -9,7 +9,7 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:c="http://java.sun.com/jstl/core"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
     <composite:interface>
     </composite:interface>
@@ -317,52 +317,54 @@
         </h:panelGroup>
 
         <h:panelGroup
-            styleClass="form-horizontal form-bordered"
+            layout="block"
             rendered="#{AdministrationForm.administrationPlugin.editionMode=='edit'}">
 
-            <ui:repeat
-                var="meta"
-                value="#{AdministrationForm.administrationPlugin.metadataList}"
-                varStatus="status">
+            <h:form>
+                <ui:repeat
+                    var="meta"
+                    value="#{AdministrationForm.administrationPlugin.metadataList}"
+                    varStatus="status">
+                    <intranda:formInputText
+                        id="id_#{status.index}"
+                        name="meta"
+                        label="#{meta.type.getLanguage(SpracheForm.locale.language)}"
+                        field="#{meta.value}"
+                        help="#{msgs.helpProcessTitle}"
+                        required="false" />
+                </ui:repeat>
 
-                <intranda:formInputText
-                    id="id_#{status.index}"
-                    name="meta"
-                    label="#{meta.type.getLanguage(SpracheForm.locale.language)}"
-                    field="#{meta.value}"
-                    help="#{msgs.helpProcessTitle}"
-                    fieldStyle="form-control"
-                    required="false" />
-            </ui:repeat>
+                <div class="box__actions">
 
-            <div class="form-actions">
+                    <!-- Cancel -->
+                    <button
+                        class="btn btn-blank"
+                        jsf:id="cancel"
+                        type="submit"
+                        jsf:immediate="true">
+                        <h:outputText value="#{msgs.abbrechen}" />
+                        <f:setPropertyActionListener
+                            value=""
+                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                    </button>
 
-                <!-- Save -->
-                <button
-                    class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
-                    jsf:id="absenden"
-                    type="submit"
-                    jsf:action="#{AdministrationForm.administrationPlugin.saveZdbTitleData}">
-                    <span class="fa fa-save margin-right-5" />
-                    <h:outputText value="#{msgs.speichern}" />
-                    <f:setPropertyActionListener
-                        value=""
-                        target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                </button>
+                    <!-- Save -->
+                    <button
+                        class="btn btn-success submitOnEnter"
+                        jsf:id="absenden"
+                        type="submit"
+                        jsf:action="#{AdministrationForm.administrationPlugin.saveZdbTitleData}">
+                        <span class="fa fa-save margin-right-5" />
+                        <span>
+                            <h:outputText value="#{msgs.speichern}" />
+                        </span>
+                        <f:setPropertyActionListener
+                            value=""
+                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                    </button>
 
-                <!-- Cancel -->
-                <button
-                    class="btn margin-sides-10 font-size-s pull-right"
-                    jsf:id="cancel"
-                    type="submit"
-                    jsf:immediate="true">
-                    <h:outputText value="#{msgs.abbrechen}" />
-                    <f:setPropertyActionListener
-                        value=""
-                        target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                </button>
-
-            </div>
+                </div>
+            </h:form>
         </h:panelGroup>
 
     </composite:implementation>
