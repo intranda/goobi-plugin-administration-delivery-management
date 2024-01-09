@@ -1,332 +1,234 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
-	xmlns:jsf="http://xmlns.jcp.org/jsf"
-	xmlns:o="http://omnifaces.org/ui"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:x="http://myfaces.apache.org/tomahawk">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:p="http://primefaces.org/ui">
 
-	<composite:interface>
-	</composite:interface>
+    <composite:interface>
+    </composite:interface>
 
-	<composite:implementation>
-		<link rel="stylesheet" href="template/css/codemirror/codemirror.css?v=#{HelperForm.buildVersion}"/>
-		<script type="text/javascript" src="template/js/codemirror/codemirror.js?v=#{HelperForm.buildVersion}"/>
-		<script type="text/javascript" src="template/js/codemirror/mode/properties/properties.js?v=#{HelperForm.buildVersion}"/>
-		<script type="text/javascript" src="template/js/codemirror/mode/xml/xml.js?v=#{HelperForm.buildVersion}"/>
-		<script type="text/javascript" src="plugin_administration_config_file_editor.js" />
+    <composite:implementation>
 
-		<style>
-			.CodeMirror {
-				height: auto;
-			}
-		</style>
+        <!-- Custom plugin styles -->
+        <link
+            type="text/css"
+            rel="stylesheet"
+            href="#{HelperForm.applicationWebsiteUrl}uii/css/plugin_administration_deliveryManagement.css" />
 
-		<!-- The area for messages that came from the backend -->
-		<h:messages
-			for="configFileEditor"
-			escape="false"
-			errorClass="alert alert-danger"
-			infoClass="alert alert-info"
-			warnClass="alert"
-			showDetail="true"
-			showSummary="true"
-			tooltip="true"
-			styleClass="messages" />
+        <script src="template/js/plugins/tinymce/tinymce.min.js"></script>
 
-		<!-- Without permission -->
-        <ui:fragment rendered="#{!LoginForm.hasRole('Plugin_administration_config_file_editor')}">
-            <intranda:box
-                boxType="neutral"
-                boxPadding="true"
-                icon="fa-plug"
-                title="#{msgs[AdministrationForm.administrationPlugin.title]}">
+        <main>
+            <h:panelGroup>
+                <div class="row deliveryManagement #{AdministrationForm.administrationPlugin.editionMode=='edit' ? 'editMode' : ''}">
+                    <h:panelGroup
+                        layout="block"
+                        styleClass="#{AdministrationForm.administrationPlugin.editionMode=='edit' ? 'col-sm-6' : 'col-sm-12'}">
+                        <intranda:box
+                            boxType="neutral"
+                            boxPadding="#{AdministrationForm.administrationPlugin.editionMode eq 'edit'
+                                or AdministrationForm.administrationPlugin.editionMode eq 'editProcess' ? 'false' : 'true'}"
+                            boxTitle="false"
+                            boxForm="true"
+                            id="administrationPlugin">
 
-                <div class="alert alert-danger alert-dismissable" >
-                    <h:outputText value="#{msgs.plugin_administration_missingPermission} Plugin_administration_config_file_editor"/>
-                </div>
-            </intranda:box>
-        </ui:fragment>
+                            <intranda:boxTitle
+                                icon="fa-plug"
+                                id="box-title"
+                                title="#{msgs[AdministrationForm.administrationPlugin.title]}#{AdministrationForm.administrationPlugin.displayMode != null ? ': '.concat(msgs[AdministrationForm.administrationPlugin.displayMode]) : ''}">
+                                <ul class="tabs" role="tablist">
+                                    <c:forEach
+                                        var="mode"
+                                        items="#{AdministrationForm.administrationPlugin.modes}">
+                                        <li class="tab #{mode eq AdministrationForm.administrationPlugin.displayMode ?'active':''}" aria-selected="#{mode eq AdministrationForm.administrationPlugin.displayMode ?'true':'false'}" role="presentation">
+                                            <h:commandLink
+                                                id="#{mode}Tab"
+                                                action="#{NavigationForm.Reload}"
+                                                value="#{msgs[mode]}"
+                                                disabled="#{AdministrationForm.administrationPlugin.editionMode == 'edit'}"
+                                                pt:role="tab">
+                                                <f:setPropertyActionListener
+                                                    target="#{AdministrationForm.administrationPlugin.displayMode}"
+                                                    value="#{mode}" />
+                                                <f:setPropertyActionListener
+                                                    value=""
+                                                    target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                                                <f:ajax render="@all" />
+                                            </h:commandLink>
+                                        </li>
+                                    </c:forEach>
+                                </ul>
+                            </intranda:boxTitle>
 
-		<!-- With permission -->
-		<h:form id="configFileEditorForm" rendered="#{LoginForm.hasRole('Plugin_administration_config_file_editor')}">
+                            <div class="box__body">
+                                <h:panelGroup rendered="#{!LoginForm.hasRole('Plugin_administration_deliveryManagement')}">
+                                    <h:outputText
+                                        styleClass="alert alert-danger alert-dismissable margin-bottom-10 margin-top-10"
+                                        value="#{msgs.plugin_administration_missingPermission} Plugin_administration_deliveryManagement" />
+                                </h:panelGroup>
 
-             <div class="row">
-    			<!-- This code block is used if the warnings for non-allowed directories are used in the backend -->
-    			<!--
-    			<h:panelGroup id="warnings" rendered="#{AdministrationForm.administrationPlugin.warningListNotEmpty}">
-    				<ui:repeat var="item" value="#{AdministrationForm.administrationPlugin.warningMessages}">
-    					<h:outputText id="warning"
-    						styleClass="alert alert-danger"
-    						value="#{item}" />
-    				</ui:repeat>
-    			</h:panelGroup>
-    			-->
-    			<!--
-    			THIS HIDDEN DIV MUST BE RENDERED TO GET THE CURRENT CONFIG FILE TYPE
-    			FROM THE BACKEND TO SET THE SYNTAX HIGHLIGHTING IN CODE MIRROR.
-    			DO NOT REMOVE IT.
-    			-->
-    			<div id="currentConfigFileType" style="position: absolute; visibility: hidden">
-    				#{AdministrationForm.administrationPlugin.currentConfigFileType}
-    			</div>
+                                <h:panelGroup
+                                    layout="block"
+                                    id="actionform"
+                                    rendered="#{LoginForm.hasRole('Plugin_administration_deliveryManagement')}">
+                                    <h:panelGroup
+                                        id="plugin-main-content"
+                                        layout="block"
+                                        pt:role="tabpanel"
+                                        pt:aria-labelledby="#{AdministrationForm.administrationPlugin.displayMode}Tab">
+                                        <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'plugin_administration_deliveryManagement_displayMode_user'}">
+                                            <ui:include src="include_users.xhtml" />
+                                        </ui:fragment>
 
-                <!-- LEFT AREA -->
-                <div class="col-sm-12 col-md-4 mb-3" id="leftarea">
+                                        <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'plugin_administration_deliveryManagement_displayMode_privacyPolicy'}">
+                                            <ui:include src="include_privacyPolicy.xhtml" />
+                                        </ui:fragment>
 
-                    <!-- BOX WITH FILES -->
-                    <intranda:box
-                        boxType="primary"
-                        boxPadding="false"
-                        icon="fa-files-o"
-                        title="#{msgs.plugin_administration_config_file_editor_config_file_selection}">
-
-                        <!-- TABLE WITH FILE LIST -->
-						<div class="gw-table gw-table-fixed">
-                            <div class="gw-table__wrapper">
-
-                                <h:dataTable
-        							id="config_file_table"
-        							styleClass="table table-bordered table-fixed table-hover"
-        							var="item"
-        							value="#{AdministrationForm.administrationPlugin.configFiles}">
-        							<h:column>
-        								<f:facet name="header">
-        									<h:outputText value="#{msgs.plugin_administration_config_file_editor_file_name}" />
-        								</f:facet>
-        								<h:outputText
-        									value="#{item.fileName}"
-        									title="#{item.configDirectory.directory}#{item.fileName}" />
-        							</h:column>
-        							<h:column headerClass="gw-table-fixed__sizeS">
-        								<f:facet name="header">
-        									<h:outputText value="#{msgs.zuletztBearbeitet}" />
-        								</f:facet>
-        								<h:outputText value="#{AdministrationForm.administrationPlugin.getLastModifiedDateOfConfigurationFile(item)}" />
-        							</h:column>
-        							<h:column headerClass="gw-table-fixed__sizeXXS">
-        								<f:facet name="header">
-        									<h:outputText value="#{msgs.auswahl}" />
-        								</f:facet>
-        								<!-- Edit-Config-File-Button -->
-        								<h:panelGroup rendered="#{AdministrationForm.administrationPlugin.currentConfigFile == null}">
-        									<button
-        										jsf:id="edit"
-        										class="btn #{AdministrationForm.administrationPlugin.isActiveConfigFile(item) ? 'btn-primary' : 'btn-blank'}"
-        										title="#{AdministrationForm.administrationPlugin.isWritable(item) ? msgs.plugin_administration_config_file_editor_edit_file : msgs.plugin_administration_config_file_editor_show_file}"
-        										jsf:rel="tooltip"
-        										jsf:action="#{AdministrationForm.administrationPlugin.editConfigFile(item)}">
-        										<span class="fa #{AdministrationForm.administrationPlugin.isWritable(item) ? 'fa-pencil' : 'fa-eye'}" />
-        										<!--
-                                                 -->
-                                                <f:ajax render="configFileEditorForm" />
-        									</button>
-        								</h:panelGroup>
-        								<h:panelGroup rendered="#{AdministrationForm.administrationPlugin.currentConfigFile != null}">
-        									<button
-        										jsf:id="edit2"
-        										class="btn #{AdministrationForm.administrationPlugin.isActiveConfigFile(item) ? 'btn-primary' : 'btn-blank'}"
-        										type="button"
-        										jsf:onclick="loadEditorContent()"
-        										jsf:action="#{AdministrationForm.administrationPlugin.editConfigFile(item)}"
-        										title="#{AdministrationForm.administrationPlugin.isWritable(item) ? msgs.plugin_administration_config_file_editor_edit_file : msgs.plugin_administration_config_file_editor_show_file}">
-        										<span class="fa #{AdministrationForm.administrationPlugin.isWritable(item) ? 'fa-pencil' : 'fa-eye'}" />
-        										<!--
-                                                -->
-                                                <f:ajax render="@form" execute="@form" />
-        									</button>
-        								</h:panelGroup>
-        							</h:column>
-        						</h:dataTable>
+                                        <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'plugin_administration_deliveryManagement_displayMode_zdbTitleData'}">
+                                            <ui:include src="include_zdbTitleData.xhtml" />
+                                        </ui:fragment>
+                                    </h:panelGroup>
+                                </h:panelGroup>
                             </div>
-                        </div>
-                        <!-- // TABLE WITH FILE LIST -->
-                    </intranda:box>
-                    <!-- // BOX WITH FILES -->
-
-
-                	<!-- BOX WITH HELP -->
-                    <div class="mt-3" jsf:rendered="#{msgs['plugin_administration_config_file_editor_help_'.concat(AdministrationForm.administrationPlugin.currentConfigFile.getFileName())] ne 'plugin_administration_config_file_editor_help_'.concat(AdministrationForm.administrationPlugin.currentConfigFile.getFileName())}">
-						<intranda:box
-                            boxType="outline"
-                            boxPadding="true"
-                            icon="fa-question-circle-o"
-                            title="#{AdministrationForm.administrationPlugin.explanationTitle}">
-
-                            <h:panelGroup id="actionform" styleClass="col-sm-12">
-							    <div class="row">
-                                    <h:outputText escape="false"
-                                        value="#{msgs['plugin_administration_config_file_editor_help_'.concat(AdministrationForm.administrationPlugin.currentConfigFile.getFileName())]}" />
-                                </div>
-                            </h:panelGroup>
                         </intranda:box>
-                    </div>
-                    <!-- // BOX WITH HELP -->
+                    </h:panelGroup>
+                    <h:panelGroup
+                        layout="block"
+                        styleClass="#{NavigationForm.uiStatus['journalBig']?'col-12 col-md-12':'col-6 col-md-6'} journal"
+                        rendered="#{AdministrationForm.administrationPlugin.editionMode=='edit'}">
+                        <h:form
+                            enctype="multipart/form-data">
+                            <!-- Box for process log -->
+                            <x:aliasBeansScope>
+                                <x:aliasBean
+                                    alias="#{showBigButton}"
+                                    value="true" />
+                                <x:aliasBean
+                                    alias="#{showFolderSelection}"
+                                    value="false" />
+                                <x:aliasBean
+                                    alias="#{bean}"
+                                    value="#{AdministrationForm.administrationPlugin.institution}" />
+                                <f:subview id="sublog">
+                                    <ui:include src="/uii/includes/journal.xhtml" />
+                                </f:subview>
+                            </x:aliasBeansScope>
+                        </h:form>
+                        <!-- // Box for process log -->
 
-				</div>
-                <!-- // LEFT AREA -->
+                    </h:panelGroup>
+                </div>
+            </h:panelGroup>
+        </main>
+        <script type="text/javascript">
+                                    //<![CDATA[
 
+                                    jsf.ajax.addOnEvent( function( data ) {
+                                        var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
+                                        var source = data.source;
+                                        switch ( ajaxstatus ) {
+                                            case "begin": // This is called right before ajax request is been sent.
+                                                break;
+                                            case "complete": // This is called right after ajax response is received.
+                                                break;
+                                            case "success": // This is called when ajax response is successfully processed.
+                                                // find element,set focus
 
-                <!-- RIGHT AREA -->
-                <div class="col-sm-12 col-md-8" id="rightarea">
-					<h:panelGroup rendered="#{AdministrationForm.administrationPlugin.currentConfigFile != null}">
+                                                break;
+                                        }
+                                    } );
 
-                        <intranda:box
-                            id="contentbox"
-                            boxType="action"
-                            boxPadding="true"
-                            icon="fa-wrench"
-                            title="#{AdministrationForm.administrationPlugin.currentEditorTitle}">
+                                    var simpleTinyMceConfig = {
+                                        selector: '.textarea-html',
+                                        setup: function( editor ) {
+                                            editor.on( 'change', function() {
+                                                tinymce.triggerSave();
+                                            } );
+                                        },
+                                        valid_elements: 'p,strong,em,span[!style<text-decoration: underline;],sup,h1,h2,h3,h4,h5,h6,blockquote,div,pre,a',
+                                        statusbar: true,
+                                        theme: 'silver',
+                                        height: 600,
+                                        plugins: [ 'print code preview fullscreen' ],
+                                        menu: {
+                                            edit: {
+                                                title: 'Edit',
+                                                items: 'undo redo | cut copy paste pastetext | selectall'
+                                            },
+                                            format: {
+                                                title: 'Format',
+                                                items: 'bold italic underline strikethrough | formats | removeformat'
+                                            },
+                                            tools: {
+                                                title: 'Tools',
+                                                items: 'spellchecker code'
+                                            }
+                                        },
+                                        menubar: 'edit format tools',
+                                        toolbar: false,
+                                        toolbar: 'undo redo | bold italic underline | code ',
+                                        content_css: './css/plugin_administration_deliveryManagement_tinymce.css',
+                                        init_instance_callback: function( editor ) {
+                                            var readOnlyAttr = $( "#" + editor.id.replace( ":", "\\:" ) ).attr( "readonly" );
+                                            if ( readOnlyAttr === "readonly" ) {
+                                                editor.setMode( "readonly" );
+                                            }
+                                        },
+                                        setup: function( editor ) {
+                                            editor.on( "blur", function( event, a, b ) {
+                                                editor.save();
+                                                $( "#" + editor.id.replace( ":", "\\:" ) ).trigger( "change" );
+                                            } );
+                                        }
 
-                            <div id="boxUntilBottom">
-								<!-- Buttons on top of text editor -->
-								<div class="form-actions mt-0 mb-3">
-									<!-- Cancel-Button -->
-									<button
-										jsf:id="cancel"
-										class="btn btn-blank float-end"
-										jsf:action="#{AdministrationForm.administrationPlugin.cancel}"
-										title="#{msgs.cancel}">
-                                        <span>
-    										<h:outputText value="#{msgs.cancel}" />
-                                        </span>
-										<f:ajax render="configFileEditorForm" />
-									</button>
-									<!-- Save-Button -->
-									<button
-										jsf:id="save"
-										class="btn btn-success float-end"
-										jsf:action="#{AdministrationForm.administrationPlugin.save}"
-										title="#{msgs.uebernehmen}"
-										onclick="loadEditorContent()">
-										<span class="fa fa-save margin-right-5" />
-										<span>
-                                            <h:outputText value="#{msgs.save}" />
-                                        </span>
-										<!--<f:ajax render="" />-->
-									</button>
-								</div>
-								<!-- Text editor -->
-								<div
-									id="configFileEditorBorder"
-									class="border">
-									<x:inputTextarea
-										id="configFileEditor"
-										style="resize: none;"
-										pt:aria-label="configFileEditor"
-										forceId="true"
-										styleClass="form-control"
-										value="#{AdministrationForm.administrationPlugin.currentConfigFileFileContent}" />
-									<h:inputText
-										id="configFileEditorBase64"
-										style="display: none;"
-										pt:aria-label="configFileEditorBase64"
-										forceId="true"
-										styleClass="form-control"
-										value="#{AdministrationForm.administrationPlugin.currentConfigFileFileContentBase64}" />
-								</div>
-								<script type="text/javascript">
-									initConfigFileEditor();
-								</script>
-							</div>
-                        </intranda:box>
+                                    };
 
-  					</h:panelGroup>
-					<!-- Box for non-selected file -->
-					<h:panelGroup rendered="#{AdministrationForm.administrationPlugin.currentConfigFile == null}">
+                                    function initTinyMce() {
+                                        console.log( "Init tinyMce" );
+                                        tinymce.init( simpleTinyMceConfig );
+                                    };
 
-                        <intranda:box
-                            boxType="outline"
-                            boxPadding="false"
-                            icon="fa-wrench"
-                            title="#{msgs.noFileSelected}">
+                                    $( window ).on( "load", function() {
+                                        renderInputFields()
+                                    } );
+                                    $( document ).ready( function() {
+                                        renderInputFields()
+                                    } );
 
-                            <div style="background-color: #eee; height: 250px;"/>
-                        </intranda:box>
+                                    jsf.ajax.addOnEvent( function( data ) {
+                                        var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
+                                        switch ( ajaxstatus ) {
+                                            case "success": // This is called when ajax response is successfully processed.
+                                                renderInputFields()
+                                                break;
+                                        }
+                                    } );
 
-					</h:panelGroup>
-				</div>
-                <!-- // RIGHT AREA -->
-
-                <!-- MODAL TO ASK FOR SAVING -->
-				<div
-					class="modal fade"
-                    id="saveDialog"
-                    tabindex="-1"
-                    role="modal"
-                    aria-labelledby="myDialogLabel"
-					jsf:rendered="#{AdministrationForm.administrationPlugin.configFileContentChanged}">
-					<div class="modal-dialog" role="document">
-						<div class="modal-content">
-
-                            <!-- MODAL HEADER -->
-                            <div class="modal-header bg-primary-400 text-white">
-								<h4 class="modal-title" id="myDialogLabel">
-									<h:outputText value="#{msgs.plugin_administration_config_file_editor_unsaved_changes}" />
-								</h4>
-                                <button
-                                    type="button"
-                                    class="btn-close btn-close-white"
-                                    data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-							</div>
-							<!-- // MODAL HEADER -->
-
-                            <!-- MODAL BODY -->
-                            <div class="modal-body">
-								<p>#{msgs.plugin_administration_config_file_editor_save_unsaved_changes}</p>
-							</div>
-							<!-- // MODAL BODY -->
-
-                            <!-- MODAL FOOTER -->
-                            <div class="modal-footer">
-								<button
-									class="btn btn-hot"
-									jsf:id="ignoreChangedFile"
-									jsf:action="#{AdministrationForm.administrationPlugin.editConfigFileIgnore}">
-									<span class="fa fa-trash-o" />
-                                    <span>
-                                        #{msgs.discard}
-                                    </span>
-								</button>
-								<button
-									class="btn btn-success"
-									jsf:id="saveWhenChangedFile"
-									jsf:action="#{AdministrationForm.administrationPlugin.save}">
-									<span class="fa fa-save" />
-                                    <span>
-                                        #{msgs.save}
-                                    </span>
-								</button>
-							</div>
-                            <!-- // MODAL FOOTER -->
-
-						</div>
-					</div>
-				</div>
-                <!-- // MODAL TO ASK FOR SAVING -->
-
-				<div jsf:id="test" jsf:rendered="#{AdministrationForm.administrationPlugin.configFileContentChanged}">
-					<script>
-						$('#saveDialog').modal('show')
-					</script>
-				</div>
-			</div>
-		</h:form>
-
-        <!-- websocket communication -->
-        <!-- The websocket is used if the warnings for non-allowed directories are used in the backend -->
-        <!--
-        <o:socket channel="adminPluginPush" scope="session">
-            <f:ajax event="update" render="configFileEditorForm:warnings" />
-        </o:socket>
-        -->
-        <!-- // websocket communication -->
-
-	</composite:implementation>
+                                    function renderInputFields( ajaxData ) {
+                                        if ( typeof tinyMCE !== 'undefined' ) {
+                                            if ( ajaxData === undefined || ajaxData.status == "begin" ) {
+                                                for ( edId in tinyMCE.editors ) {
+                                                    try {
+                                                        tinyMCE.editors[ edId ].remove();
+                                                        console.log( "Removed editor " + edId );
+                                                    }
+                                                    catch ( error ) {
+                                                        console.log( "Error occured during removing editors; ", error );
+                                                    }
+                                                }
+                                            }
+                                            if ( ajaxData === undefined || ajaxData.status == "success" ) {
+                                                initTinyMce( ajaxData );
+                                            }
+                                        }
+                                    }
+                                    //]]>
+                                </script>
+    </composite:implementation>
 </ui:composition>
