@@ -140,6 +140,9 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     private transient List<ConfiguredField> configuredDnbFields = null;
 
     @Getter
+    private transient List<ConfiguredField> additionalFields = null;
+
+    @Getter
     @Setter
     private String userSearchFilter;
 
@@ -264,6 +267,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         configuredInstitutionFields = new LinkedHashMap<>();
         configuredUserFields = new ArrayList<>();
         configuredDnbFields = new ArrayList<>();
+        additionalFields = new ArrayList<>();
 
         privacyPolicyText = conf.getString("/privacyStatement", ""); //NOSONAR
 
@@ -285,8 +289,10 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 }
             }
 
-            if ("institution".equals(field.getType())) { //NOSONAR
-                String position = hc.getString("@position");
+            String position = hc.getString("@position");
+            if ("admin".equals(position)) {
+                additionalFields.add(field);
+            } else if ("institution".equals(field.getType())) { //NOSONAR
                 List<ConfiguredField> fields = configuredInstitutionFields.get(position);
                 if (fields == null) {
                     fields = new ArrayList<>();
@@ -366,6 +372,19 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         String status = user.getAdditionalData().get("dnb-status");
         if (StringUtils.isNotBlank(status)) {
             dnbStatus = status;
+        }
+
+        // additional, hidden fields
+        for (ConfiguredField field : additionalFields) {
+            if ("institution".equals(field.getType())) {
+                String value = institution.getAdditionalData().get(field.getName());
+                if (COMBO_FIELD_NAME.equals(field.getFieldType()) && StringUtils.isNotBlank(value) && !"false".equals(value)) {
+                    field.setBooleanValue(true);
+                    field.setSubValue(value);
+                } else {
+                    field.setValue(value);
+                }
+            }
         }
     }
 
@@ -484,6 +503,19 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 field.setValue(user.getAdditionalData().get(field.getName()));
             }
         }
+
+        // additional, hidden fields
+        for (ConfiguredField field : additionalFields) {
+            if (!"institution".equals(field.getType())) {
+                String value = user.getAdditionalData().get(field.getName());
+                if (COMBO_FIELD_NAME.equals(field.getFieldType()) && StringUtils.isNotBlank(value) && !"false".equals(value)) {
+                    field.setBooleanValue(true);
+                    field.setSubValue(value);
+                } else {
+                    field.setValue(value);
+                }
+            }
+        }
     }
 
     public void setExtendedUser(ExtendedUser extendedUser) {
@@ -513,6 +545,22 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 user.getAdditionalData().put(field.getName(), field.getSubValue());
             } else {
                 user.getAdditionalData().put(field.getName(), field.getValue());
+            }
+        }
+
+        for (ConfiguredField field : additionalFields) {
+            if ("institution".equals(field.getType())) {
+                if (COMBO_FIELD_NAME.equals(field.getFieldType()) && field.getBooleanValue() && StringUtils.isNotBlank(field.getSubValue())) {
+                    institution.getAdditionalData().put(field.getName(), field.getSubValue());
+                } else if (StringUtils.isNotBlank(field.getValue())) {
+                    institution.getAdditionalData().put(field.getName(), field.getValue());
+                }
+            } else {
+                if (COMBO_FIELD_NAME.equals(field.getFieldType()) && field.getBooleanValue()) {
+                    user.getAdditionalData().put(field.getName(), field.getSubValue());
+                } else {
+                    user.getAdditionalData().put(field.getName(), field.getValue());
+                }
             }
         }
 
@@ -1075,8 +1123,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             Map<String, String> data = new HashMap<>();
             data.put("status", dnbStatus);
 
-            Response res = target.request(MediaType.APPLICATION_JSON_TYPE)
-                    .post(Entity.json(data));
+            Response res = target.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data));
 
             if (res.getStatus() > 308) {
                 // TODO handle error
