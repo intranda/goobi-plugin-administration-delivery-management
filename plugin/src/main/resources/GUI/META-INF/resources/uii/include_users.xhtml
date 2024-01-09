@@ -1060,24 +1060,6 @@
                                                     value="#{zdbItem}"
                                                     target="#{AdministrationForm.administrationPlugin.process}" />
                                             </button>
-                                            <!-- <h:commandLink
-                                                action="#{AdministrationForm.administrationPlugin.openProcess(false)}"
-                                                id="action15"
-                                                rel="tooltip"
-                                                title="#{msgs.metadatenBearbeiten}"
-                                                pt:aria-label="#{msgs.metadatenBearbeiten}">
-                                                <span class="btn fa fa-book " />
-                                                <f:passThroughAttribute
-                                                    name="data-toggle"
-                                                    value="tooltip" />
-                                                <f:setPropertyActionListener
-                                                    value="editProcess"
-                                                    target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                                                <f:setPropertyActionListener
-                                                    value="#{zdbItem}"
-                                                    target="#{AdministrationForm.administrationPlugin.process}" />
-
-                                            </h:commandLink> -->
                                         </td>
                                     </tr>
                                 </ui:repeat>
@@ -1178,14 +1160,12 @@
 
             <h:panelGroup
                 layout="block"
-                styleClass="dataTables_wrapper edit-mode"
                 rendered="#{AdministrationForm.administrationPlugin.editionMode=='editProcess'}">
 
                 <ui:repeat
                     var="meta"
                     value="#{AdministrationForm.administrationPlugin.metadataList}"
                     varStatus="status">
-
                     <intranda:formInputText
                         id="id_#{status.index}"
                         name="meta"
@@ -1197,23 +1177,9 @@
                 </ui:repeat>
 
                 <div class="form-actions">
-
-                    <!-- Save -->
-                    <button
-                        class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
-                        jsf:id="saveProcessEdition"
-                        type="submit"
-                        jsf:action="#{AdministrationForm.administrationPlugin.saveZdbTitleData}">
-                        <span class="fa fa-save margin-right-5" />
-                        <h:outputText value="#{msgs.speichern}" />
-                        <f:setPropertyActionListener
-                            value=""
-                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                    </button>
-
                     <!-- Cancel -->
                     <button
-                        class="btn margin-sides-10 font-size-s pull-right"
+                        class="btn btn-blank"
                         jsf:id="cancelProcessEdition"
                         type="submit"
                         jsf:immediate="true">
@@ -1221,6 +1187,24 @@
                         <f:setPropertyActionListener
                             value=""
                             target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                        <f:ajax render="@all" />
+                    </button>
+                    <!-- Save -->
+                    <button
+                        class="btn btn-success submitOnEnter"
+                        jsf:id="saveProcessEdition"
+                        type="submit"
+                        jsf:action="#{AdministrationForm.administrationPlugin.saveZdbTitleData}">
+                        <span class="fa fa-save" />
+                        <span>
+                            <h:outputText value="#{msgs.speichern}" />
+                        </span>
+                        <f:setPropertyActionListener
+                            value=""
+                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                        <f:ajax
+                            render="@all"
+                            execute="@form" />
                     </button>
                 </div>
             </h:panelGroup>
