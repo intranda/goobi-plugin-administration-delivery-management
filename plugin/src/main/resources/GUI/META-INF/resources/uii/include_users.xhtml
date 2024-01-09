@@ -96,17 +96,21 @@
                                         name="name"
                                         ajaxRender="@form"
                                         sortField="benutzer.Nachname"
+                                        sortLabelDesc="benutzer.Nachname Desc"
+                                        sortLabelAsc="benutzer.Nachname"
                                         formSortField="#{AdministrationForm.administrationPlugin.userSort}"
                                         sortMethod="#{AdministrationForm.administrationPlugin.filterUser}" />
                                     <!-- LOGIN HEADER -->
                                     <intranda:columnheader
-                                            value="#{msgs.login}"
-                                            form="#{AdministrationForm.administrationPlugin}"
-                                            name="login"
-                                            ajaxRender="@form"
-                                            sortField="benutzer.login"
-                                            formSortField="#{AdministrationForm.administrationPlugin.userSort}"
-                                            sortMethod="#{AdministrationForm.administrationPlugin.filterUser}" />
+                                        value="#{msgs.login}"
+                                        form="#{AdministrationForm.administrationPlugin}"
+                                        name="login"
+                                        ajaxRender="@form"
+                                        sortField="benutzer.login"
+                                        sortLabelDesc="benutzer.login Desc"
+                                        sortLabelAsc="benutzer.login"
+                                        formSortField="#{AdministrationForm.administrationPlugin.userSort}"
+                                        sortMethod="#{AdministrationForm.administrationPlugin.filterUser}" />
                                     <!-- EMAIL HEADER -->
                                     <intranda:columnheader
                                         value="#{msgs.email}"
@@ -114,6 +118,8 @@
                                         name="email"
                                         ajaxRender="@form"
                                         sortField="benutzer.email"
+                                        sortLabelDesc="benutzer.email Desc"
+                                        sortLabelAsc="benutzer.email"
                                         formSortField="#{AdministrationForm.administrationPlugin.userSort}"
                                         sortMethod="#{AdministrationForm.administrationPlugin.filterUser}" />
                                     <!-- INSTITUTION HEADER -->
@@ -123,6 +129,8 @@
                                         name="institution"
                                         ajaxRender="@form"
                                         sortField="institution.longName"
+                                        sortLabelDesc="institution.longName Desc"
+                                        sortLabelAsc="institution.longName"
                                         formSortField="#{AdministrationForm.administrationPlugin.userSort}"
                                         sortMethod="#{AdministrationForm.administrationPlugin.filterUser}" />
                                     <!-- LAST CHANGE HEADER -->
@@ -132,6 +140,8 @@
                                         name="lastChange"
                                         ajaxRender="@form"
                                         sortField="lastDate"
+                                        sortLabelDesc="lastDate Desc"
+                                        sortLabelAsc="lastDate"
                                         formSortField="#{AdministrationForm.administrationPlugin.userSort}"
                                         sortMethod="#{AdministrationForm.administrationPlugin.filterUser}" />
                                     <!-- NUMBER OF UPLOADS HEADER -->
@@ -141,6 +151,8 @@
                                         name="numberOfUploads"
                                         ajaxRender="@form"
                                         sortField="items"
+                                        sortLabelDesc="items Desc"
+                                        sortLabelAsc="items"
                                         formSortField="#{AdministrationForm.administrationPlugin.userSort}"
                                         sortMethod="#{AdministrationForm.administrationPlugin.filterUser}" />
                                     <!-- ACC STATUS HEADER -->
@@ -150,6 +162,8 @@
                                         name="status"
                                         ajaxRender="@form"
                                         sortField="status"
+                                        sortLabelDesc="status Desc"
+                                        sortLabelAsc="status"
                                         formSortField="#{AdministrationForm.administrationPlugin.userSort}"
                                         sortMethod="#{AdministrationForm.administrationPlugin.filterUser}" />
                                     <!-- ACTION HEADER -->
@@ -534,8 +548,8 @@
                         <h:panelGroup
                             layout="block"
                             rendered="#{AdministrationForm.administrationPlugin.extendedUser.dnbUser}">
-                            <div class="mt-4 ps-3 border-bottom">
-                                <h3 class="folder--line">
+                            <div class="mt-5 ps-3 border-bottom">
+                                <h3>
                                     <h:outputText
                                         styleClass="text"
                                         value="#{msgs.plugin_rest_usercreation_dnb_data}" />
@@ -624,8 +638,8 @@
                         </h:panelGroup>
 
                         <!-- INSTITUTION OR PERSON -->
-                        <div class="mt-4 ps-3 border-bottom">
-                            <h3 class="folder--line">
+                        <div class="mt-5 ps-3 border-bottom">
+                            <h3>
                                 <h:outputText
                                     styleClass="text"
                                     value="#{msgs.plugin_rest_usercreation_new_institution}" />
@@ -654,20 +668,18 @@
                             var="entry">
                             <ui:fragment rendered="#{entry.key!='page3a' or AdministrationForm.administrationPlugin.displaySecondContact}">
                                 <div
-                                    class="ps-3 border-bottom mt-4
+                                    class="ps-3 border-bottom mt-5
                                     #{entry.key=='page3'
                                         and !AdministrationForm.administrationPlugin.displaySecondContact
                                         or entry.key=='page3a' ? 'me-3' : ''}">
                                     <!-- INSTITUTION OR PERSON DATA -->
-                                    <h3
-                                        class="folder--line"
-                                        jsf:rendered="#{entry.key=='page2'}">
+                                    <h3 jsf:rendered="#{entry.key=='page2'}">
                                         <h:outputText
                                             styleClass="text"
                                             value="#{msgs.plugin_rest_usercreation_new_institution}" />
                                     </h3>
                                     <h3
-                                        class="folder--line d-flex justify-content-between"
+                                        class="d-flex justify-content-between"
                                         jsf:rendered="#{entry.key=='page3'}">
                                         <h:outputText
                                             styleClass="text"
@@ -676,7 +688,7 @@
                                             jsf:rendered="#{!AdministrationForm.administrationPlugin.displaySecondContact}"
                                             jsf:id="createNewContact"
                                             jsf:action="#{AdministrationForm.administrationPlugin.createNewContact}"
-                                            class="btn btn-blank d-flex align-items-center position-relative z-1">
+                                            class="btn btn-primary-400 d-flex align-items-center position-relative z-1">
 
                                             <span class="fa fa-plus" />
                                             <span>
@@ -685,7 +697,7 @@
                                         </button>
                                     </h3>
                                     <h3
-                                        class="folder--line d-flex justify-content-between"
+                                        class="d-flex justify-content-between"
                                         jsf:rendered="#{entry.key=='page3a'}">
                                         <h:outputText
                                             styleClass="text"
@@ -693,7 +705,7 @@
                                         <button
                                             jsf:id="disableContact"
                                             jsf:action="#{AdministrationForm.administrationPlugin.disableContact}"
-                                            class="btn btn-blank d-flex align-items-center position-relative z-1">
+                                            class="btn btn-primary-400 d-flex align-items-center position-relative z-1">
 
                                             <span class="fa fa-minus" />
                                             <span>
@@ -701,9 +713,7 @@
                                             </span>
                                         </button>
                                     </h3>
-                                    <h3
-                                        class="folder--line"
-                                        jsf:rendered="#{entry.key=='page4'}">
+                                    <h3 jsf:rendered="#{entry.key=='page4'}">
                                         <h:outputText
                                             styleClass="text"
                                             value="#{msgs.plugin_rest_usercreation_new_additionalData}" />
@@ -959,7 +969,6 @@
                                 <thead>
                                     <tr role="row">
 
-
                                         <!-- Embedded Metadata -->
                                         <intranda:columnheader
                                             addClass="tableColumnOverflow header__col-max-xxxl"
@@ -967,57 +976,27 @@
                                             sortable="false" />
 
                                         <!-- TITLE -->
-                                        <!-- TODO add sortfield -->
-                                            <intranda:columnheader
+                                        <intranda:columnheader
                                             addClass="tableColumnOverflow header__col-max-xxxl"
                                             ajaxRender="@form"
-                                            sortable="false"
-                                            value="#{msgs.prozessTitel}" />
-
-                                        <!-- <th
-                                            scope="col"
-                                            role="columnheader"
-                                            class="tableColumnOverflow maxWidth300"
-                                            aria-sort="#{AdministrationForm.administrationPlugin.sortField== 'titelDesc' ? 'descending' : AdministrationForm.administrationPlugin.sortField== 'titelAsc' ? 'ascending' :'none'}">
-                                            <button
-                                                class="button-link"
-                                                style="width: 100%; text-align: left;"
-                                                jsf:action="#{AdministrationForm.administrationPlugin.generateInstitutionProcessTitleList}"
-                                                aria-label="#{msgs.defaultSortField} #{msgs.prozessTitel} #{AdministrationForm.administrationPlugin.sortField== 'titelDesc' ? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung== 'titelAsc' ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
-                                                <h:outputText value="#{msgs.prozessTitel}" />
-                                                <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.sortField== 'titelDesc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.sortField== 'titelAsc' ?'fa-sort-asc':'fa-sort'}"></span>
-                                                <f:setPropertyActionListener
-                                                    target="#{AdministrationForm.administrationPlugin.sortField}"
-                                                    value="#{AdministrationForm.administrationPlugin.sortField== 'titelAsc' ? 'titelDesc' : 'titelAsc' }" />
-                                                <f:ajax render="@form" />
-                                            </button>
-                                        </th> -->
+                                            form="#{AdministrationForm.administrationPlugin}"
+                                            value="#{msgs.prozessTitel}"
+                                            sortField="AdministrationForm.administrationPlugin.sortField"
+                                            sortLabelDesc="titelDesc"
+                                            sortLabelAsc="titelAsc"
+                                            sortMethod="#{AdministrationForm.administrationPlugin.generateInstitutionProcessTitleList}" />
 
                                         <!-- DATE -->
-                                        <!-- TODO add sortfield -->
                                         <intranda:columnheader
                                             addClass="tableColumnOverflow header__col-max-xxl"
                                             ajaxRender="@form"
-                                            sortable="false"
+                                            form="#{AdministrationForm.administrationPlugin}"
+                                            sortField="AdministrationForm.administrationPlugin.sortField"
+                                            sortLabelDesc="creationDateDesc"
+                                            sortLabelAsc="creationDateAsc"
+                                            sortMethod="#{AdministrationForm.administrationPlugin.generateInstitutionProcessTitleList}"
                                             value="#{msgs.vorgangsdatum}" />
-                                        <!-- <th
-                                            scope="col"
-                                            role="columnheader"
-                                            class="tableColumnOverflow maxwidth200"
-                                            aria-sort="#{AdministrationForm.administrationPlugin.sortField== 'creationDateDesc' ? 'descending' : AdministrationForm.administrationPlugin.sortField== 'creationDateAsc' ? 'ascending' :'none'}">
-                                            <button
-                                                class="button-link"
-                                                style="width: 100%; text-align: left;"
-                                                jsf:action="#{AdministrationForm.administrationPlugin.generateInstitutionProcessTitleList}"
-                                                aria-label="#{msgs.defaultSortField} #{msgs.prozessTitel} #{AdministrationForm.administrationPlugin.sortField== 'creationDateDesc' ? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung== 'creationDateAsc' ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
-                                                <h:outputText value="#{msgs.vorgangsdatum}" />
-                                                <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.sortField== 'creationDateDesc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.sortField== 'creationDateAsc' ?'fa-sort-asc':'fa-sort'}"></span>
-                                                <f:setPropertyActionListener
-                                                    target="#{AdministrationForm.administrationPlugin.sortField}"
-                                                    value="#{AdministrationForm.administrationPlugin.sortField== 'creationDateAsc' ? 'creationDateDesc' : 'creationDateAsc' }" />
-                                                <f:ajax render="@form" />
-                                            </button>
-                                        </th> -->
+
                                         <!-- ACTIONS -->
                                         <intranda:columnheader
                                             value="#{msgs.auswahl}"

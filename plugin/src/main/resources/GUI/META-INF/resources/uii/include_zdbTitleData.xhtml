@@ -33,7 +33,7 @@
                                 class="btn gw-table__filters__option hidden-xs"
                                 jsf:action="#{AdministrationForm.administrationPlugin.generateZdbTitleList}"
                                 jsf:immediate="true">
-                                <i class="fa #{AdministrationForm.administrationPlugin.includeFinishedZdbData?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                                <span class="fa #{AdministrationForm.administrationPlugin.includeFinishedZdbData?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                 <h:outputText
                                     styleClass="font-size-s"
                                     value="#{msgs.plugin_administration_deliveryManagement_includeFinishedZdbData}" />
@@ -46,7 +46,7 @@
                             <h:form class="search-form">
                                 <div class="input-group">
                                     <span class="input-group-text">
-                                        <i class="fa fa-search"></i>
+                                        <span class="fa fa-search" />
                                     </span>
                                     <h:inputText
                                         id="searchfield"
@@ -202,12 +202,12 @@
                                     <h:panelGroup
                                         rendered="#{zdbItem.getMetadataValue('CatalogIDPeriodicalDB') != ''}"
                                         class="badge badge-intranda-green">
-                                        <i class="fa fa-unlock"></i> #{msgs.plugin_administration_deliveryManagement_displayMode_zdb_status_available}
+                                        <span class="fa fa-unlock" /> #{msgs.plugin_administration_deliveryManagement_displayMode_zdb_status_available}
                                 </h:panelGroup>
                                     <h:panelGroup
                                         rendered="#{zdbItem.getMetadataValue('CatalogIDPeriodicalDB') == ''}"
                                         class="badge badge-intranda-red">
-                                        <i class="fa fa-lock"></i> #{msgs.plugin_administration_deliveryManagement_displayMode_zdb_status_missing}
+                                        <span class="fa fa-lock" /> #{msgs.plugin_administration_deliveryManagement_displayMode_zdb_status_missing}
                                     </h:panelGroup>
                                 </td>
 
@@ -222,7 +222,7 @@
                                             jsf:id="action15"
                                             jsf:rel="tooltip"
                                             title="#{msgs.metadatenBearbeiten}">
-                                            <i class="fa fa-pencil" />
+                                            <span class="fa fa-pencil" />
                                             <f:setPropertyActionListener
                                                 value="edit"
                                                 target="#{AdministrationForm.administrationPlugin.editionMode}" />
@@ -248,14 +248,14 @@
                                         aria-label="#{msgs.firstPage}"
                                         jsf:action="#{AdministrationForm.administrationPlugin.processPaginator.cmdMoveFirst}"
                                         jsf:id="navfirst">
-                                        <i class="fa fa-angle-double-left"></i>
+                                        <span class="fa fa-angle-double-left" />
                                         <f:ajax render="@form" />
                                     </button>
                                     <button
                                         class="btn btn-primary-400"
                                         jsf:action="#{AdministrationForm.administrationPlugin.processPaginator.cmdMovePrevious}"
                                         jsf:id="navprev">
-                                        <i class="fa fa-angle-left"></i>
+                                        <span class="fa fa-angle-left" />
                                         <h:outputText value=" #{msgs.pagePrevious}" />
                                         <f:ajax render="@form" />
                                     </button>
@@ -296,7 +296,7 @@
                                         jsf:action="#{AdministrationForm.administrationPlugin.processPaginator.cmdMoveNext}"
                                         jsf:id="navnext">
                                         <h:outputText value="#{msgs.pageNext} " />
-                                        <i class="fa fa-angle-right"></i>
+                                        <span class="fa fa-angle-right" />
                                         <f:ajax render="@form" />
                                     </button>
                                     <button
@@ -304,7 +304,7 @@
                                         aria-label="#{msgs.lastPage}"
                                         jsf:action="#{AdministrationForm.administrationPlugin.processPaginator.cmdMoveLast}"
                                         jsf:id="navlast">
-                                        <i class="fa fa-angle-double-right"></i>
+                                        <span class="fa fa-angle-double-right" />
                                         <f:ajax render="@form" />
                                     </button>
                                 </h:panelGroup>
@@ -343,7 +343,7 @@
                     jsf:id="absenden"
                     type="submit"
                     jsf:action="#{AdministrationForm.administrationPlugin.saveZdbTitleData}">
-                    <i class="fa fa-save margin-right-5"></i>
+                    <span class="fa fa-save margin-right-5" />
                     <h:outputText value="#{msgs.speichern}" />
                     <f:setPropertyActionListener
                         value=""
