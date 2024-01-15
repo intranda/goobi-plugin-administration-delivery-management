@@ -512,6 +512,7 @@
                                 </intranda:formLabel>
                             </div>
                             <div class="col-12 col-md-9">
+                                <div class="d-flex justify-content-between w-100">
                                 <h:selectOneRadio
                                     id="dnbstatus"
                                     styleClass="select-radio"
@@ -524,19 +525,19 @@
                                         var="val" />
                                         <f:ajax execute="@this"/>
                                 </h:selectOneRadio>
-                                <intranda:formHelp
-                                    content=""
-                                    msgFor="dnbstatus" />
                                 <!-- button to send current status to dnb -->
                                 <button
-                                    class="btn font-size-s margin-bottom-most"
+                                    class="btn btn-primary-400 squareButton"
                                     jsf:id="syncStatus"
-
                                     jsf:action="#{AdministrationForm.administrationPlugin.syncUserStatus}">
                                     <span class="fa fa-refresh" />
 
                                     <f:ajax execute="@this" render="@this globalMessage"/>
                                 </button>
+                                </div>
+                                <intranda:formHelp
+                                    content=""
+                                    msgFor="dnbstatus" />
                             </div>
                         </h:panelGroup>
 

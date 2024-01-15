@@ -172,4 +172,9 @@
   .z-1 {
     z-index: 1;
   }
+  
+  .squareButton {
+      width: 50px;
+      height: 50px;
+  }
 }
