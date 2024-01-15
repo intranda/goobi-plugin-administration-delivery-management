@@ -1,185 +1,175 @@
-.editMode .tabs {
-  display: none;
-}
+.deliveryManagement {
+  button,
+  .btn {
+    .fa ~ * {
+      margin-inline-start: 0.4rem;
+    }
+  }
 
-.tox-tinymce {
-  margin: 16px;
-}
+  &.editMode .tabs {
+    display: none;
+  }
 
-.dataTables_wrapper .dataTables_info {
-  float: unset;
-  margin: 16px 0;
-}
+  [id$="combo"] > table tr {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 8px 0;
+  }
 
-.dataTables_filter {
-  margin-right: 0;
-}
+  .include__institution .ui-fileupload-buttonbar.ui-widget-header.ui-corner-top {
+    display: inline;
+  }
 
-/* BS 3 overrides */
-.deliveryManagement [type="checkbox"] {
-  width: unset;
-  margin-left: 0;
-}
+  /* under journal: additional styles to bring journal into PG style while component still uses od composites */
+  .journal {
+    .fa {
+      margin: 0 10px 0 5px;
+    }
+    .box-title {
+      border-bottom: .15rem solid var(--clr-neutral-300);
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: space-between;
+      padding: var(--box-padding-title);
+      .actions {
+        line-height: 2.4rem;
+      }
+      .btn {
+        border: .1rem solid var(--clr-neutral-300);
+        padding: .375rem;
+        &:not(:last-child) {
+          margin-inline-end: .8rem;
+        }
+      }
+      h3 {
+        font-size: 1.5rem;
+        line-height: 2.4rem;
+        margin: 3px 0;
+      }
+    }
+    .box-content {
+      .first-row td:first-child {
+        width: 240px;
+      }
 
-.deliveryManagement [type="radio"] {
-  margin-right: 4px;
-}
+      .form-actions {
+        margin: 0;
+        flex-direction: column;
+        > * {
+          display: flex;
+          > * {
+            flex: 0 0 auto;
+          }
+          .flex-label {
+            width: 25%;
+          }
+          .flex-value {
+            width: 75%;
+          }
+        }
+        > :first-child {
+          padding: 1.5rem 1.5rem .5rem;
+        }
+        > :last-child {
+          padding: .5rem 1.5rem 1.5rem;
+          .flex-value {
+            .flex-row {
+              display: flex;
+              justify-content: space-between;
+            }
+          }
+        }
+      }
 
-.deliveryManagement [id$="combo"] > table tr {
-  display: flex;
-  flex-direction: column;
-  padding: 8px;
-}
+      .log_color_error {
+        color: #f00;
+      }
 
-.form-horizontal.form-bordered .form-group:last-child {
-	border-bottom: 1px solid #ddd;
-}
-[id$="combo"] > table tr {
-  display: flex;
-  flex-direction: column;
-}
+      .log_color_warn {
+        color: #f60;
+      }
 
-[id$="combo"] > table {
-	display: table;
-}
+      .log_color_info {
+        color: #03c;
+      }
 
-.dataTables_wrapper .dataTables_paginate {
-  margin: 0px 5px 10px 0;
-}
+      .log_color_debug {
+        color: #8e8d8e;
+      }
 
-.dataTables_wrapper .dataTables_length {
-  margin-left: 0;
-}
-.dataTables_wrapper .dataTables_filter {
-  margin-right: 0;
-}
+      .log_color_user {
+        color: #060;
+      }
 
-/* Upload btn in include_institution */
-.ui-fileupload-buttonbar.ui-widget-header.ui-corner-top {
-  height: unset;
-  padding: 0;
-}
+      [class*="log_file"] {
+        background: #368ee0;
+        border: none;
+        color: white;
+        line-height: 2rem;
+        margin-left: 10px;
+        padding: .375rem .75rem;
+        &[class*="_delete"] {
+          background: var(--clr-hot);
+          border: none;
+        }
+      }
 
-.include__institution .ui-fileupload-content.ui-widget-content.ui-corner-bottom {
-  display: none;
-}
+      .log_table_column_date {
+        min-width: 140px;
+      }
 
-.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left.ui-fileupload-choose {
-  height: 2.7rem;
-  padding-top: 1px;
-}
+      th:last-child,
+      td:last-child {
+        border-right: 0px;
+        border-left: 0;
+      }
+    }
+  }
 
-.ui-fileupload.ui-widget.ui-fileupload-responsive {
-  display: flex;
-}
-
-.include__institution .ui-fileupload-buttonbar.ui-widget-header.ui-corner-top {
-  display: inline;
-  background-color: var(--clr-primary-400);
-  /*! height: 27px; */
-}
-.ui-button-icon-left.ui-icon.ui-c.ui-icon-plusthick::before {
-  content: "\e934" !important;
-}
-
-.ui-button-icon-left.ui-icon {
-
-  transform: translateY(-21%);
-
-}
-
-.pull-right button:last-child {
-  margin-right: -4px;
-}
-
-.btn--in-label {
-  background-color: rgb(54, 142, 224);
-  color: #fff;
-  /*float: none !important; */
-  position: absolute;
-  bottom: 0;
-  top: 0;
-  right: -5px;
-  width: 4.8rem;
-}
-
-/* SEARCH BTN INSIDE FORM LABELS */
-.btn--in-label:hover {
-
-  background-color: #1e74c5;
-  color: #fff;
-}
-
-.font-asterisk-absolute {
-  position: absolute;
-  margin-left: 3px;
-}
-
-
-/* ****************************************
- * INCLUDE_USERS
- * ************************************* */
-
-.deliveryManagement .users .box-title {
-  padding-right: 10px;
-}
-
-.deliveryManagement .box-title h2 {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-/* Messages `Stammdaten importieren` */
-.deliveryManagement .ui-fileupload-content.ui-widget-content.ui-corner-bottom {
-  border: 0;
-}
-
-.deliveryManagement .ui-messages-error.ui-corner-all {
-  margin: 0;
-  transform: translateY(-4px);
-}
-
-/* Account status options */
-.accountStatus__options__table {
-  height: unset;
-  padding-left: unset;
-}
-
-.accountStatus__options__table tr {
-  display: flex;
-  flex-direction: column;
-  padding: 8px;
-}
-
-/* Create new contact button */
-.users .users__title-btn {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  color: #fff;
-  background-color: #368ee0;
-  margin: 0 !important;
-  margin-right: 10px;
-}
-
-.users .users__title-btn:hover {
-  text-decoration: none;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0 0);
-}
-
-
-
-
-
-.dataTables_wrapper .dataTables_info span {
- 	font-weight: normal;
-}
-
-.mce-content-body {
+  .mce-content-body {
     font-size: 13px !important;
-}
+  }
 
-.smallertablecell{
-	padding: 4px !important;
+  .smallertablecell{
+    padding: 4px;
+  }
+
+  .table-borderless tr {
+    border: 0;
+  }
+
+  .ui-fileupload
+  {
+    height: 27.5px;
+    .ui-fileupload-buttonbar {
+      padding: 0;
+    }
+  }
+
+  .ui-button {
+    background: var(--clr-primary-400);
+    border: var(--clr-primary-400);
+    color: #fff;
+    &:hover {
+      background: #2282db;
+      border: #2282db;
+    }
+    &.ui-button-text-icon-left {
+      .ui-button-text {
+        padding-left: 1.5em;
+      }
+    }
+  }
+
+  .width-100 {
+    width: 100px;
+  }
+
+  .width-200 {
+    width: 200px;
+  }
+
+  .z-1 {
+    z-index: 1;
+  }
 }

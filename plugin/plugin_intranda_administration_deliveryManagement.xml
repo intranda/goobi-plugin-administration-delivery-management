@@ -8,6 +8,16 @@
 	<excludeInstitution>ZLB</excludeInstitution>
 	<excludeInstitution>goobi</excludeInstitution>
 
+        <dnb>
+                <apiUrl>https://devel.dnb.de/dobi-npregional-bas/api/institutionen/{iln}/abliefernde/{ido}/status</apiUrl>
+                <iln>1234567890</iln>
+                <status>NEU</status>
+                <status>INBEARBEITUNG</status>
+                <status>NSG</status>
+                <status>SAMMELGEBIET</status>
+        </dnb>
+
+
 	<privacyStatement>&lt;p&gt;&lt;strong&gt;Formatierte Datenschutzerkl&amp;auml;rung&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;1.) Lorem ipsum&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.&lt;/p&gt;
@@ -18,6 +28,31 @@
 
 
 	<fields>
+                <field fieldType="input"
+                        helpMessage="additional sample field"
+                        helpMessageTitle="additional sample field"
+                        label="additional sample field"
+                        name="additional sample field"
+                        position="admin"
+                        required="false"
+                        type="institution" />
+                <field fieldType="input"
+                        helpMessage="other"
+                        helpMessageTitle="other"
+                        label="other"
+                        name="other"
+                        position="admin"
+                        required="false"
+                        type="user" />                        
+
+                <field fieldType="input"
+                        helpMessage="DNB ID"
+                        helpMessageTitle="DNB ID"
+                        label="IDO"
+                        name="ido"
+                        position="dnb"
+                        required="false"
+                        type="dnb" />
 
 		<!-- institution data -->
 

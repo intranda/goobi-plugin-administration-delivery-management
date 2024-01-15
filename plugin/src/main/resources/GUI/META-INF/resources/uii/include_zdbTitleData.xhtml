@@ -9,260 +9,269 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:c="http://java.sun.com/jstl/core"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
     <composite:interface>
     </composite:interface>
 
     <composite:implementation>
 
-
-
-        <h:form
-            styleClass="form-horizontal form-bordered"
+        <h:panelGroup
             rendered="#{AdministrationForm.administrationPlugin.editionMode==''}">
-            <div class="dataTables_wrapper col-md-12">
-                <!-- search field -->
-                <div class="dataTables_length">
-                    <h:outputText value="#{msgs.treffer}: #{AdministrationForm.administrationPlugin.processPaginator.totalResults}" />
-                </div>
-                <div class="dataTables_filter">
-                    <div class="input-group input-group">
-                        <span class="input-group-addon">
-                            <i class="fa fa-search"></i>
-                        </span>
-                        <h:inputText
-                            id="searchfield"
-                            styleClass="form-control searchfield"
-                            value="#{AdministrationForm.administrationPlugin.zdbSearchField}">
-
-                        </h:inputText>
-                        <div class="input-group-btn">
+            <div class="gw-table col-md-12">
+                <!-- SEARCH FIELD -->
+                <div class="gw-table__search">
+                    <!-- NUMBER OF HITS -->
+                    <div class="gw-table__search__length">
+                        <h:outputText value="#{msgs.treffer}: #{AdministrationForm.administrationPlugin.processPaginator.totalResults}" />
+                    </div>
+                    <div class="gw-table__filters">
+                        <!-- INCLUDE/EXCLUDE FINISHED TITLE DATA -->
+                        <h:form>
                             <button
-                                jsf:id="searchButton"
-                                jsf:forceId="true"
-                                class="btn"
-                                style="text-align: center; line-height: 100%; padding: 0px 10px"
-                                jsf:action="#{AdministrationForm.administrationPlugin.generateZdbTitleList}">#{msgs.search}</button>
+                                jsf:id="plugin_administration_deliveryManagement_includeFinishedZdbData"
+                                class="btn gw-table__filters__option hidden-xs"
+                                jsf:action="#{AdministrationForm.administrationPlugin.generateZdbTitleList}"
+                                jsf:immediate="true">
+                                <span class="fa #{AdministrationForm.administrationPlugin.includeFinishedZdbData?'fa-check-square-o':'fa-square-o'} margin-right-5" />
+                                <h:outputText
+                                    styleClass="font-size-s"
+                                    value="#{msgs.plugin_administration_deliveryManagement_includeFinishedZdbData}" />
+                                <f:setPropertyActionListener
+                                    target="#{AdministrationForm.administrationPlugin.includeFinishedZdbData}"
+                                    value="#{not AdministrationForm.administrationPlugin.includeFinishedZdbData}" />
+                            </button>
+                        </h:form>
+                        <div class="gw-table__filters__search-bar">
+                            <h:form class="search-form">
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <span class="fa fa-search" />
+                                    </span>
+                                    <h:inputText
+                                        id="searchfield"
+                                        styleClass="form-control searchfield"
+                                        value="#{AdministrationForm.administrationPlugin.zdbSearchField}">
+
+                                    </h:inputText>
+                                    <button
+                                        jsf:id="searchButton"
+                                        jsf:forceId="true"
+                                        class="btn btn-blank"
+                                        jsf:action="#{AdministrationForm.administrationPlugin.generateZdbTitleList}">#{msgs.search}</button>
+                                </div>
+                                <x:commandButton
+                                    type="submit"
+                                    id="searchButton2"
+                                    forceId="true"
+                                    style="display:none"
+                                    action="#{AdministrationForm.administrationPlugin.generateZdbTitleList}" />
+                            </h:form>
                         </div>
                     </div>
-                    <x:commandButton
-                        type="submit"
-                        id="searchButton2"
-                        forceId="true"
-                        style="display:none"
-                        action="#{AdministrationForm.administrationPlugin.generateZdbTitleList}" />
                 </div>
 
-
-                <!-- checkbox to include/exclude finished title data -->
-                <div class="dataTables_filter">
-                    <button
-                        jsf:id="plugin_administration_deliveryManagement_includeFinishedZdbData"
-                        class="btn searchfieldbuttongroup hidden-xs"
-                        jsf:action="#{AdministrationForm.administrationPlugin.generateZdbTitleList}"
-                        jsf:immediate="true">
-                        <i class="fa #{AdministrationForm.administrationPlugin.includeFinishedZdbData?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
-                        <h:outputText
-                            styleClass="font-size-s"
-                            value="#{msgs.plugin_administration_deliveryManagement_includeFinishedZdbData}" />
-                        <f:setPropertyActionListener
-                            target="#{AdministrationForm.administrationPlugin.includeFinishedZdbData}"
-                            value="#{not AdministrationForm.administrationPlugin.includeFinishedZdbData}" />
-                    </button>
-                </div>
                 <!-- +++++++++++++++++  Display as table ++++++++++++++++++++++++ -->
-                <table
-                    role="grid"
-                    id="processTable"
-                    class="table table-hover table-nomargin dataTable table-bordered responsive">
-                    <!-- ### Columnheader row ### -->
-                    <thead>
-                        <tr role="row">
+                <h:form>
+                    <table
+                        role="grid"
+                        id="processTable"
+                        class="table table-hover table-bordered table-responsive">
+                        <!-- ### Columnheader row ### -->
+                        <thead>
+                            <tr role="row">
 
+                                <!-- Embedded Metadata -->
+                                <intranda:columnheader
+                                    addClass="tableColumnOverflow header__col-max-xxxl"
+                                    value="#{msgs.metadata}"
+                                    sortable="false" />
 
-                            <!-- Embedded Metadata -->
-                            <intranda:columnheader
-                                addClass="tableColumnOverflow maxWidth300"
-                                value="#{msgs.metadata}"
-                                sortable="false" />
+                                <!-- TITLE -->
+                                <intranda:columnheader
+                                    addClass="tableColumnOverflow header__col-max-xxxl"
+                                    ajaxRender="@form"
+                                    form="AdministrationForm.administrationPlugin"
+                                    name="processTitle"
+                                    sortable="false"
+                                    value="#{msgs.prozessTitel}"
+                                />
+                                <!-- TODO add sortField -->
 
-                            <th
-                                scope="col"
-                                role="columnheader"
-                                class="tableColumnOverflow maxWidth300"
-                                aria-sort="#{AdministrationForm.administrationPlugin.sortField== 'prozesse.titel desc' ? 'descending' : AdministrationForm.administrationPlugin.sortField== 'prozesse.titel' ? 'ascending' :'none'}">
-                                <button
-                                    class="button-link"
-                                    style="width: 100%; text-align: left;"
-                                    jsf:action="#{AdministrationForm.administrationPlugin.generateZdbTitleList}"
-                                    aria-label="#{msgs.defaultSortField} #{msgs.prozessTitel} #{AdministrationForm.administrationPlugin.sortField== 'prozesse.titel desc' ? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung== 'prozesse.titel' ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
-                                    <h:outputText value="#{msgs.prozessTitel}" />
-                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.sortField== 'prozesse.titel desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.sortField== 'prozesse.titel' ?'fa-sort-asc':'fa-sort'}"></span>
-                                    <f:setPropertyActionListener
-                                        target="#{AdministrationForm.administrationPlugin.sortField}"
-                                        value="#{AdministrationForm.administrationPlugin.sortField== 'prozesse.titel' ? 'prozesse.titel desc' : 'prozesse.titel' }" />
-                                    <f:ajax render="@form" />
-                                </button>
-                            </th>
-
-
-                            <th
-                                scope="col"
-                                role="columnheader"
-                                class="tableColumnOverflow maxwidth200"
-                                aria-sort="#{AdministrationForm.administrationPlugin.sortField== 'prozesse.erstellungsdatum desc' ? 'descending' : AdministrationForm.administrationPlugin.sortField== 'prozesse.erstellungsdatum' ? 'ascending' :'none'}">
-                                <button
-                                    class="button-link"
-                                    style="width: 100%; text-align: left;"
-                                    jsf:action="#{AdministrationForm.administrationPlugin.generateZdbTitleList}"
-                                    aria-label="#{msgs.defaultSortField} #{msgs.prozessTitel} #{AdministrationForm.administrationPlugin.sortField== 'prozesse.erstellungsdatum desc' ? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung== 'prozesse.erstellungsdatum' ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
-                                    <h:outputText value="#{msgs.vorgangsdatum}" />
-                                    <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.sortField== 'prozesse.erstellungsdatum desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.sortField== 'prozesse.erstellungsdatum' ?'fa-sort-asc':'fa-sort'}"></span>
-                                    <f:setPropertyActionListener
-                                        target="#{AdministrationForm.administrationPlugin.sortField}"
-                                        value="#{AdministrationForm.administrationPlugin.sortField== 'prozesse.erstellungsdatum' ? 'prozesse.erstellungsdatum desc' : 'prozesse.erstellungsdatum' }" />
-                                    <f:ajax render="@form" />
-                                </button>
-                            </th>
-
-
-                            <intranda:columnheader
-                                value="#{msgs.plugin_administration_deliveryManagement_status}"
-                                sortable="false" />
-
-
-
-                            <!-- Buttons -->
-                            <intranda:columnheader
-                                addClass="width200"
-                                value="#{msgs.auswahl}"
-                                sortable="false" />
-                        </tr>
-                    </thead>
-                    <ui:repeat
-                        var="zdbItem"
-                        value="#{AdministrationForm.administrationPlugin.processPaginator.list}"
-                        varStatus="status">
-                        <tr role="row">
-
-                            <!-- Embedded Metadata -->
-                            <td>
-                                <table class="table table-borderless">
-                                    <ui:repeat
-                                        var="metadata"
-                                        value="#{AdministrationForm.administrationPlugin.metadataDisplayList}"
-                                        varStatus="metadatastatus">
-                                        <ui:fragment rendered="#{zdbItem.getMetadataValue(metadata) != ''}">
-                                            <tr>
-                                                <td
-                                                    style="width: 100px;"
-                                                    class="tableColumnWidth100 smallertablecell">
-                                                    <h:outputText value="#{msgs['process_grid_'.concat(metadata)]}:" />
-                                                </td>
-                                                <td
-                                                    style="width: 200px;"
-                                                    class="tableColumnWidthLong smallertablecell">
-                                                    <h:outputText value="#{zdbItem.getMetadataValue(metadata)}" />
-                                                </td>
-                                            </tr>
-                                        </ui:fragment>
-                                    </ui:repeat>
-                                </table>
-                            </td>
-
-
-                            <td>
-                                <h:outputText value="#{zdbItem.titel}" />
-                            </td>
-
-                            <!-- Vorgangsdatum -->
-                            <td>
-                                <h:outputText value="#{zdbItem.erstellungsdatumAsString}">
-                                </h:outputText>
-                            </td>
-
-                            <td>
-                                <h:panelGroup
-                                    rendered="#{zdbItem.getMetadataValue('CatalogIDPeriodicalDB') != ''}"
-                                    class="badge badge-intranda-green">
-                                    <i class="fa fa-unlock"></i> #{msgs.plugin_administration_deliveryManagement_displayMode_zdb_status_available}
-						      </h:panelGroup>
-                                <h:panelGroup
-                                    rendered="#{zdbItem.getMetadataValue('CatalogIDPeriodicalDB') == ''}"
-                                    class="badge badge-intranda-red">
-                                    <i class="fa fa-lock"></i> #{msgs.plugin_administration_deliveryManagement_displayMode_zdb_status_missing}
-                                </h:panelGroup>
-                            </td>
-
-
-                            <!-- Buttons -->
-                            <td class="width200">
-
-
-                                <!-- Metadaten-Schaltknopf - Allow writing -->
-                                <h:commandLink
-                                    action="#{AdministrationForm.administrationPlugin.openProcess(true)}"
-                                    id="action15"
-                                    rel="tooltip"
-                                    title="#{msgs.metadatenBearbeiten}"
-                                    pt:aria-label="#{msgs.metadatenBearbeiten}">
-                                    <i class="btn fa fa-pencil" />
-
-                                    <f:setPropertyActionListener
-                                        value="edit"
-                                        target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                                    <f:setPropertyActionListener
-                                        value="#{zdbItem}"
-                                        target="#{AdministrationForm.administrationPlugin.process}" />
-
-                                </h:commandLink>
-
-
-
-                            </td>
-                        </tr>
-                    </ui:repeat>
-                </table>
-
-                <div
-                    class="dataTables_info"
-                    style="float: left; width: 100%;">
-                    <div class="dataTables_paginate">
-
-                        <ui:fragment id="zdb_paginator">
-                            <!-- paginator -->
-                            <h:panelGroup rendered="#{AdministrationForm.administrationPlugin.processPaginator.totalResults > LoginForm.myBenutzer.tabellengroesse}">
-
-                                <div class="pull-right">
-
+                                <!-- <th
+                                    scope="col"
+                                    role="columnheader"
+                                    class="tableColumnOverflow maxWidth300"
+                                    aria-sort="#{AdministrationForm.administrationPlugin.sortField== 'prozesse.titel desc' ? 'descending' : AdministrationForm.administrationPlugin.sortField== 'prozesse.titel' ? 'ascending' :'none'}">
                                     <button
-                                        class="btn font-size-s margin-sides-10"
+                                        class="button-link"
+                                        style="width: 100%; text-align: left;"
+                                        jsf:action="#{AdministrationForm.administrationPlugin.generateZdbTitleList}"> -->
+                                        <!-- aria-label="#{msgs.defaultSortField} #{msgs.prozessTitel} #{AdministrationForm.administrationPlugin.sortField== 'prozesse.titel desc' ? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung== 'prozesse.titel' ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"> -->
+                                        <!-- <h:outputText value="#{msgs.prozessTitel}" />
+                                        <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.sortField== 'prozesse.titel desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.sortField== 'prozesse.titel' ?'fa-sort-asc':'fa-sort'}"></span>
+                                        <f:setPropertyActionListener
+                                            target="#{AdministrationForm.administrationPlugin.sortField}"
+                                            value="#{AdministrationForm.administrationPlugin.sortField== 'prozesse.titel' ? 'prozesse.titel desc' : 'prozesse.titel' }" />
+                                        <f:ajax render="@form" />
+                                    </button>
+                                </th> -->
+
+                                <!-- DATE -->
+                                <intranda:columnheader
+                                    addClass="tableColumnOverflow header__col-max-xxl"
+                                    ajaxRender="@form"
+                                    form="AdministrationForm.administrationPlugin"
+                                    name="date"
+                                    sortable="false"
+                                    value="#{msgs.vorgangsdatum}"/>
+                                <!-- TODO add sortField -->
+                                <!-- <th
+                                    scope="col"
+                                    role="columnheader"
+                                    class="tableColumnOverflow maxwidth200"
+                                    aria-sort="#{AdministrationForm.administrationPlugin.sortField== 'prozesse.erstellungsdatum desc' ? 'descending' : AdministrationForm.administrationPlugin.sortField== 'prozesse.erstellungsdatum' ? 'ascending' :'none'}">
+                                    <button
+                                        class="button-link"
+                                        style="width: 100%; text-align: left;"
+                                        jsf:action="#{AdministrationForm.administrationPlugin.generateZdbTitleList}"> -->
+                                        <!-- aria-label="#{msgs.defaultSortField} #{msgs.prozessTitel} #{AdministrationForm.administrationPlugin.sortField== 'prozesse.erstellungsdatum desc' ? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung== 'prozesse.erstellungsdatum' ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"> -->
+                                        <!-- <h:outputText value="#{msgs.vorgangsdatum}" />
+                                        <span class="pull-right table-sort-icon fa #{AdministrationForm.administrationPlugin.sortField== 'prozesse.erstellungsdatum desc' ?'fa-sort-desc':AdministrationForm.administrationPlugin.sortField== 'prozesse.erstellungsdatum' ?'fa-sort-asc':'fa-sort'}"></span>
+                                        <f:setPropertyActionListener
+                                            target="#{AdministrationForm.administrationPlugin.sortField}"
+                                            value="#{AdministrationForm.administrationPlugin.sortField== 'prozesse.erstellungsdatum' ? 'prozesse.erstellungsdatum desc' : 'prozesse.erstellungsdatum' }" />
+                                        <f:ajax render="@form" />
+                                    </button>
+                                </th> -->
+
+                                <!-- STATUS -->
+                                <intranda:columnheader
+                                    value="#{msgs.plugin_administration_deliveryManagement_status}"
+                                    sortable="false" />
+
+                                <!-- ACTIONS -->
+                                <intranda:columnheader
+                                    addClass="gw-table-fixed__actions"
+                                    value="#{msgs.auswahl}"
+                                    sortable="false" />
+                            </tr>
+                        </thead>
+
+                        <ui:repeat
+                            var="zdbItem"
+                            value="#{AdministrationForm.administrationPlugin.processPaginator.list}"
+                            varStatus="status">
+                            <tr role="row">
+
+                                <!-- Embedded Metadata -->
+                                <td class="col-sm-4">
+                                    <table class="table table-borderless">
+                                        <ui:repeat
+                                            var="metadata"
+                                            value="#{AdministrationForm.administrationPlugin.metadataDisplayList}"
+                                            varStatus="metadatastatus">
+                                            <ui:fragment rendered="#{zdbItem.getMetadataValue(metadata) != ''}">
+                                                <tr>
+                                                    <td
+                                                        class="width-200 smallertablecell">
+                                                        <h:outputText value="#{msgs['process_grid_'.concat(metadata)]}:" />
+                                                    </td>
+                                                    <td
+                                                        class="ps-5 smallertablecell">
+                                                        <h:outputText value="#{zdbItem.getMetadataValue(metadata)}" />
+                                                    </td>
+                                                </tr>
+                                            </ui:fragment>
+                                        </ui:repeat>
+                                    </table>
+                                </td>
+
+                                <!-- TITLE -->
+                                <td class="col-md">
+                                    <h:outputText value="#{zdbItem.titel}" />
+                                </td>
+
+                                <!-- Vorgangsdatum -->
+                                <td class="col-sm-1">
+                                    <h:outputText value="#{zdbItem.erstellungsdatumAsString}">
+                                    </h:outputText>
+                                </td>
+
+                                <td class="col-sm-1">
+                                    <h:panelGroup
+                                        rendered="#{zdbItem.getMetadataValue('CatalogIDPeriodicalDB') != ''}"
+                                        class="badge badge-intranda-green">
+                                        <span class="fa fa-unlock" /> #{msgs.plugin_administration_deliveryManagement_displayMode_zdb_status_available}
+                                </h:panelGroup>
+                                    <h:panelGroup
+                                        rendered="#{zdbItem.getMetadataValue('CatalogIDPeriodicalDB') == ''}"
+                                        class="badge badge-intranda-red">
+                                        <span class="fa fa-lock" /> #{msgs.plugin_administration_deliveryManagement_displayMode_zdb_status_missing}
+                                    </h:panelGroup>
+                                </td>
+
+                                <!-- ASCTIONS -->
+                                <td class="col-sm-1">
+
+                                    <!-- EDIT METADATA -->
+                                    <div class="gw-table__actions__container">
+                                        <button
+                                            class="btn btn-blank"
+                                            jsf:action="#{AdministrationForm.administrationPlugin.openProcess(true)}"
+                                            jsf:id="action15"
+                                            jsf:rel="tooltip"
+                                            title="#{msgs.metadatenBearbeiten}">
+                                            <span class="fa fa-pencil" />
+                                            <f:setPropertyActionListener
+                                                value="edit"
+                                                target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                                            <f:setPropertyActionListener
+                                                value="#{zdbItem}"
+                                                target="#{AdministrationForm.administrationPlugin.process}" />
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ui:repeat>
+                    </table>
+
+                    <!-- PAGINATOR -->
+                    <div class="box__actions">
+                        <div class="dataTables__paginator">
+
+                            <ui:fragment id="zdb_paginator">
+                                <!-- paginator -->
+                                <h:panelGroup rendered="#{AdministrationForm.administrationPlugin.processPaginator.totalResults > LoginForm.myBenutzer.tabellengroesse}">
+                                    <button
+                                        class="btn btn-blank"
                                         aria-label="#{msgs.firstPage}"
                                         jsf:action="#{AdministrationForm.administrationPlugin.processPaginator.cmdMoveFirst}"
                                         jsf:id="navfirst">
-                                        <i class="fa fa-angle-double-left"></i>
+                                        <span class="fa fa-angle-double-left" />
                                         <f:ajax render="@form" />
                                     </button>
                                     <button
-                                        class="btn btn-primary font-size-s navigator-previous"
+                                        class="btn btn-primary-400"
                                         jsf:action="#{AdministrationForm.administrationPlugin.processPaginator.cmdMovePrevious}"
                                         jsf:id="navprev">
-                                        <i class="fa fa-angle-left"></i>
+                                        <span class="fa fa-angle-left" />
                                         <h:outputText value=" #{msgs.pagePrevious}" />
                                         <f:ajax render="@form" />
                                     </button>
 
-                                    <div class="margin-sides-10">
+                                    <div
+                                        type="button"
+                                        class="dataTables__paginator__page-count">
                                         <!-- aktuelle Seite anzeigen -->
                                         <x:outputText
                                             id="zdb_txtMoveTo1"
                                             forceId="true"
                                             value="#{msgs.seite} #{AdministrationForm.administrationPlugin.processPaginator.pageNumberCurrent} #{msgs.von} #{AdministrationForm.administrationPlugin.processPaginator.pageNumberLast}"
                                             onclick="document.getElementById('zdb_txtMoveTo2').style.display='inline';
-	                   document.getElementById('zdb_txtMoveTo1').style.display='none';
-	                   document.getElementById('zdb_txtMoveTo2').focus();
-	                   document.getElementById('zdb_txtMoveTo2').select();" />
+                                                document.getElementById('zdb_txtMoveTo1').style.display='none';
+                                                document.getElementById('zdb_txtMoveTo2').focus();
+                                                document.getElementById('zdb_txtMoveTo2').select();" />
 
                                         <!-- Seite direkt anspringen -->
                                         <x:inputText
@@ -283,88 +292,80 @@
                                     </div>
 
                                     <button
-                                        class="btn btn-primary font-size-s navigator-next"
+                                        class="btn btn-primary-400"
                                         jsf:action="#{AdministrationForm.administrationPlugin.processPaginator.cmdMoveNext}"
                                         jsf:id="navnext">
                                         <h:outputText value="#{msgs.pageNext} " />
-                                        <i class="fa fa-angle-right"></i>
+                                        <span class="fa fa-angle-right" />
                                         <f:ajax render="@form" />
                                     </button>
                                     <button
-                                        class="btn font-size-s margin-sides-10"
+                                        class="btn btn-blank"
                                         aria-label="#{msgs.lastPage}"
                                         jsf:action="#{AdministrationForm.administrationPlugin.processPaginator.cmdMoveLast}"
                                         jsf:id="navlast">
-                                        <i class="fa fa-angle-double-right"></i>
+                                        <span class="fa fa-angle-double-right" />
                                         <f:ajax render="@form" />
                                     </button>
-                                </div>
-                            </h:panelGroup>
-
-                            <!-- /paginator -->
-
-                        </ui:fragment>
+                                </h:panelGroup>
+                                <!-- /paginator -->
+                            </ui:fragment>
+                        </div>
                     </div>
-                </div>
+                </h:form>
             </div>
+        </h:panelGroup>
 
-        </h:form>
-
-
-
-        <h:form
-            styleClass="form-horizontal form-bordered"
+        <h:panelGroup
+            layout="block"
             rendered="#{AdministrationForm.administrationPlugin.editionMode=='edit'}">
 
-            <ui:repeat
-                var="meta"
-                value="#{AdministrationForm.administrationPlugin.metadataList}"
-                varStatus="status">
+            <h:form>
+                <ui:repeat
+                    var="meta"
+                    value="#{AdministrationForm.administrationPlugin.metadataList}"
+                    varStatus="status">
+                    <intranda:formInputText
+                        id="id_#{status.index}"
+                        name="meta"
+                        label="#{meta.type.getLanguage(SpracheForm.locale.language)}"
+                        field="#{meta.value}"
+                        help="#{msgs.helpProcessTitle}"
+                        required="false" />
+                </ui:repeat>
 
+                <div class="box__actions">
 
-                <intranda:formInputText
-                    id="id_#{status.index}"
-                    name="meta"
-                    label="#{meta.type.getLanguage(SpracheForm.locale.language)}"
-                    field="#{meta.value}"
-                    help="#{msgs.helpProcessTitle}"
-                    fieldStyle="form-control"
-                    required="false" />
-            </ui:repeat>
+                    <!-- Cancel -->
+                    <button
+                        class="btn btn-blank"
+                        jsf:id="cancel"
+                        type="submit"
+                        jsf:immediate="true">
+                        <h:outputText value="#{msgs.abbrechen}" />
+                        <f:setPropertyActionListener
+                            value=""
+                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                    </button>
 
+                    <!-- Save -->
+                    <button
+                        class="btn btn-success submitOnEnter"
+                        jsf:id="absenden"
+                        type="submit"
+                        jsf:action="#{AdministrationForm.administrationPlugin.saveZdbTitleData}">
+                        <span class="fa fa-save margin-right-5" />
+                        <span>
+                            <h:outputText value="#{msgs.speichern}" />
+                        </span>
+                        <f:setPropertyActionListener
+                            value=""
+                            target="#{AdministrationForm.administrationPlugin.editionMode}" />
+                    </button>
 
-            <div class="form-actions">
-
-                <!-- Save -->
-                <button
-                    class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
-                    jsf:id="absenden"
-                    type="submit"
-                    jsf:action="#{AdministrationForm.administrationPlugin.saveZdbTitleData}">
-                    <i class="fa fa-save margin-right-5"></i>
-                    <h:outputText value="#{msgs.speichern}" />
-                    <f:setPropertyActionListener
-                        value=""
-                        target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                </button>
-
-                <!-- Cancel -->
-                <button
-                    class="btn margin-sides-10 font-size-s pull-right"
-                    jsf:id="cancel"
-                    type="submit"
-                    jsf:immediate="true">
-                    <h:outputText value="#{msgs.abbrechen}" />
-                    <f:setPropertyActionListener
-                        value=""
-                        target="#{AdministrationForm.administrationPlugin.editionMode}" />
-                </button>
-
-
-
-            </div>
-        </h:form>
-
+                </div>
+            </h:form>
+        </h:panelGroup>
 
     </composite:implementation>
 </ui:composition>
