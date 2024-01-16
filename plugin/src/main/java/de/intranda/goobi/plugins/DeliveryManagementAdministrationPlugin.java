@@ -401,11 +401,33 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             for (ConfiguredField cf : configuredUserFields) {
                 sqlQuery.append(" or ExtractValue(benutzer.additional_data, '/root/").append(cf.getName()).append("')").append(like);
             }
+
+            for (ConfiguredField cf : additionalFields) {
+                if ("user".equals(cf.getType())) {
+                    sqlQuery.append(" or ExtractValue(benutzer.additional_data, '/root/").append(cf.getName()).append("')").append(like);
+                }
+            }
+
             sqlQuery.append(" or BenutzerID IN (SELECT DISTINCT BenutzerID FROM benutzer, institution WHERE ");
             sqlQuery.append("benutzer.institution_id = institution.id AND (institution.shortName ");
             sqlQuery.append(like);
             sqlQuery.append(" OR institution.longName ");
             sqlQuery.append(like);
+
+            for (Entry<String, List<ConfiguredField>> fields : configuredInstitutionFields.entrySet()) {
+                for (ConfiguredField cf : fields.getValue()) {
+                    sqlQuery.append(" or ExtractValue(institution.additional_data, '/root/").append(cf.getName()).append("')").append(like);
+                }
+            }
+            for (ConfiguredField cf : configuredDnbFields) {
+                sqlQuery.append(" or ExtractValue(institution.additional_data, '/root/").append(cf.getName()).append("')").append(like);
+            }
+            for (ConfiguredField cf : additionalFields) {
+                if ("institution".equals(cf.getType())) {
+                    sqlQuery.append(" or ExtractValue(institution.additional_data, '/root/").append(cf.getName()).append("')").append(like);
+                }
+            }
+
             sqlQuery.append("))");
 
             sqlQuery.append(")");
