@@ -391,13 +391,17 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
     public void filterUser() {
         ExtendedUserManager m = new ExtendedUserManager();
         StringBuilder sqlQuery = new StringBuilder();
-        sqlQuery.append("userstatus!='deleted'");
+        sqlQuery.append("userstatus!='deleted' ");
         if (StringUtils.isNotBlank(userSearchFilter)) {
             String like = " like '%" + StringEscapeUtils.escapeSql(userSearchFilter) + "%'";
             sqlQuery.append("and (login").append(like);
             sqlQuery.append(" or Vorname").append(like);
             sqlQuery.append(" or Nachname").append(like);
             sqlQuery.append(" or email").append(like);
+
+            sqlQuery.append(" OR benutzer.institution_id in (select objectId from journal where entrytype = 'institution' and content ");
+            sqlQuery.append(like);
+            sqlQuery.append(") ");
             for (ConfiguredField cf : configuredUserFields) {
                 sqlQuery.append(" or ExtractValue(benutzer.additional_data, '/root/").append(cf.getName()).append("')").append(like);
             }
@@ -413,7 +417,6 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             sqlQuery.append(like);
             sqlQuery.append(" OR institution.longName ");
             sqlQuery.append(like);
-
             for (Entry<String, List<ConfiguredField>> fields : configuredInstitutionFields.entrySet()) {
                 for (ConfiguredField cf : fields.getValue()) {
                     sqlQuery.append(" or ExtractValue(institution.additional_data, '/root/").append(cf.getName()).append("')").append(like);
@@ -433,8 +436,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             sqlQuery.append(")");
         }
         if (!excludeInstitutions.isEmpty()) {
-            sqlQuery.append(" AND benutzer.institution_id NOT IN (SELECT institution.id from institution where ");
-            sqlQuery.append("institution.shortName in (");
+            sqlQuery.append(" and institution.shortName NOT IN (");
             StringBuilder inst = new StringBuilder();
             for (String s : excludeInstitutions) {
                 if (inst.length() > 0) {
@@ -445,7 +447,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 inst.append("'");
             }
             sqlQuery.append(inst.toString());
-            sqlQuery.append("))");
+            sqlQuery.append(")");
         }
 
         if (showOnlyInactiveUser) {
@@ -577,12 +579,10 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                 } else if (StringUtils.isNotBlank(field.getValue())) {
                     institution.getAdditionalData().put(field.getName(), field.getValue());
                 }
+            } else if (COMBO_FIELD_NAME.equals(field.getFieldType()) && field.getBooleanValue()) {
+                user.getAdditionalData().put(field.getName(), field.getSubValue());
             } else {
-                if (COMBO_FIELD_NAME.equals(field.getFieldType()) && field.getBooleanValue()) {
-                    user.getAdditionalData().put(field.getName(), field.getSubValue());
-                } else {
-                    user.getAdditionalData().put(field.getName(), field.getValue());
-                }
+                user.getAdditionalData().put(field.getName(), field.getValue());
             }
         }
 
