@@ -848,7 +848,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
                     createElement(u, "lang", usr.getMetadatenSprache());
                     createElement(u, "dashboard", usr.getDashboardPlugin());
 
-                    for (Entry<String, String> entry : data.entrySet()) {
+                    for (Entry<String, String> entry : usr.getAdditionalData().entrySet()) {
                         createElement(u, entry.getKey(), entry.getValue());
                     }
 
