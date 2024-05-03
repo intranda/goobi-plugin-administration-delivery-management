@@ -546,7 +546,7 @@
                             <h3>
                                 <h:outputText
                                     styleClass="text"
-                                    value="#{msgs.plugin_rest_usercreation_new_institution}" />
+                                    value="#{msgs.plugin_administration_delivery_institution}" />
                             </h3>
                         </div>
                         <!-- INSTITUTION OR PERSON ABBREVIATION -->
@@ -580,14 +580,14 @@
                                     <h3 jsf:rendered="#{entry.key=='page2'}">
                                         <h:outputText
                                             styleClass="text"
-                                            value="#{msgs.plugin_rest_usercreation_new_institution}" />
+                                            value="#{msgs.plugin_administration_delivery_institution}" />
                                     </h3>
                                     <h3
                                         class="d-flex justify-content-between"
                                         jsf:rendered="#{entry.key=='page3'}">
                                         <h:outputText
                                             styleClass="text"
-                                            value="#{msgs.plugin_rest_usercreation_new_contact}" />
+                                            value="#{msgs.plugin_administration_delivery_contact}" />
                                         <button
                                             jsf:rendered="#{!AdministrationForm.administrationPlugin.displaySecondContact}"
                                             jsf:id="createNewContact"
@@ -605,7 +605,7 @@
                                         jsf:rendered="#{entry.key=='page3a'}">
                                         <h:outputText
                                             styleClass="text"
-                                            value="#{msgs.plugin_rest_usercreation_new_contact}" />
+                                            value="#{msgs.plugin_administration_delivery_contact}" />
                                         <button
                                             jsf:id="disableContact"
                                             jsf:action="#{AdministrationForm.administrationPlugin.disableContact}"
@@ -620,7 +620,7 @@
                                     <h3 jsf:rendered="#{entry.key=='page4'}">
                                         <h:outputText
                                             styleClass="text"
-                                            value="#{msgs.plugin_rest_usercreation_new_additionalData}" />
+                                            value="#{msgs.plugin_administration_delivery_additionalData}" />
                                     </h3>
                                 </div>
                                 <ui:repeat
