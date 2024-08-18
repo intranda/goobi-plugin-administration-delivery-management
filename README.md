@@ -15,8 +15,8 @@ Detail                      | Description
 **Plugin identifier**       | -
 **Plugin type**             | administration
 **Licence**                 | GPL 2.0 or newer
-**Documentation (German)**  | -
-**Documentation (English)** | -
+**Documentation (German)**  | This plugin is not yet documented.
+**Documentation (English)** | This plugin is not yet documented.
 
 ## Goobi details
 
