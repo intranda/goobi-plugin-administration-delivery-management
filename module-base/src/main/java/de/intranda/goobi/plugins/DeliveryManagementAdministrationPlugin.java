@@ -148,7 +148,19 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     @Getter
     @Setter
-    private boolean showOnlyInactiveUser = true;
+    private boolean showOnlyInactiveUser = false;
+
+    @Getter
+    @Setter
+    private boolean showAllUser = true;
+
+    @Getter
+    @Setter
+    private boolean showOnlyDnbUser = false;
+
+    @Getter
+    @Setter
+    private boolean showNonDnbUser = false;
 
     @Getter
     @Setter
@@ -454,6 +466,18 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             sqlQuery.append(" AND userstatus!='active'");
         }
 
+        if (!showAllUser) {
+            if (showOnlyDnbUser) {
+                sqlQuery.append(
+                        " AND benutzer.institution_id in (SELECT id FROM institution WHERE  ExtractValue(institution.additional_data, '/root/ido') != '') ");
+            } else {
+                sqlQuery.append(
+                        " AND benutzer.institution_id in (SELECT id FROM institution WHERE  ExtractValue(institution.additional_data, '/root/ido') = '') ");
+
+            }
+
+        }
+
         userPaginator = new UserPaginator(getUserSqlSortString(), sqlQuery.toString(), m);
     }
 
@@ -702,7 +726,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         }
 
         ProcessManager m = new ProcessManager();
-        processPaginator = new DatabasePaginator(sortField, sb.toString(), m, "process_all");
+        processPaginator = new DatabasePaginator("prozesse.erstellungsdatum desc", sb.toString(), m, "process_all");
     }
 
     public void generateInstitutionProcessTitleList() {
