@@ -35,13 +35,13 @@
                             class="mx-1 btn gw-table__filters__option"
                             jsf:action="#{AdministrationForm.administrationPlugin.filterUser}"
                             jsf:immediate="true">
-                            <span class="fa #{AdministrationForm.administrationPlugin.showOnlyInactiveUser?'fa-check-square-o':'fa-square-o'}" />
+                            <span class="fa #{AdministrationForm.administrationPlugin.showOnlyActiveUser?'fa-check-square-o':'fa-square-o'}" />
                             <h:outputText
                                 styleClass="font-size-s"
-                                value="#{msgs.plugin_administration_deliveryManagement_includeInactiveUser}" />
+                                value="#{msgs.plugin_administration_deliveryManagement_showOnlyActiveUser}" />
                             <f:setPropertyActionListener
-                                target="#{AdministrationForm.administrationPlugin.showOnlyInactiveUser}"
-                                value="#{not AdministrationForm.administrationPlugin.showOnlyInactiveUser}" />
+                                target="#{AdministrationForm.administrationPlugin.showOnlyActiveUser}"
+                                value="#{not AdministrationForm.administrationPlugin.showOnlyActiveUser}" />
                         </button>
 
 

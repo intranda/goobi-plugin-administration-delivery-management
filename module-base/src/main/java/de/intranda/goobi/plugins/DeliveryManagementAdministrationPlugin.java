@@ -148,7 +148,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     @Getter
     @Setter
-    private boolean showOnlyInactiveUser = false;
+    private boolean showOnlyActiveUser = false;
 
     @Getter
     @Setter
@@ -462,8 +462,8 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             sqlQuery.append(")");
         }
 
-        if (showOnlyInactiveUser) {
-            sqlQuery.append(" AND userstatus!='active'");
+        if (showOnlyActiveUser) {
+            sqlQuery.append(" AND userstatus ='active'");
         }
 
         if (!showAllUser) {
