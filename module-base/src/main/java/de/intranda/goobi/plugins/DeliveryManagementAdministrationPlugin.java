@@ -384,6 +384,8 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
         String status = user.getAdditionalData().get("dnb-status");
         if (StringUtils.isNotBlank(status)) {
             dnbStatus = status;
+        } else {
+            dnbStatus = "INBEARBEITUNG";
         }
 
         // additional, hidden fields
