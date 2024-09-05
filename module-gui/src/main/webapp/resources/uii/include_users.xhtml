@@ -32,17 +32,80 @@
                     <h:form id="toggleActiveUsers">
                         <button
                             jsf:id="excludeActiveUsers"
-                            class="btn gw-table__filters__option"
+                            class="mx-1 btn gw-table__filters__option"
                             jsf:action="#{AdministrationForm.administrationPlugin.filterUser}"
                             jsf:immediate="true">
-                            <span class="fa #{AdministrationForm.administrationPlugin.showOnlyInactiveUser?'fa-square-o':'fa-check-square-o'}" />
+                            <span class="fa #{AdministrationForm.administrationPlugin.showOnlyActiveUser?'fa-check-square-o':'fa-square-o'}" />
+                            <h:outputText
+                                styleClass="font-size-s"
+                                value="#{msgs.plugin_administration_deliveryManagement_showOnlyActiveUser}" />
+                            <f:setPropertyActionListener
+                                target="#{AdministrationForm.administrationPlugin.showOnlyActiveUser}"
+                                value="#{not AdministrationForm.administrationPlugin.showOnlyActiveUser}" />
+                        </button>
+
+
+                        <button
+                            jsf:id="showAllUser"
+                            class="mx-1 btn gw-table__filters__option"
+                            jsf:action="#{AdministrationForm.administrationPlugin.filterUser}"
+                            jsf:immediate="true">
+                            <span class="fa #{AdministrationForm.administrationPlugin.showAllUser?'fa-check-square-o':'fa-square-o'}" />
                             <h:outputText
                                 styleClass="font-size-s"
                                 value="#{msgs.plugin_administration_deliveryManagement_showAllUsers}" />
                             <f:setPropertyActionListener
-                                target="#{AdministrationForm.administrationPlugin.showOnlyInactiveUser}"
-                                value="#{not AdministrationForm.administrationPlugin.showOnlyInactiveUser}" />
+                                target="#{AdministrationForm.administrationPlugin.showAllUser}"
+                                value="true" />
+                            <f:setPropertyActionListener
+                                target="#{AdministrationForm.administrationPlugin.showOnlyDnbUser}"
+                                value="false" />
+                            <f:setPropertyActionListener
+                                target="#{AdministrationForm.administrationPlugin.showNonDnbUser}"
+                                value="false" />
                         </button>
+
+                        <button
+                            jsf:id="showOnlyDnbUser"
+                            class="mx-1 btn gw-table__filters__option"
+                            jsf:action="#{AdministrationForm.administrationPlugin.filterUser}"
+                            jsf:immediate="true">
+                            <span class="fa #{AdministrationForm.administrationPlugin.showOnlyDnbUser?'fa-check-square-o':'fa-square-o'}" />
+                            <h:outputText
+                                styleClass="font-size-s"
+                                value="#{msgs.plugin_administration_deliveryManagement_showOnlyDnbUser}" />
+                            <f:setPropertyActionListener
+                                target="#{AdministrationForm.administrationPlugin.showAllUser}"
+                                value="false" />
+                            <f:setPropertyActionListener
+                                target="#{AdministrationForm.administrationPlugin.showOnlyDnbUser}"
+                                value="true" />
+                            <f:setPropertyActionListener
+                                target="#{AdministrationForm.administrationPlugin.showNonDnbUser}"
+                                value="false" />
+                        </button>
+
+                        <button
+                            jsf:id="showNonDnbUser"
+                            class="mx-1 btn gw-table__filters__option"
+                            jsf:action="#{AdministrationForm.administrationPlugin.filterUser}"
+                            jsf:immediate="true">
+                            <span class="fa #{AdministrationForm.administrationPlugin.showNonDnbUser?'fa-check-square-o':'fa-square-o'}" />
+                            <h:outputText
+                                styleClass="font-size-s"
+                                value="#{msgs.plugin_administration_deliveryManagement_showNonDnbUser}" />
+                            <f:setPropertyActionListener
+                                target="#{AdministrationForm.administrationPlugin.showAllUser}"
+                                value="false" />
+                            <f:setPropertyActionListener
+                                target="#{AdministrationForm.administrationPlugin.showOnlyDnbUser}"
+                                value="false" />
+                            <f:setPropertyActionListener
+                                target="#{AdministrationForm.administrationPlugin.showNonDnbUser}"
+                                value="true" />
+                        </button>
+
+
                     </h:form>
                     <!-- SEARCH -->
                     <div class="gw-table__filters__search-bar">
