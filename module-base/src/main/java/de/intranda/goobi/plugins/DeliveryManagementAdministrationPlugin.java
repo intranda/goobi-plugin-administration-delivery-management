@@ -381,7 +381,7 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
             }
         }
         // set dnb status
-        String status = user.getAdditionalData().get("dnb-status");
+        String status = institution.getAdditionalData().get("dnb-status");
         if (StringUtils.isNotBlank(status)) {
             dnbStatus = status;
         } else {
