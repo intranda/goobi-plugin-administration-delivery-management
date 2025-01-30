@@ -4,7 +4,6 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:c="http://java.sun.com/jstl/core"
@@ -130,7 +129,7 @@
                                     jsf:forceId="true"
                                     class="btn btn-blank text-center"
                                     jsf:action="#{AdministrationForm.administrationPlugin.filterUser}">#{msgs.search}</button>
-                                <x:commandButton
+                                <h:commandButton
                                     type="submit"
                                     id="FilterAlle"
                                     forceId="true"
@@ -816,7 +815,7 @@
                                             jsf:action="#{AdministrationForm.administrationPlugin.generateInstitutionProcessTitleList}">#{msgs.search}</button>
                                     </div>
                                 </div>
-                                <x:commandButton
+                                <h:commandButton
                                     type="submit"
                                     id="processsearchButton2"
                                     forceId="true"
@@ -996,7 +995,7 @@
                                     class="dataTables__paginator__page-count"
                                     type="button">
                                     <!-- aktuelle Seite anzeigen -->
-                                    <x:outputText
+                                    <h:outputText
                                         id="item_txtMoveTo1"
                                         forceId="true"
                                         value="#{msgs.seite} #{AdministrationForm.administrationPlugin.institutionProcessPaginator.pageNumberCurrent} #{msgs.von} #{AdministrationForm.administrationPlugin.institutionProcessPaginator.pageNumberLast}"
@@ -1006,7 +1005,7 @@
                         document.getElementById('item_txtMoveTo2').select();" />
 
                                     <!-- Seite direkt anspringen -->
-                                    <x:inputText
+                                    <h:inputText
                                         id="item_txtMoveTo2"
                                         forceId="true"
                                         value="#{AdministrationForm.administrationPlugin.institutionProcessPaginator.txtMoveTo}"
@@ -1014,13 +1013,13 @@
                                         required="true"
                                         onblur="document.getElementById('item_txtMoveTo2').style.display='none';document.getElementById('item_txtMoveTo1').style.display='inline';"
                                         onkeypress="return submitEnter('item_cmdMoveTo',event)" />
-                                    <x:commandButton
+                                    <h:commandButton
                                         action="#{NavigationForm.Reload}"
                                         id="item_cmdMoveTo"
                                         forceId="true"
                                         value="go"
                                         style="display:none">
-                                    </x:commandButton>
+                                    </h:commandButton>
                                 </div>
 
                                 <button

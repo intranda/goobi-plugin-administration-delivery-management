@@ -5,7 +5,6 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
@@ -104,21 +103,11 @@
                         rendered="#{AdministrationForm.administrationPlugin.editionMode=='edit'}">
                         <h:form
                             enctype="multipart/form-data">
-                            <!-- Box for process log -->
-                            <x:aliasBeansScope>
-                                <x:aliasBean
-                                    alias="#{showBigButton}"
-                                    value="true" />
-                                <x:aliasBean
-                                    alias="#{showFolderSelection}"
-                                    value="false" />
-                                <x:aliasBean
-                                    alias="#{bean}"
-                                    value="#{AdministrationForm.administrationPlugin.institution}" />
-                                <f:subview id="sublog">
-                                    <ui:include src="/uii/includes/journal.xhtml" />
-                                </f:subview>
-                            </x:aliasBeansScope>
+                            <intranda:journal
+                                showBigButton="true"
+                                showFolderSelection="false"
+                                showImageComments="false"
+                                bean="#{AdministrationForm.administrationPlugin.institution}" />
                         </h:form>
                         <!-- // Box for process log -->
 
@@ -129,7 +118,7 @@
         <script type="text/javascript">
                                     //<![CDATA[
 
-                                    jsf.ajax.addOnEvent( function( data ) {
+                                    faces.ajax.addOnEvent( function( data ) {
                                         var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
                                         var source = data.source;
                                         switch ( ajaxstatus ) {
@@ -201,7 +190,7 @@
                                         renderInputFields()
                                     } );
 
-                                    jsf.ajax.addOnEvent( function( data ) {
+                                    faces.ajax.addOnEvent( function( data ) {
                                         var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
                                         switch ( ajaxstatus ) {
                                             case "success": // This is called when ajax response is successfully processed.

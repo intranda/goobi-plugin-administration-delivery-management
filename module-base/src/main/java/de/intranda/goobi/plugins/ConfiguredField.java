@@ -3,12 +3,11 @@ package de.intranda.goobi.plugins;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-
 import org.apache.commons.lang.StringUtils;
 
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.SelectItem;
 import lombok.Data;
 
 @Data
