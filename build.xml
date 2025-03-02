@@ -8,8 +8,8 @@
 		<exec executable="mvn">
 			<arg value="package"/>
 		</exec>
-		<copy file="module-base/target/plugin-administration-${name}-base.jar" todir="/opt/digiverso/goobi/plugins/administration/" overwrite="true"/>
-		<copy file="module-gui/target/plugin-administration-${name}-gui.jar" todir="/opt/digiverso/goobi/plugins/GUI/" overwrite="true"/>
+        <copy file="module-base/target/plugin-administration-delivery-management-base.jar" todir="/opt/digiverso/goobi/plugins/administration/"/>
+        <copy file="module-gui/target/plugin-administration-delivery-management-gui.jar" todir="/opt/digiverso/goobi/plugins/GUI/"/>
 	</target>
 
 </project>

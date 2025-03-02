@@ -4,7 +4,6 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:c="http://java.sun.com/jstl/core"
@@ -45,7 +44,7 @@
         </ui:fragment>
 
         <ui:fragment rendered="#{item.fieldType=='combo'}">
-            <div class="form-group">
+           
                 <div
                     class="col-12 col-md-3"
                     tabindex="-1">
@@ -70,7 +69,7 @@
                             value="#{msgs[item.placeholderText]}" />
                     </h:inputText>
 
-                    <x:inputTextarea
+                    <h:inputTextarea
                         rendered="#{item.fieldType=='textarea'}"
                         required="#{item.required}"
                         styleClass="form-control form__input"
@@ -83,7 +82,7 @@
                         <f:passThroughAttribute
                             name="placeholder"
                             value="#{msgs[item.placeholderText]}" />
-                    </x:inputTextarea>
+                    </h:inputTextarea>
 
                     <h:selectOneMenu
                         rendered="#{item.fieldType=='dropdown'}"
@@ -137,7 +136,6 @@
                     <intranda:formHelp
                         content="#{item.helpMessage}"
                         msgFor="#{status.index}field" />
-                </div>
             </div>
 
         </ui:fragment>
