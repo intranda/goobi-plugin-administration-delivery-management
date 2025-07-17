@@ -154,7 +154,7 @@ public class ExtendedUserManager implements IManager {
         }
     }
 
-    private static ResultSetHandler<List<ExtendedUser>> resultSetToUserListHandler = new ResultSetHandler<List<ExtendedUser>>() {
+    private static ResultSetHandler<List<ExtendedUser>> resultSetToUserListHandler = new ResultSetHandler<>() {
         @Override
         public List<ExtendedUser> handle(ResultSet rs) throws SQLException {
             List<ExtendedUser> answer = new ArrayList<>();
@@ -202,17 +202,17 @@ public class ExtendedUserManager implements IManager {
         sb.append("institution ON benutzer.institution_id = id ");
         sb.append("LEFT JOIN ");
         sb.append("(SELECT  ");
-        sb.append("wert, ");
-        sb.append("MAX(creationDate) AS lastDate, ");
-        sb.append("COUNT(creationDate) AS items ");
+        sb.append("property_value, ");
+        sb.append("MAX(creation_date) AS lastDate, ");
+        sb.append("COUNT(creation_date) AS items ");
         sb.append("FROM ");
-        sb.append("prozesseeigenschaften ");
+        sb.append("properties ");
         sb.append("WHERE ");
-        sb.append("titel = 'Institution' ");
-        sb.append("GROUP BY wert) AS t ON institution.shortName = t.wert ");
+        sb.append("property_name = 'Institution' and object_type = 'process' ");
+        sb.append("GROUP BY property_value) AS t ON institution.shortName = t.property_value ");
     }
 
-    public static boolean isInstitutionHasUserAssigned(Institution institution)  {
+    public static boolean isInstitutionHasUserAssigned(Institution institution) {
         if (institution.getId() == null) {
             return false;
         }
