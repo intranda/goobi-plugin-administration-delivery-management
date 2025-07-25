@@ -7,19 +7,22 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:c="http://java.sun.com/jstl/core"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:section="http://goobi.io/section"
+    >
 
     <composite:interface>
     </composite:interface>
 
     <composite:implementation>
         <h:form styleClass="form-horizontal form-bordered">
-            <h:inputTextarea
-                id="textareaHtml"
-                styleClass="form-control textarea-html"
-                value="#{AdministrationForm.administrationPlugin.privacyPolicyText}" />
-
-            <div class="box__actions">
+            <section:body padding="true">
+                <h:inputTextarea
+                    id="textareaHtml"
+                    styleClass="form-control textarea-html"
+                    value="#{AdministrationForm.administrationPlugin.privacyPolicyText}" />
+            </section:body>
+            <section:footer>
                 <!-- Save -->
                 <button
                     class="btn btn-success submitOnEnter"
@@ -34,7 +37,7 @@
                         render="@form"
                         execute="@form" />
                 </button>
-            </div>
+            </section:footer>
         </h:form>
     </composite:implementation>
 </ui:composition>

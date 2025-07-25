@@ -7,137 +7,150 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:c="http://java.sun.com/jstl/core"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:form="http://goobi.io/form"
+    >
 
     <composite:interface>
     </composite:interface>
     <composite:implementation>
-        <ui:fragment rendered="#{item.fieldType=='input'}">
-            <intranda:formInputTextAjax
-                name="#{status.index}field"
+        <c:if test="#{item.fieldType=='input'}">
+            <form:field
                 label="#{msgs[item.label]}"
-                field="#{item.value}"
                 help="#{item.helpMessage}"
-                required="#{item.required}"
-                execute="@this" />
-        </ui:fragment>
-        <ui:fragment rendered="#{item.fieldType=='textarea'}">
-            <intranda:formInputTextArea
-                name="#{status.index}field"
+                required="#{item.required}">
+                <h:inputText
+                    id="field#{status.index}"
+                    value="#{item.value}"
+                    styleClass="form-control">
+                    <f:ajax
+                        execute="@this" />
+                </h:inputText>
+                <form:message target="field#{status.index}" />
+            </form:field>
+        </c:if>
+        <c:if test="#{item.fieldType=='textarea'}">
+            <form:field
                 label="#{msgs[item.label]}"
-                field="#{item.value}"
                 help="#{item.helpMessage}"
-                required="#{item.required}" />
-        </ui:fragment>
-        <ui:fragment rendered="#{item.fieldType=='dropdown'}">
-            <intranda:formInputDropDownAjax
-                label="#{msgs[item.label]}"
-                field="#{item.value}"
-                help="#{item.helpMessage}"
-                name="#{status.index}field"
-                selectItems="#{item.selectItemList}"
-                required="#{item.required}"
-                itemValue="#{var.value}"
-                itemLabel="#{msgs[var.label]}"
-                ajaxEvent="change"
-                ajaxRender="@form" />
-        </ui:fragment>
-
-        <ui:fragment rendered="#{item.fieldType=='combo'}">
-
-                <div
-                    class="col-12 col-md-3"
-                    tabindex="-1">
-                    <intranda:formLabel
-                        label="#{msgs[item.label]}"
-                        labelFor="#{status.index}field"
-                        labelRequired="#{item.required}" />
-                </div>
-                <div class="col-12 col-md-9">
-                    <h:inputText
-                        rendered="#{item.fieldType=='input'}"
-                        required="#{item.required}"
-                        styleClass="form-control form__input"
-                        pt:aria-label="#{msgs[item.label]}"
-                        value="#{item.value}"
-                        validator="#{item.validateField}">
-                        <f:ajax
-                            event="blur"
-                            execute="@this" />
-                        <f:passThroughAttribute
-                            name="placeholder"
-                            value="#{msgs[item.placeholderText]}" />
-                    </h:inputText>
-
+                required="#{item.required}">
+                <form:grow-wrap>
                     <h:inputTextarea
-                        rendered="#{item.fieldType=='textarea'}"
-                        required="#{item.required}"
-                        styleClass="form-control form__input"
-                        pt:aria-label="#{msgs[item.label]}"
+                        id="field#{status.index}"
                         value="#{item.value}"
-                        validator="#{item.validateField}">
+                        styleClass="form-control">
                         <f:ajax
-                            event="blur"
                             execute="@this" />
-                        <f:passThroughAttribute
-                            name="placeholder"
-                            value="#{msgs[item.placeholderText]}" />
                     </h:inputTextarea>
+                </form:grow-wrap>
+                <form:message target="field#{status.index}" />
+            </form:field>
+        </c:if>
+        <c:if test="#{item.fieldType=='dropdown'}">
+            <form:field
+                label="#{msgs[item.label]}"
+                help="#{item.helpMessage}"
+                required="#{item.required}">
+                <h:selectOneMenu
+                    id="field#{status.index}"
+                    value="#{item.value}"
+                    styleClass="form-select">
+                    <f:selectItems
+                        value="#{item.selectItemList}"
+                        itemValue="#{var.value}"
+                        itemLabel="#{msgs[var.label]}"
+                        var="val" />
+                    <f:ajax
+                        event="change"
+                        execute="@this"
+                        render="@form" />
+                </h:selectOneMenu>
+                <form:message target="field#{status.index}" />
+            </form:field>
+        </c:if>
+        <c:if test="#{item.fieldType=='combo'}">
+            <form:field
+                label="#{msgs[item.label]}"
+                help="#{item.helpMessage}"
+                required="#{item.required}">
+                <h:inputText
+                    rendered="#{item.fieldType=='input'}"
+                    required="#{item.required}"
+                    styleClass="form-control form__input"
+                    pt:aria-label="#{msgs[item.label]}"
+                    value="#{item.value}"
+                    validator="#{item.validateField}">
+                    <f:ajax
+                        event="blur"
+                        execute="@this" />
+                    <f:passThroughAttribute
+                        name="placeholder"
+                        value="#{msgs[item.placeholderText]}" />
+                </h:inputText>
 
-                    <h:selectOneMenu
-                        rendered="#{item.fieldType=='dropdown'}"
-                        required="#{item.required}"
-                        styleClass="form-select"
-                        pt:aria-label="#{msgs[item.label]}"
-                        value="#{item.value}"
-                        validator="#{item.validateField}">
-                        <f:selectItems
-                            value="#{item.selectItemList}"
-                            itemValue="#{var.value}"
-                            itemLabel="#{msgs[var.label]}"
-                            var="val" />
-                    </h:selectOneMenu>
+                <h:inputTextarea
+                    rendered="#{item.fieldType=='textarea'}"
+                    required="#{item.required}"
+                    styleClass="form-control form__input"
+                    pt:aria-label="#{msgs[item.label]}"
+                    value="#{item.value}"
+                    validator="#{item.validateField}">
+                    <f:ajax
+                        event="blur"
+                        execute="@this" />
+                    <f:passThroughAttribute
+                        name="placeholder"
+                        value="#{msgs[item.placeholderText]}" />
+                </h:inputTextarea>
 
-                    <ui:fragment rendered="#{item.fieldType=='combo'}">
-                        <h:panelGroup id="combo">
-                            <h:selectBooleanCheckbox
-                                id="combo1"
-                                value="#{item.booleanValue}"
-                                validator="#{item.validateField}">
-                                <f:ajax
-                                    render="@form"
-                                    execute="@this" />
-                            </h:selectBooleanCheckbox>
-                            <h:selectOneRadio
-                                rendered="#{item.booleanValue}"
-                                styleClass="select-radio select-radio-horizontal"
-                                id="combo2"
-                                value="#{item.subValue}"
-                                validator="#{item.validateField}">
-                                <f:ajax
-                                    render="@form"
-                                    execute="@this" />
-                                <f:selectItems
-                                    value="#{item.selectItemList}"
-                                    itemValue="#{var.value}"
-                                    itemLabel="#{msgs[var.label]}"
-                                    var="val" />
-                            </h:selectOneRadio>
-                        </h:panelGroup>
-                    </ui:fragment>
+                <h:selectOneMenu
+                    rendered="#{item.fieldType=='dropdown'}"
+                    required="#{item.required}"
+                    styleClass="form-select"
+                    pt:aria-label="#{msgs[item.label]}"
+                    value="#{item.value}"
+                    validator="#{item.validateField}">
+                    <f:selectItems
+                        value="#{item.selectItemList}"
+                        itemValue="#{var.value}"
+                        itemLabel="#{msgs[var.label]}"
+                        var="val" />
+                </h:selectOneMenu>
 
-                    <h:panelGroup
-                        layout="block"
-                        rendered="#{!item.fieldValid}"
-                        styleClass="text-danger validation-message">
-                        <h:outputText value="#{item.validationError}" />
+                <c:if test="#{item.fieldType=='combo'}">
+                    <h:panelGroup id="combo">
+                        <h:selectBooleanCheckbox
+                            id="combo1"
+                            value="#{item.booleanValue}"
+                            validator="#{item.validateField}">
+                            <f:ajax
+                                render="@form"
+                                execute="@this" />
+                        </h:selectBooleanCheckbox>
+                        <h:selectOneRadio
+                            rendered="#{item.booleanValue}"
+                            styleClass="select-radio select-radio-horizontal"
+                            id="combo2"
+                            value="#{item.subValue}"
+                            validator="#{item.validateField}">
+                            <f:ajax
+                                render="@form"
+                                execute="@this" />
+                            <f:selectItems
+                                value="#{item.selectItemList}"
+                                itemValue="#{var.value}"
+                                itemLabel="#{msgs[var.label]}"
+                                var="val" />
+                        </h:selectOneRadio>
                     </h:panelGroup>
-
-                    <intranda:formHelp
-                        content="#{item.helpMessage}"
-                        msgFor="#{status.index}field" />
-            </div>
-
-        </ui:fragment>
+                </c:if>
+                <h:panelGroup
+                    layout="block"
+                    rendered="#{!item.fieldValid}"
+                    styleClass="text-danger validation-message">
+                    <h:outputText value="#{item.validationError}" />
+                </h:panelGroup>
+            </form:field>
+        </c:if>
     </composite:implementation>
 </ui:composition>

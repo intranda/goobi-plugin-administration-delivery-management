@@ -8,13 +8,15 @@
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:section="http://goobi.io/section"
+    xmlns:table="http://goobi.io/table"
+    >
 
     <composite:interface>
     </composite:interface>
 
     <composite:implementation>
-
         <!-- Custom plugin styles -->
         <link
             type="text/css"
@@ -24,24 +26,29 @@
         <script src="template/js/plugins/tinymce/tinymce.min.js"></script>
 
         <main>
-            <h:panelGroup>
-                <div class="row deliveryManagement #{AdministrationForm.administrationPlugin.editionMode=='edit' ? 'editMode' : ''}">
-                    <h:panelGroup
-                        layout="block"
-                        styleClass="#{AdministrationForm.administrationPlugin.editionMode=='edit' ? 'col-sm-6' : 'col-sm-12'}">
-                        <intranda:box
-                            boxType="neutral"
-                            boxPadding="#{AdministrationForm.administrationPlugin.editionMode eq 'edit'
-                                or AdministrationForm.administrationPlugin.editionMode eq 'editProcess' ? 'false' : 'true'}"
-                            boxTitle="false"
-                            boxForm="true"
-                            id="administrationPlugin">
-
-                            <intranda:boxTitle
-                                icon="fa-plug"
-                                id="box-title"
-                                title="#{msgs[AdministrationForm.administrationPlugin.title]}#{AdministrationForm.administrationPlugin.displayMode != null ? ': '.concat(msgs[AdministrationForm.administrationPlugin.displayMode]) : ''}">
-                                <ul class="tabs" role="tablist">
+            <h:panelGroup
+                rendered="#{!LoginForm.hasRole('Plugin_administration_deliveryManagement')}"
+                layout="block"
+                styleClass="alert alert-danger"
+                >
+                #{msgs.plugin_administration_missingPermission} Plugin_administration_deliveryManagement
+            </h:panelGroup>
+            <h:panelGroup
+                styleClass="deliveryManagement#{AdministrationForm.administrationPlugin.editionMode=='edit' ? ' row' : ''}"
+                layout="block"
+                rendered="#{LoginForm.hasRole('Plugin_administration_deliveryManagement')}">
+                <h:panelGroup
+                    layout="block"
+                    styleClass="#{AdministrationForm.administrationPlugin.editionMode=='edit' ? 'col-sm-6' : 'col-sm-12'}">
+                    <c:set var="editMode" value="#{AdministrationForm.administrationPlugin.editionMode eq 'edit' or AdministrationForm.administrationPlugin.editionMode eq 'editProcess'}" />
+                    <section:section
+                        type="#{editMode ? 'action' : 'primary'}"
+                        id="administrationPlugin">
+                        <section:header
+                            icon="plug"
+                            title="#{msgs[AdministrationForm.administrationPlugin.title]}#{AdministrationForm.administrationPlugin.displayMode != null ? ': '.concat(msgs[AdministrationForm.administrationPlugin.displayMode]) : ''}">
+                            <section:header-actions>
+                                <ul class="tabs" role="tablist" jsf:rendered="#{!editMode}">
                                     <c:forEach
                                         var="mode"
                                         items="#{AdministrationForm.administrationPlugin.modes}">
@@ -63,56 +70,47 @@
                                         </li>
                                     </c:forEach>
                                 </ul>
-                            </intranda:boxTitle>
+                            </section:header-actions>
+                        </section:header>
 
-                            <div class="box__body">
-                                <h:panelGroup rendered="#{!LoginForm.hasRole('Plugin_administration_deliveryManagement')}">
-                                    <h:outputText
-                                        styleClass="alert alert-danger alert-dismissable margin-bottom-10 margin-top-10"
-                                        value="#{msgs.plugin_administration_missingPermission} Plugin_administration_deliveryManagement" />
-                                </h:panelGroup>
+                        <h:panelGroup
+                            layout="block"
+                            id="actionform">
+                            <h:panelGroup
+                                id="plugin-main-content"
+                                layout="block"
+                                pt:role="tabpanel"
+                                pt:aria-labelledby="#{AdministrationForm.administrationPlugin.displayMode}Tab">
+                                <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'plugin_administration_deliveryManagement_displayMode_user'}">
+                                    <ui:include src="include_users.xhtml" />
+                                </ui:fragment>
 
-                                <h:panelGroup
-                                    layout="block"
-                                    id="actionform"
-                                    rendered="#{LoginForm.hasRole('Plugin_administration_deliveryManagement')}">
-                                    <h:panelGroup
-                                        id="plugin-main-content"
-                                        layout="block"
-                                        pt:role="tabpanel"
-                                        pt:aria-labelledby="#{AdministrationForm.administrationPlugin.displayMode}Tab">
-                                        <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'plugin_administration_deliveryManagement_displayMode_user'}">
-                                            <ui:include src="include_users.xhtml" />
-                                        </ui:fragment>
+                                <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'plugin_administration_deliveryManagement_displayMode_privacyPolicy'}">
+                                    <ui:include src="include_privacyPolicy.xhtml" />
+                                </ui:fragment>
 
-                                        <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'plugin_administration_deliveryManagement_displayMode_privacyPolicy'}">
-                                            <ui:include src="include_privacyPolicy.xhtml" />
-                                        </ui:fragment>
+                                <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'plugin_administration_deliveryManagement_displayMode_zdbTitleData'}">
+                                    <ui:include src="include_zdbTitleData.xhtml" />
+                                </ui:fragment>
+                            </h:panelGroup>
+                        </h:panelGroup>
+                    </section:section>
+                </h:panelGroup>
+                <h:panelGroup
+                    layout="block"
+                    styleClass="#{NavigationForm.uiStatus['journalBig']?'col-12 col-md-12':'col-6 col-md-6'} journal"
+                    rendered="#{AdministrationForm.administrationPlugin.editionMode=='edit'}">
+                    <h:form
+                        enctype="multipart/form-data">
+                        <intranda:journal
+                            showBigButton="true"
+                            showFolderSelection="false"
+                            showImageComments="false"
+                            bean="#{AdministrationForm.administrationPlugin.institution}" />
+                    </h:form>
+                    <!-- // Box for process log -->
 
-                                        <ui:fragment rendered="#{AdministrationForm.administrationPlugin.displayMode == 'plugin_administration_deliveryManagement_displayMode_zdbTitleData'}">
-                                            <ui:include src="include_zdbTitleData.xhtml" />
-                                        </ui:fragment>
-                                    </h:panelGroup>
-                                </h:panelGroup>
-                            </div>
-                        </intranda:box>
-                    </h:panelGroup>
-                    <h:panelGroup
-                        layout="block"
-                        styleClass="#{NavigationForm.uiStatus['journalBig']?'col-12 col-md-12':'col-6 col-md-6'} journal"
-                        rendered="#{AdministrationForm.administrationPlugin.editionMode=='edit'}">
-                        <h:form
-                            enctype="multipart/form-data">
-                            <intranda:journal
-                                showBigButton="true"
-                                showFolderSelection="false"
-                                showImageComments="false"
-                                bean="#{AdministrationForm.administrationPlugin.institution}" />
-                        </h:form>
-                        <!-- // Box for process log -->
-
-                    </h:panelGroup>
-                </div>
+                </h:panelGroup>
             </h:panelGroup>
         </main>
         <script type="text/javascript">
