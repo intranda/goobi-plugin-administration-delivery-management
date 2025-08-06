@@ -732,8 +732,8 @@ public class DeliveryManagementAdministrationPlugin implements IAdministrationPl
 
     public void generateInstitutionProcessTitleList() {
         StringBuilder sb = new StringBuilder();
-        sb.append("(prozesse.ProzesseID in (select prozesseID from prozesseeigenschaften where ");
-        sb.append("prozesseeigenschaften.Titel = 'Institution' AND prozesseeigenschaften.Wert = '");
+        sb.append("(prozesse.ProzesseID in (select object_id from properties where ");
+        sb.append("properties.property_name = 'Institution' and object_type = 'process' AND properties.property_value = '");
         sb.append(institution.getShortName());
         sb.append("')) AND prozesse.istTemplate = false ");
 
