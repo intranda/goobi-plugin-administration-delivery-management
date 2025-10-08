@@ -118,7 +118,7 @@
                 </h:selectOneMenu>
 
                 <c:if test="#{item.fieldType=='combo'}">
-                    <h:panelGroup id="combo">
+                    <div id="combo">
                         <h:selectBooleanCheckbox
                             id="combo1"
                             value="#{item.booleanValue}"
@@ -129,7 +129,7 @@
                         </h:selectBooleanCheckbox>
                         <h:selectOneRadio
                             rendered="#{item.booleanValue}"
-                            styleClass="select-radio select-radio-horizontal"
+                            styleClass="select-radio"
                             id="combo2"
                             value="#{item.subValue}"
                             validator="#{item.validateField}">
@@ -142,7 +142,7 @@
                                 itemLabel="#{msgs[var.label]}"
                                 var="val" />
                         </h:selectOneRadio>
-                    </h:panelGroup>
+                    </div>
                 </c:if>
                 <h:panelGroup
                     layout="block"

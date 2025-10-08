@@ -30,8 +30,8 @@ public class DeliveryManagementPluginTest {
 
         System.setProperty("log4j.configurationFile", log4jFile);
         Path goobiFolder = Paths.get(resourcesFolder, "goobi_config.properties");
-        String goobiMainFolder =goobiFolder.getParent().toString();
-        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder.toString();
+        String goobiMainFolder = goobiFolder.getParent().toString();
+        ConfigurationHelper.configFileName = goobiFolder.toString();
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiMainFolder + "/");
 
