@@ -91,16 +91,19 @@ public class ExtendedUserManager implements IManager {
         sql.append("SELECT benutzer.*, institution.*, lastDate, items");
         createFromQuery(sql);
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter); //NOSONAR
+            sql.append(" WHERE " + filter); //NOSONAR - Goobi framework filter pattern, not direct user input
         }
         if (order != null && !order.isEmpty()) {
             sql.append(" ORDER BY " + order);
         }
         if (start != null && count != null) {
-            sql.append(" LIMIT " + start + ", " + count);
+            sql.append(" LIMIT ?, ?");
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
+            if (start != null && count != null) {
+                return new QueryRunner().query(connection, sql.toString(), resultSetToUserListHandler, start, count);
+            }
             return new QueryRunner().query(connection, sql.toString(), resultSetToUserListHandler);
         } finally {
             if (connection != null) {
